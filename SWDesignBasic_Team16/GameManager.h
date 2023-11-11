@@ -12,14 +12,18 @@ private:
 	sf::Clock dtClock;
 	float dt;
 
-	std::stack<State *> states;
+	std::stack<State*> states;
+	std::map<std::string, int> supportedKeys;
 
 	void initWindow();
+	void initKeys();
 	void initStates();
 
 public:
 	GameManager();
 	virtual ~GameManager();
+
+	void endGame();
 
 	void updateDt();
 	void updateSFMLEvents();

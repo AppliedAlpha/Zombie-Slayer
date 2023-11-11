@@ -22,12 +22,23 @@ void GameManager::initWindow() {
 	this->window->setVerticalSyncEnabled(verticalSyncEnabled);
 }
 
+void GameManager::initKeys()
+{
+	this->supportedKeys.emplace("ESC", sf::Keyboard::Key::Escape);
+
+	this->supportedKeys.emplace("W", sf::Keyboard::Key::W);
+	this->supportedKeys.emplace("A", sf::Keyboard::Key::A);
+	this->supportedKeys.emplace("S", sf::Keyboard::Key::S);
+	this->supportedKeys.emplace("D", sf::Keyboard::Key::D);
+}
+
 void GameManager::initStates() {
-	this->states.push(new GameState(this->window));
+	this->states.push(new GameState(this->window, &this->supportedKeys));
 }
 
 GameManager::GameManager() {
 	this->initWindow();
+	this->initKeys();
 	this->initStates();
 }
 
@@ -38,6 +49,10 @@ GameManager::~GameManager() {
 		delete this->states.top();
 		this->states.pop();
 	}
+}
+
+void GameManager::endGame() {
+	std::cout << "Ending Game\n";
 }
 
 void GameManager::updateDt() {
@@ -54,8 +69,20 @@ void GameManager::updateSFMLEvents() {
 void GameManager::update() {
 	this->updateSFMLEvents();
 
-	if (!this->states.empty())
+	if (!this->states.empty()) {
 		this->states.top()->update(this->dt);
+
+		if (this->states.top()->getQuit()) {
+			this->states.top()->endState();
+
+			delete this->states.top();
+			this->states.pop();
+		}
+	}
+	else {
+		this->endGame();
+		this->window->close();
+	}
 }
 
 void GameManager::render() {
