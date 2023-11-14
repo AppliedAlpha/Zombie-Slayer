@@ -14,6 +14,9 @@ public:
 	float nextSpawnTime;
 	float bossSpawnTime;
 
+	bool isBossSpawned;
+	std::string boss;
+
 	Stage();
 
 	Stage(int stageLevel, int maxMobCount);

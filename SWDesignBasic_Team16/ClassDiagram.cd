@@ -1,45 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="GameManager" Collapsed="true">
+  <Class Name="GameManager">
     <Position X="6" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAgAAAAAAAAACEAAAACAAAAAAEAIMQRQAAARUAAA=</HashCode>
+      <HashCode>AAAAAgAAAAAAAAACEAAAAAAAAAAAEAIMQBQAAARUAAA=</HashCode>
       <FileName>GameManager.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Player" Collapsed="true">
-    <Position X="3.5" Y="1.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Player.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Stage" Collapsed="true">
-    <Position X="9.5" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Stage.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Map" Collapsed="true">
-    <Position X="6" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Map.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Mob" Collapsed="true">
-    <Position X="7.75" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Mob.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Item" Collapsed="true">
-    <Position X="9.5" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Item.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Inventory" Collapsed="true">
@@ -49,11 +14,18 @@
       <FileName>Inventory.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Weapon" Collapsed="true">
-    <Position X="0.5" Y="0.5" Width="1.5" />
+  <Class Name="Item">
+    <Position X="9.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Weapon.h</FileName>
+      <FileName>Item.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Map">
+    <Position X="8" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAIAAAUIAA=</HashCode>
+      <FileName>Map.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MeleeWeapon" Collapsed="true">
@@ -63,6 +35,27 @@
       <FileName>MeleeWeapon.h</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="Mob">
+    <Position X="7.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Mob.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Player" Collapsed="true">
+    <Position X="3.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Player.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stage">
+    <Position X="9.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABBAAAAAgAIQAACAAAgAEAAAAEAAARAAAgQAAAAAAA=</HashCode>
+      <FileName>Stage.h</FileName>
+    </TypeIdentifier>
+  </Class>
   <Class Name="Sword" Collapsed="true">
     <Position X="0.5" Y="3.25" Width="1.5" />
     <TypeIdentifier>
@@ -70,17 +63,24 @@
       <FileName>Sword.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GameState" Collapsed="true">
-    <Position X="3.5" Y="4.75" Width="1.5" />
+  <Class Name="Weapon" Collapsed="true">
+    <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ACIAAAAAAAAAAAAAAAAAAAAAAAgAAAABAAAQAAAUIAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Weapon.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameState">
+    <Position X="5.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIBQAAAAAAgAAAAACABAAAAAAgADCABAAAQAEEVIAA=</HashCode>
       <FileName>GameState.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="State" Collapsed="true">
-    <Position X="3.5" Y="3.5" Width="1.5" />
+  <Class Name="State">
+    <Position X="2.75" Y="2.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ACIBAAAAAUAAAAAAAAQAACAAAAAAAAAIAAARBBAUAAA=</HashCode>
+      <HashCode>AAIBAAAAAUAAAAAAAAAAAAAAAAAAAAAIAAARBBAUAAA=</HashCode>
       <FileName>State.h</FileName>
     </TypeIdentifier>
   </Class>

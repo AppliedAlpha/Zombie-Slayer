@@ -34,6 +34,7 @@ public:
 	virtual ~GameState();
 
 	void spawnMob();
+	void spawnBoss();
 	void endState();
 
 	void updateInput(const float& dt);

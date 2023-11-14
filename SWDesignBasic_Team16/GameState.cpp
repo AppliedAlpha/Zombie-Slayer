@@ -21,10 +21,14 @@ void GameState::initStages()
 	this->currentStage = *currentStageIndex;
 
 	std::cout << this->currentStage.stageLevel << ' ' << this->currentStage.maxMobCount << '\n';
+
+	this->timeUntilSpawn = this->currentStage.nextSpawnTime;
+	this->timeUntilBoss = this->currentStage.bossSpawnTime;
 }
 
 GameState::GameState(sf::RenderWindow* window) : State(window) {
 	this->initStages();
+
 	this->timeUntilItemCooldown = 1.f;
 }
 
@@ -38,6 +42,13 @@ void GameState::spawnMob()
 	
 	this->currentStage.SubEncounter(mobName);
 	this->mobs.push_back(mobName);
+}
+
+void GameState::spawnBoss() {
+	std::string bossName = this->currentStage.boss;
+
+	this->currentStage.isBossSpawned = true;
+	this->mobs.push_back(bossName);
 }
 
 void GameState::endState() {
@@ -82,7 +93,14 @@ void GameState::updateItemUse(const float& dt) {
 }
 
 void GameState::updateMobSpawn(const float& dt) {
-	this->timeUntilBoss -= dt;
+	if (!this->currentStage.isBossSpawned) {
+		this->timeUntilBoss -= dt;
+
+		if (this->timeUntilBoss <= 0) {
+			this->spawnBoss();
+			this->timeUntilBoss = 0;
+		}
+	}
 
 	if (this->mobs.size() < this->currentStage.maxMobCount) {
 		this->timeUntilSpawn -= dt;
@@ -93,7 +111,7 @@ void GameState::updateMobSpawn(const float& dt) {
 		}
 	}
 
-	std::cout << "Mob count: " << this->mobs.size() << ", until: " << this->timeUntilSpawn << '\n';
+	std::cout << "Mob count: " << this->mobs.size() << ", until: " << this->timeUntilSpawn << ", boss until: " << this->timeUntilBoss << '\n';
 }
 
 void GameState::update(const float& dt) {

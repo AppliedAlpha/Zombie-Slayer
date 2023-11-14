@@ -4,11 +4,11 @@ Stage::Stage()
 {
 }
 
-Stage::Stage(int stageLevel, int maxMobCount) : stageLevel(stageLevel), maxMobCount(maxMobCount), killCountUntilBoss(maxMobCount * 3 / 4), nextSpawnTime(3.f), bossSpawnTime(90.f)
+Stage::Stage(int stageLevel, int maxMobCount) : stageLevel(stageLevel), maxMobCount(maxMobCount), killCountUntilBoss(maxMobCount * 3 / 4), nextSpawnTime(3.f), bossSpawnTime(90.f), isBossSpawned(false)
 {
 }
 
-Stage::Stage(int stageLevel, int maxMobCount, int killCountUntilBoss, float nextSpawnTime, float bossSpawnTime) : stageLevel(stageLevel), maxMobCount(maxMobCount), killCountUntilBoss(killCountUntilBoss), nextSpawnTime(nextSpawnTime), bossSpawnTime(bossSpawnTime)
+Stage::Stage(int stageLevel, int maxMobCount, int killCountUntilBoss, float nextSpawnTime, float bossSpawnTime) : stageLevel(stageLevel), maxMobCount(maxMobCount), killCountUntilBoss(killCountUntilBoss), nextSpawnTime(nextSpawnTime), bossSpawnTime(bossSpawnTime), isBossSpawned(false)
 {
 }
 
