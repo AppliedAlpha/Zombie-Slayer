@@ -15,6 +15,8 @@ void Entity::move(const float& dt, const float dx, const float dy) {
 }
 
 void Entity::update(const float& dt) {
+	auto pos = this->shape.getPosition();
+	// std::cout << pos.x << ' ' << pos.y << '\n';
 }
 
 void Entity::render(sf::RenderTarget* target) {

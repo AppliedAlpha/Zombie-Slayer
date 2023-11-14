@@ -22,23 +22,12 @@ void GameManager::initWindow() {
 	this->window->setVerticalSyncEnabled(verticalSyncEnabled);
 }
 
-void GameManager::initKeys()
-{
-	this->supportedKeys.emplace("ESC", sf::Keyboard::Key::Escape);
-
-	this->supportedKeys.emplace("W", sf::Keyboard::Key::W);
-	this->supportedKeys.emplace("A", sf::Keyboard::Key::A);
-	this->supportedKeys.emplace("S", sf::Keyboard::Key::S);
-	this->supportedKeys.emplace("D", sf::Keyboard::Key::D);
-}
-
 void GameManager::initStates() {
-	this->states.push(new GameState(this->window, &this->supportedKeys));
+	this->states.push(new GameState(this->window));
 }
 
 GameManager::GameManager() {
 	this->initWindow();
-	this->initKeys();
 	this->initStates();
 }
 
