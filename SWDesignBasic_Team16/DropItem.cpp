@@ -1,5 +1,5 @@
 #include "DropItem.h"
-/*
+
 // Constructor
 DropItem::DropItem(const sf::Vector2f& position, const Inventory& inventory) : inventory(inventory) {
     shape.setRadius(10.f);  // 작은 원의 반지름 설정
@@ -20,4 +20,3 @@ const Inventory& DropItem::getInventory() const {
 void DropItem::draw(sf::RenderWindow& window) const {
     window.draw(shape);
 }
-*/

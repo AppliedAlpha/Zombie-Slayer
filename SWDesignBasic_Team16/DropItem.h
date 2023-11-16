@@ -1,5 +1,5 @@
 #pragma once
-/*
+
 #include "Inventory.h"
 
 using namespace sf;
@@ -20,4 +20,3 @@ public:
     // Draw the drop item
     void draw(RenderWindow& window) const;
 };
-*/

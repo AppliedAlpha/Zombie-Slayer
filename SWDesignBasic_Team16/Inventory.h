@@ -1,5 +1,4 @@
 #pragma once
-/*
 #include "Entity.h"
 #include "GameState.h"
 #include "stdafx.h"
@@ -27,9 +26,10 @@ public:
     // Clear all items in the inventory
     void clearItems();
 };
-*/
+/*
 class Inventory {
 public:
     Inventory();
     ~Inventory();
 };
+*/
