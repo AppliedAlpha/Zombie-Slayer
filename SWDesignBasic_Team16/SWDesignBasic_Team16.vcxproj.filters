@@ -19,6 +19,9 @@
     <Filter Include="Entities">
       <UniqueIdentifier>{84bbe910-c7aa-440e-8282-16c8bc362c6a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Custom Static Classes">
+      <UniqueIdentifier>{12906c95-16c3-43b1-886e-dbc8a4d04905}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -63,11 +66,14 @@
     <ClCompile Include="Player.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Random.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="DropItem.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Random.cpp">
+      <Filter>Custom Static Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="CustomMath.cpp">
+      <Filter>Custom Static Classes</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -113,11 +119,14 @@
     <ClInclude Include="Player.h">
       <Filter>Entities</Filter>
     </ClInclude>
-    <ClInclude Include="Random.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="DropItem.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Random.h">
+      <Filter>Custom Static Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="CustomMath.h">
+      <Filter>Custom Static Classes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

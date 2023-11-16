@@ -41,8 +41,13 @@ void Player::attack()
 void Player::updateCollision(Entity* object, sf::Vector2f& velocity)
 {
 	this->hp -= object->power;
-	if (this->hp <= 0.f) printf("You Died\n");
-	else printf("Player: %.1f\n", this->hp);
+	if (this->hp <= 0.f) {
+		printf("You Died\n");
+		this->death = true;
+	}
+	else {
+		printf("Player: %.1f\n", this->hp);
+	}
 	//// 아래 충돌
 	//sf::FloatRect playerBounds = this->nextPos;
 	//sf::FloatRect objectBounds = object->getShape().getGlobalBounds();
@@ -126,6 +131,6 @@ float Player::getViewAngle()
 
 void Player::update(const float& dt, sf::Vector2f velocity) {
 	float angle = getViewAngle();
-	this->sword->update(dt, this->shape, this->cx, this->cy, angle);
 	this->move(dt, velocity.x, velocity.y);
+	this->sword->update(dt, this->shape, this->cx, this->cy, angle);
 }

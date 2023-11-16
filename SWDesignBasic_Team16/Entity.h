@@ -2,14 +2,12 @@
 
 #include "stdafx.h"
 #include "Inventory.h"
-#include "Random.h"
 
 class Entity {
 private:
 
 
 protected:
-
 	virtual void initShape();
 	void initVariables(float movementSpeed, float power, float hp);
 
@@ -23,7 +21,6 @@ public:
 	float girdSize;
 	sf::RectangleShape shape;
 
-	Entity();
 	Entity(float movementSpeed, float power, float hp);
 	virtual ~Entity();
 

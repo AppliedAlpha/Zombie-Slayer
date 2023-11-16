@@ -1,6 +1,6 @@
 #include "Inventory.h"
 
-Inventory::Inventory() : xp(0), gold(0) {
+Inventory::Inventory() : xp(1), gold(0) {
 
 }
 
@@ -20,7 +20,3 @@ void Inventory::addItem(const std::string& item) { items.push_back(item); }
 
 
 void Inventory::clearItems() { items.clear(); }
-
-
-// Inventory::Inventory() {}
-// Inventory::~Inventory() {}

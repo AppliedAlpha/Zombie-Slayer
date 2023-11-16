@@ -7,6 +7,8 @@ class Player : public Entity
 private:
 	void initShape();
 	void initVariables();
+	bool death = false;
+
 public:
 	sf::Vector2f viewDirection;
 	Sword* sword;
@@ -18,4 +20,6 @@ public:
 	void render(sf::RenderTarget* target);
 	void update(const float& dt, sf::Vector2f velocity);
 	float getViewAngle();
+	
+	bool getDeath() const { return this->death; }
 };

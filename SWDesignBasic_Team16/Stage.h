@@ -10,6 +10,8 @@ public:
 	int stageLevel;
 	int maxMobCount;
 	int killCountUntilBoss;
+	int currentKillCount;
+	int totalMobCount;
 
 	float nextSpawnTime;
 	float bossSpawnTime;
