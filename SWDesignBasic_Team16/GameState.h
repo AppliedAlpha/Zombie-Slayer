@@ -1,19 +1,19 @@
 #pragma once
 
+#include "stdafx.h"
 #include "State.h"
-#include "Entity.h"
+#include "Player.h"
+#include "Mob.h"
 #include "Stage.h"
 #include "Map.h"
 
 class GameState : public State
 {
 private:
-	Entity player;
+	Player player;
+	std::vector<Mob*> mobList;
+	sf::Vector2f velocity;
 	Map basicMap;
-
-	// 현재 깔려있는 몹
-	// 원래는 Mob 클래스가 들어가야 함
-	std::vector<std::string> mobs; 
 	
 	std::vector<Stage> stages;
 	std::vector<Stage>::const_iterator currentStageIndex;
@@ -37,10 +37,11 @@ public:
 	void spawnBoss();
 	void endState();
 
-	void updateInput(const float& dt);
+	void updateCollision(sf::Vector2f& velocity);
+	void updateInput(const float& dt, int& keyTime);
 	void updateItemUse(const float& dt);
 	void updateMobSpawn(const float& dt);
-	void update(const float& dt);
+	void update(const float& dt, int& keyTime);
 	void render(sf::RenderTarget* target = nullptr);
 };
 

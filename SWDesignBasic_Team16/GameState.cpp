@@ -24,6 +24,11 @@ void GameState::initStages()
 
 	this->timeUntilSpawn = this->currentStage.nextSpawnTime;
 	this->timeUntilBoss = this->currentStage.bossSpawnTime;
+
+	for (int i = 0; i < 10; i++) {
+		Mob* mob = new Mob();
+		this->mobList.push_back(mob);
+	}
 }
 
 GameState::GameState(sf::RenderWindow* window) : State(window) {
@@ -33,45 +38,83 @@ GameState::GameState(sf::RenderWindow* window) : State(window) {
 }
 
 GameState::~GameState() {
+	for (int i = 0; i < this->mobList.size(); i++) {
+		delete this->mobList.at(i);
+	}
+	this->mobList.clear();
 }
 
 void GameState::spawnMob()
 {
 	// 원래는 랜덤이거나 앞에 있어야 하는건데 일단
+	/*
 	std::string mobName = "Normal Zombie";
 	
 	this->currentStage.SubEncounter(mobName);
 	this->mobs.push_back(mobName);
+	*/
 }
 
 void GameState::spawnBoss() {
 	std::string bossName = this->currentStage.boss;
 
 	this->currentStage.isBossSpawned = true;
-	this->mobs.push_back(bossName);
+	// this->mobs.push_back(bossName);
 }
 
 void GameState::endState() {
 	std::cout << "Ending State\n";
 }
 
-void GameState::updateInput(const float& dt) {
+void GameState::updateCollision(sf::Vector2f& velocity)
+{
+	for (int i = 0; i < this->mobList.size(); i++) {
+		sf::FloatRect playerNextPosBounds = this->player.shape.getGlobalBounds();
+		sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
+		sf::FloatRect swordBounds = this->player.sword->shape.getGlobalBounds();
+		if (mobBounds.intersects(playerNextPosBounds)) {
+			this->player.updateCollision(mobList[i], velocity);
+		}
+		if (mobBounds.intersects(swordBounds) && this->player.sword->active) {
+			// printf("Collision\n");
+			mobList[i]->updateCollision(this->player.sword);
+			if (mobList[i]->hp <= 0) {
+				delete mobList[i];
+				this->mobList.erase(this->mobList.begin() + i);
+			}
+		}
+	}
+}
+
+void GameState::updateInput(const float& dt, int& keyTime) {
 	this->checkForQuit();
+	this->velocity.x = 0;
+	this->velocity.y = 0;
+	this->player.viewDirection.x = 0.f;
+	this->player.viewDirection.y = 0.f;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-		this->player.move(dt, -1.f, 0.f);
+		keyTime = 0;
+		this->player.viewDirection.x = -1.f;
+		this->velocity.x = -1.f;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		this->player.move(dt, 1.f, 0.f);
+		keyTime = 0;
+		this->player.viewDirection.x = 1.f;
+		this->velocity.x = 1.f;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-		this->player.move(dt, 0.f, -1.f);
+		keyTime = 0;
+		this->player.viewDirection.y = -1.f;
+		this->velocity.y = -1.f;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		this->player.move(dt, 0.f, 1.f);
+		keyTime = 0;
+		this->player.viewDirection.y = 1.f;
+		this->velocity.y = 1.f;
 	}
 
 	for (auto i = 1; i <= 9; i++) {
@@ -93,6 +136,7 @@ void GameState::updateItemUse(const float& dt) {
 }
 
 void GameState::updateMobSpawn(const float& dt) {
+	/*
 	if (!this->currentStage.isBossSpawned) {
 		this->timeUntilBoss -= dt;
 
@@ -112,14 +156,23 @@ void GameState::updateMobSpawn(const float& dt) {
 	}
 
 	std::cout << "Mob count: " << this->mobs.size() << ", until: " << this->timeUntilSpawn << ", boss until: " << this->timeUntilBoss << '\n';
+	*/
 }
 
-void GameState::update(const float& dt) {
-	this->updateInput(dt);
-	this->player.update(dt);
+void GameState::update(const float& dt, int& keyTime) {
+	if (keyTime < 4)
+		keyTime++;
+	
+	this->updateInput(dt, keyTime);
+	this->updateCollision(this->velocity);
+	this->player.update(dt, this->velocity);
 
 	this->updateItemUse(dt);
 	this->updateMobSpawn(dt);
+
+	for (auto mob : this->mobList) {
+		mob->update(dt);
+	}
 }
 
 void GameState::render(sf::RenderTarget* target) {
@@ -129,4 +182,11 @@ void GameState::render(sf::RenderTarget* target) {
 	// 맵 출력이 플레이어보다 앞서야 함
 	this->basicMap.render(target);
 	this->player.render(target);
+
+	for (auto mob : this->mobList)
+		mob->render(target);
+	
+	if (this->player.sword->active) {
+		this->player.sword->render(target);
+	}
 }

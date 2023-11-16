@@ -11,6 +11,7 @@ private:
 
 	sf::Clock dtClock;
 	float dt;
+	int keyTime;
 
 	std::stack<State*> states;
 

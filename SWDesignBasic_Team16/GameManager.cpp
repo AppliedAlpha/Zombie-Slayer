@@ -6,7 +6,8 @@ void GameManager::initWindow() {
 	std::string title;
 	sf::VideoMode windowBounds(1280, 720);
 	unsigned int frameRateLimit = 60;
-	bool verticalSyncEnabled = true;
+	bool verticalSyncEnabled = false;
+	this->keyTime = 4;
 
 	if (ifs.is_open()) {
 		std::getline(ifs, title);
@@ -59,7 +60,7 @@ void GameManager::update() {
 	this->updateSFMLEvents();
 
 	if (!this->states.empty()) {
-		this->states.top()->update(this->dt);
+		this->states.top()->update(this->dt, this->keyTime);
 
 		if (this->states.top()->getQuit()) {
 			this->states.top()->endState();
