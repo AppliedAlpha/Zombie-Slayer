@@ -8,24 +8,20 @@ private:
 
 protected:
 	sf::RenderWindow* window;
-	std::map<std::string, int>* supportedKeys;
-	std::map<std::string, int> keybinds;
 
 	std::vector<sf::Texture> textures;
 	bool quit;
 
-	virtual void initKeybinds() = 0;
-
 public:
-	State(sf::RenderWindow* window, std::map<std::string, int>* supportedKeys);
+	State(sf::RenderWindow* window);
 	virtual ~State();
 
 	const bool& getQuit() const;
 	virtual void checkForQuit();
 
 	virtual void endState() = 0;
-	virtual void updateInput(const float& dt) = 0;
-	virtual void update(const float& dt) = 0;
+	virtual void updateInput(const float& dt, int& keyTime) = 0;
+	virtual void update(const float& dt, int& keyTime) = 0;
 	virtual void render(sf::RenderTarget* target = nullptr) = 0;
 };
 
