@@ -34,10 +34,6 @@ NPC::~NPC()
 {
 }
 
-void NPC::updateCollision(Player player)
-{
-}
-
 void NPC::move(const float& dt)
 {
 	float multiplyer = 20.f;

@@ -1,8 +1,6 @@
 #pragma once
 
 #include "Entity.h"
-#include "Player.h"
-#include "Sword.h"
 #include "stdafx.h"
 #include "DropItem.h"
 
@@ -17,7 +15,7 @@ public:
 	NPC();
 	NPC(const std::string& name, float movementSpeed, float power, float hp);
 	~NPC();
-
+	bool active = false;
 	std::string name;
 	Inventory inventory;
 	sf::Vector2f direction;
@@ -25,7 +23,6 @@ public:
 	float movingTime;
 	float time;
 	bool moving;
-	void updateCollision(Player player);
 
 	void move(const float& dt);
 

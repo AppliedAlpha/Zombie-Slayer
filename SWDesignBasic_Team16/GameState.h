@@ -1,12 +1,13 @@
 #pragma once
 
 #include "stdafx.h"
-#include "State.h"
 #include "Player.h"
 #include "Mob.h"
 #include "Stage.h"
 #include "Map.h"
 #include "NPC.h"
+#include "State.h"
+#include "NPCEvent.h"
 
 class GameState : public State
 {
@@ -47,12 +48,12 @@ public:
 	void endState();
 
 	void updateCollision(sf::Vector2f& velocity);
-	void updateInput(const float& dt, int& keyTime);
+	void updateInput(const float& dt);
 	void updateItemUse(const float& dt);
 	void updateMobSpawn(const float& dt);
 	void updateHpBar();
 	void updateStageClear();
-	void update(const float& dt, int& keyTime);
+	void update(const float& dt);
 	void render(sf::RenderTarget* target = nullptr);
 };
 

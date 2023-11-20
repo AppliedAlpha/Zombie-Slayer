@@ -52,7 +52,6 @@ GameState::GameState(sf::RenderWindow* window) : State(window) {
 	this->initStages();
 	// this->initFirstStage();
 	this->initPlayerHpBar();
-
 	this->timeUntilItemCooldown = 1.f;
 
 	this->npcList.push_back(new NPC());
@@ -63,6 +62,11 @@ GameState::~GameState() {
 		delete this->mobList.at(i);
 	}
 	this->mobList.clear();
+
+	for (int i = 0; i < this->npcList.size(); i++) {
+		delete this->npcList.at(i);
+	}
+	this->npcList.clear();
 }
 
 void GameState::spawnMob()
@@ -99,9 +103,6 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		sf::FloatRect meleeWeaponBounds = meleeWeapon->shape.getGlobalBounds();
 		for (int i = 0; i < this->mobList.size(); i++) {
 			sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
-			if (mobBounds.intersects(playerNextPosBounds)) {
-				this->player.updateCollision(mobList[i], velocity);
-			}
 			if (mobBounds.intersects(meleeWeaponBounds) && meleeWeapon->active) {
 				// printf("Collision\n");
 				mobList[i]->updateCollision(meleeWeapon);
@@ -113,6 +114,23 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 					this->mobList.erase(this->mobList.begin() + i);
 				}
 			}
+		}
+	}
+	for (int i = 0; i < this->mobList.size(); i++) {
+		sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
+		if (mobBounds.intersects(playerNextPosBounds)) {
+			this->player.updateCollision(mobList[i]);
+		}
+	}
+	for (int i = 0; i < this->npcList.size(); i++) {
+		sf::FloatRect npcBounds = npcList[i]->getShape().getGlobalBounds();
+		if (npcBounds.intersects(playerNextPosBounds)) {
+			if (npcList[i]->active == false) {
+				npcList[i]->active = true;
+				this->eventQueue.push_back(new NPCEvent(&this->player));
+			}
+			delete npcList[i];
+			this->npcList.erase(this->npcList.begin() + i);
 		}
 	}
 	for (int i = 0; i < this->dropItemList.size(); i++) {
@@ -131,7 +149,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 	}
 }
 
-void GameState::updateInput(const float& dt, int& keyTime) {
+void GameState::updateInput(const float& dt) {
 	this->checkForQuit();
 	this->velocity.x = 0;
 	this->velocity.y = 0;
@@ -139,25 +157,21 @@ void GameState::updateInput(const float& dt, int& keyTime) {
 	this->player.viewDirection.y = 0.f;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-		keyTime = 0;
 		this->player.viewDirection.x = -1.f;
 		this->velocity.x = -1.f;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		keyTime = 0;
 		this->player.viewDirection.x = 1.f;
 		this->velocity.x = 1.f;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-		keyTime = 0;
 		this->player.viewDirection.y = -1.f;
 		this->velocity.y = -1.f;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		keyTime = 0;
 		this->player.viewDirection.y = 1.f;
 		this->velocity.y = 1.f;
 	}
@@ -217,11 +231,8 @@ void GameState::updateStageClear()
 	}
 }
 
-void GameState::update(const float& dt, int& keyTime) {
-	if (keyTime < 4)
-		keyTime++;
-	
-	this->updateInput(dt, keyTime);
+void GameState::update(const float& dt) {
+	this->updateInput(dt);
 	this->updateCollision(this->velocity);
 	this->player.update(dt, this->velocity);
 
@@ -238,7 +249,7 @@ void GameState::update(const float& dt, int& keyTime) {
 
 	this->updateHpBar();
 
-	if (this->player.getDeath()) {
+	if (this->player.hp <= 0) {
 		this->quit = true;
 	}
 

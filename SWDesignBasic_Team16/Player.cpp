@@ -1,7 +1,4 @@
 #include "Player.h"
-#include "Sword.h"
-#include "Spear.h"
-#include "Grinder.h"
 
 void Player::initVariables()
 {
@@ -41,58 +38,19 @@ Player::~Player()
 	}
 }
 
-void Player::attack()
+void Player::attack(const float& dt)
 {
+	float angle = getViewAngle();
+	for (auto weapon : this->weaponList) {
+		weapon->update(dt, this->shape, this->cx, this->cy, angle);
+	}
 }
 
-void Player::updateCollision(Entity* object, sf::Vector2f& velocity)
+void Player::updateCollision(Entity* object)
 {
-	this->hp -= object->power;
-	if (this->hp <= 0.f) {
-		printf("You Died\n");
-		this->death = true;
+	if (Mob* mob = dynamic_cast<Mob*>(object)) {
+		this->hp -= mob->power;
 	}
-	else {
-		printf("Player: %.1f\n", this->hp);
-	}
-	//// 아래 충돌
-	//sf::FloatRect playerBounds = this->nextPos;
-	//sf::FloatRect objectBounds = object->getShape().getGlobalBounds();
-	//if (playerBounds.top < objectBounds.top &&
-	//	playerBounds.top + playerBounds.height < objectBounds.top + objectBounds.height &&
-	//	playerBounds.left < objectBounds.left + objectBounds.width &&
-	//	playerBounds.left + playerBounds.width > objectBounds.left) {
-	//	velocity.y = 0.f;
-	//	this->cy = this->cy - (playerBounds.top + playerBounds.height - objectBounds.top);
-	//	// this->shape.setPosition(playerBounds.left, objectBounds.top - playerBounds.height);
-	//}
-	//// 위 충돌
-	//else if (playerBounds.top > objectBounds.top &&
-	//	playerBounds.top + playerBounds.height > objectBounds.top + objectBounds.height &&
-	//	playerBounds.left < objectBounds.left + objectBounds.width &&
-	//	playerBounds.left + playerBounds.width > objectBounds.left) {
-	//	velocity.y = 0.f;
-	//	this->cy = this->cy + (objectBounds.top + objectBounds.height - playerBounds.top);
-	//	// this->shape.setPosition(this->shape.getGlobalBounds().left, object->downside);
-	//}
-	//// 오른쪽 충돌
-	//if (playerBounds.left < objectBounds.left &&
-	//	playerBounds.left + playerBounds.width < objectBounds.left + objectBounds.width &&
-	//	playerBounds.top < objectBounds.top + objectBounds.height &&
-	//	playerBounds.top + playerBounds.height > objectBounds.top) {
-	//	velocity.x = 0.f;
-	//	this->cx = this->cx - (playerBounds.left + playerBounds.width - objectBounds.left);
-	//	// this->shape.setPosition(object->leftside - playerBounds.width, playerBounds.top);
-	//}
-	//// 왼쪽 충돌
-	//else if (playerBounds.left > objectBounds.left &&
-	//	playerBounds.left + playerBounds.width > objectBounds.left + objectBounds.width &&
-	//	playerBounds.top < objectBounds.top + objectBounds.height &&
-	//	playerBounds.top + playerBounds.height > objectBounds.top) {
-	//	velocity.x = 0.f;
-	//	this->cx = this->cx + (objectBounds.left + objectBounds.width - playerBounds.left);
-	//	// this->shape.setPosition(object->rightside, playerBounds.top);
-	//}
 }
 
 void Player::move(const float& dt, const float dx, const float dy) {
@@ -137,10 +95,7 @@ float Player::getViewAngle()
 }
 
 void Player::update(const float& dt, sf::Vector2f velocity) {
-	float angle = getViewAngle();
 	this->move(dt, velocity.x, velocity.y);
-	for (auto weapon : this->weaponList) {
-		weapon->update(dt, this->shape, this->cx, this->cy, angle);
-	}
+	this->attack(dt);
 	Entity::update(dt);
 }

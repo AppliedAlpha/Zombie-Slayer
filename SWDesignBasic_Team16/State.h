@@ -1,6 +1,7 @@
 #pragma once
 
 #include "stdafx.h"
+#include "Event.h"
 
 class State
 {
@@ -13,6 +14,7 @@ protected:
 	bool quit;
 
 public:
+	std::deque<Event*> eventQueue;
 	State(sf::RenderWindow* window);
 	virtual ~State();
 
@@ -20,8 +22,8 @@ public:
 	virtual void checkForQuit();
 
 	virtual void endState() = 0;
-	virtual void updateInput(const float& dt, int& keyTime) = 0;
-	virtual void update(const float& dt, int& keyTime) = 0;
+	virtual void updateInput(const float& dt) = 0;
+	virtual void update(const float& dt) = 0;
 	virtual void render(sf::RenderTarget* target = nullptr) = 0;
 };
 

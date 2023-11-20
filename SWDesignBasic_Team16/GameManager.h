@@ -2,6 +2,7 @@
 
 #include "stdafx.h"
 #include "GameState.h"
+#include "EventState.h"
 
 class GameManager
 {
@@ -11,7 +12,6 @@ private:
 
 	sf::Clock dtClock;
 	float dt;
-	int keyTime;
 
 	std::stack<State*> states;
 
@@ -24,6 +24,7 @@ public:
 
 	void endGame();
 
+	void pushStates(std::deque<Event*>& eventQueue);
 	void updateDt();
 	void updateSFMLEvents();
 	void update();
