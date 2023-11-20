@@ -11,7 +11,8 @@ private:
 
 public:
 	sf::Vector2f viewDirection;
-	Sword* sword;
+	std::vector<Weapon*> weaponList;
+	Inventory inventory;
 	Player();
 	~Player();
 	void attack();

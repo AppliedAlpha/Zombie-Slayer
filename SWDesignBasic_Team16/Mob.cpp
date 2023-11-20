@@ -3,15 +3,15 @@
 void Mob::initShape(sf::Color color)
 {
 	Entity::initShape();
-	this->shape.setSize(sf::Vector2f(this->girdSize, this->girdSize));
+	this->shape.setSize(sf::Vector2f(this->gridSize, this->gridSize));
 	this->shape.setFillColor(color);
 	this->cx = Random::instance().getFloat(0, 100) + Random::instance().getInt(0, 1) * 1180.f;
 	this->cy = Random::instance().getFloat(0, 720);
 }
 
-void Mob::updateCollision(Sword* sword)
+void Mob::updateCollision(Weapon* weapon)
 {
-	this->hp -= sword->damage;
+	this->hp -= weapon->damage;
 
 	if (this->hp <= 0.f) {
 		printf("Dead\n");
@@ -51,6 +51,7 @@ void Mob::move(const float& dt, sf::Vector2f playerPosition) {
 
 void Mob::update(const float& dt, sf::Vector2f playerPosition) {
 	this->move(dt, playerPosition);
+	Entity::update(dt);
 }
 
 void Mob::render(sf::RenderTarget* target) {

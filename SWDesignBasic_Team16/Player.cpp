@@ -1,4 +1,7 @@
 #include "Player.h"
+#include "Sword.h"
+#include "Spear.h"
+#include "Grinder.h"
 
 void Player::initVariables()
 {
@@ -11,7 +14,7 @@ void Player::initVariables()
 
 void Player::initShape()
 {
-	this->shape.setSize(sf::Vector2f(this->girdSize, this->girdSize));
+	this->shape.setSize(sf::Vector2f(this->gridSize, this->gridSize));
 	this->shape.setFillColor(sf::Color::White);
 	
 	this->shape.setOrigin(sf::Vector2f(this->shape.getLocalBounds().width, this->shape.getLocalBounds().height) / 2.f);
@@ -26,12 +29,16 @@ Player::Player() : Entity(10, 5, 100)
 	this->initVariables();
 
 	// TODO: 맨 처음에 무기 구석에 있는 거 고치기
-	this->sword = new Sword(1, 1, .5f);
+	weaponList.push_back(new Sword(1, 1, .5f));
+	weaponList.push_back(new Spear(2, 2.5f, .5f));
+	weaponList.push_back(new Grinder(0, .5f, .1f));
 }
 
 Player::~Player()
 {
-	delete this->sword;
+	for (auto weapon : this->weaponList) {
+		delete weapon;
+	}
 }
 
 void Player::attack()
@@ -132,5 +139,8 @@ float Player::getViewAngle()
 void Player::update(const float& dt, sf::Vector2f velocity) {
 	float angle = getViewAngle();
 	this->move(dt, velocity.x, velocity.y);
-	this->sword->update(dt, this->shape, this->cx, this->cy, angle);
+	for (auto weapon : this->weaponList) {
+		weapon->update(dt, this->shape, this->cx, this->cy, angle);
+	}
+	Entity::update(dt);
 }

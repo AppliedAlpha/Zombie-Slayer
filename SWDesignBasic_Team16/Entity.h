@@ -18,12 +18,15 @@ public:
 	float cx;
 	float cy;
 	float movementSpeed;
-	float girdSize;
+	float gridSize;
 	sf::RectangleShape shape;
+	sf::Vertex hpBar[4];
 
 	Entity(float movementSpeed, float power, float hp);
 	virtual ~Entity();
 
+	void initHpBar();
+	void updateHpBar();
 	virtual void move(const float& dt, const float dx, const float dy);
 	virtual void updateCollision(Entity* object);
 	virtual void update(const float& dt);

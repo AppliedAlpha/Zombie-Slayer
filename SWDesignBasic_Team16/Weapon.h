@@ -15,6 +15,7 @@ public:
 	sf::RectangleShape shape;
 	Weapon(float cooltime, float damage, float duration);
 	~Weapon();
-	void update(const float& dt, sf::FloatRect pos);
-	void render(sf::RenderTarget* target);
+	virtual void initShape();
+	virtual void update(const float& dt, sf::RectangleShape playerShape, float cx, float cy, float angle);
+	virtual void render(sf::RenderTarget* target);
 };

@@ -54,6 +54,8 @@ GameState::GameState(sf::RenderWindow* window) : State(window) {
 	this->initPlayerHpBar();
 
 	this->timeUntilItemCooldown = 1.f;
+
+	this->npcList.push_back(new NPC());
 }
 
 GameState::~GameState() {
@@ -92,21 +94,24 @@ void GameState::endState() {
 void GameState::updateCollision(sf::Vector2f& velocity)
 {
 	sf::FloatRect playerNextPosBounds = this->player.shape.getGlobalBounds();
-	sf::FloatRect swordBounds = this->player.sword->shape.getGlobalBounds();
-	for (int i = 0; i < this->mobList.size(); i++) {
-		sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
-		if (mobBounds.intersects(playerNextPosBounds)) {
-			this->player.updateCollision(mobList[i], velocity);
-		}
-		if (mobBounds.intersects(swordBounds) && this->player.sword->active) {
-			// printf("Collision\n");
-			mobList[i]->updateCollision(this->player.sword);
-			if (mobList[i]->getDeath()) {
-				// 
-				DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
-				dropItemList.push_back(dropitem);
-				delete mobList[i];
-				this->mobList.erase(this->mobList.begin() + i);
+	for (auto weapon : this->player.weaponList) {
+		MeleeWeapon* meleeWeapon = (MeleeWeapon*)weapon;
+		sf::FloatRect meleeWeaponBounds = meleeWeapon->shape.getGlobalBounds();
+		for (int i = 0; i < this->mobList.size(); i++) {
+			sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
+			if (mobBounds.intersects(playerNextPosBounds)) {
+				this->player.updateCollision(mobList[i], velocity);
+			}
+			if (mobBounds.intersects(meleeWeaponBounds) && meleeWeapon->active) {
+				// printf("Collision\n");
+				mobList[i]->updateCollision(meleeWeapon);
+				if (mobList[i]->getDeath()) {
+					// 
+					DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
+					dropItemList.push_back(dropitem);
+					delete mobList[i];
+					this->mobList.erase(this->mobList.begin() + i);
+				}
 			}
 		}
 	}
@@ -227,6 +232,10 @@ void GameState::update(const float& dt, int& keyTime) {
 		mob->update(dt, sf::Vector2f(this->player.cx, this->player.cy));
 	}
 
+	for (auto npc : this->npcList) {
+		npc->update(dt);
+	}
+
 	this->updateHpBar();
 
 	if (this->player.getDeath()) {
@@ -246,12 +255,17 @@ void GameState::render(sf::RenderTarget* target) {
 
 	for (auto mob : this->mobList)
 		mob->render(target);
+
+	for (auto npc : this->npcList)
+		npc->render(target);
 	
 	for (auto dropitem : this->dropItemList)
 		dropitem->draw(target);
 	
-	if (this->player.sword->active) {
-		this->player.sword->render(target);
+	for (auto weapon : this->player.weaponList) {
+		if (weapon->active) {
+			weapon->render(target);
+		}
 	}
 
 	target->draw(hpBar, 4, sf::Quads);

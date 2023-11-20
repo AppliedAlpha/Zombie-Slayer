@@ -6,12 +6,14 @@
 #include "Mob.h"
 #include "Stage.h"
 #include "Map.h"
+#include "NPC.h"
 
 class GameState : public State
 {
 private:
 	Player player;
 	std::vector<Mob*> mobList;
+	std::vector<NPC*> npcList;
 	sf::Vector2f velocity;
 	Map basicMap;
 	std::vector<DropItem*> dropItemList;
