@@ -27,7 +27,7 @@ Player::Player() : Entity(10, 1, 100)
 
 	// TODO: 맨 처음에 무기 구석에 있는 거 고치기
 	weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Sword", new Sword(1, 1, .5f)));
-	weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Grinder", new Grinder(0, 1, 0)));
+	// weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Grinder", new Grinder(0, 1, 0)));
 	// weaponList.push_back(new Sword(1, 1, .5f));
 	// weaponList.push_back(new Spear(2, 2.5f, .5f));
 	// weaponList.push_back(new Grinder(0, .5f, .1f));

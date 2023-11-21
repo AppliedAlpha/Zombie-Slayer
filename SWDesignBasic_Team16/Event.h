@@ -10,6 +10,8 @@ public:
 	Player* player;
 	std::deque<std::string> dialog;
 	sf::Text currentDialog;
+	std::string fontDir;
+	sf::Font font;
 	Event(Player* player);
 	virtual ~Event();
 	virtual void initScreen() = 0;

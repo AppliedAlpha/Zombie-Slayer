@@ -2,9 +2,9 @@
 
 NPCEvent::NPCEvent(Player* player) : Event(player)
 {
-	this->dialog.push_back("Hello?");
-	this->dialog.push_back("You are alive!");
-	this->dialog.push_back("I have a present for you.");
+	this->dialog.push_back("Hello? You are not Zombie!");
+	this->dialog.push_back("Survive here if you can.");
+	this->dialog.push_back("I have a present for you. Good Luck!");
 	this->dialog.push_back("You got 10 golds.");
 	initScreen();
 }
@@ -23,16 +23,12 @@ void NPCEvent::initScreen()
 	this->textField.setOutlineThickness(5);
 	this->textField.setFillColor(sf::Color::Black);
 	this->textField.setPosition(40, 680 - 200);
+
+	this->font.loadFromFile(this->fontDir);
+	this->currentDialog.setFont(this->font);
 	this->currentDialog.setPosition(80, 680 - 200 + 75);
-	if (!this->font.loadFromFile("C:\\Users\\±ËªÛ¿±\\Desktop\\malgun.ttf"))
-	{
-		std::cout << "Cant load Font" << std::endl;
-	}
-	else {
-		this->currentDialog.setFont(this->font);
-		this->currentDialog.setString(this->dialog.front());
-		this->dialog.pop_front();
-	}
+	this->currentDialog.setString(this->dialog.front());
+	this->dialog.pop_front();
 }
 
 void NPCEvent::showSelectionScreen()
