@@ -8,7 +8,7 @@ private:
 protected:
 public:
 	MeleeWeapon(float cooltime, float damage, float duration);
-	~MeleeWeapon();
+	virtual ~MeleeWeapon();
 	sf::RectangleShape shape;
 
 	virtual void initShape();

@@ -18,10 +18,12 @@ NPCEvent::~NPCEvent()
 void NPCEvent::initScreen()
 {
 	// sf::VideoMode windowBounds(1280, 720);
-	this->textField.setSize(sf::Vector2f(1280, 300));
+	this->textField.setSize(sf::Vector2f(1200, 200));
+	this->textField.setOutlineColor(sf::Color::White);
+	this->textField.setOutlineThickness(5);
 	this->textField.setFillColor(sf::Color::Black);
-	this->textField.setPosition(0, 720 - 300);
-	this->currentDialog.setPosition(30, 720 - 300 + 150);
+	this->textField.setPosition(40, 680 - 200);
+	this->currentDialog.setPosition(80, 680 - 200 + 75);
 	if (!this->font.loadFromFile("C:\\Users\\±ËªÛ¿±\\Desktop\\malgun.ttf"))
 	{
 		std::cout << "Cant load Font" << std::endl;

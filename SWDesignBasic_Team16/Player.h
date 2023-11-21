@@ -15,12 +15,14 @@ private:
 	bool death = false;
 
 public:
+	bool invincible = true;
 	sf::Vector2f viewDirection;
 	std::vector<Weapon*> weaponList;
 	Inventory inventory;
 	Player();
 	~Player();
 	void attack(const float& dt);
+	void updateLevel(const float& dt);
 	void updateCollision(Entity* obejct);
 	void move(const float& dt, const float dx, const float dy);
 	void render(sf::RenderTarget* target);

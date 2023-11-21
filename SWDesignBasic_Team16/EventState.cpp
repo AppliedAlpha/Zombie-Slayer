@@ -24,12 +24,31 @@ void EventState::update(const float& dt)
 		inputTerm++;
 	}
 	else {
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) && inputTerm >= 10) {
-			if (event->dialog.empty()) this->quit = true;
-			else {
-				event->update(dt);
+		if (NPCEvent* npc = dynamic_cast<NPCEvent*>(this->event)) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) && inputTerm >= 10) {
+				if (npc->dialog.empty()) this->quit = true;
+				else {
+					npc->update(dt);
+				}
+				inputTerm = 0;
 			}
-			inputTerm = 0;
+		}
+		else if (OptionSelectionEvent* option = dynamic_cast<OptionSelectionEvent*>(this->event)) {
+			if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) && inputTerm >= 10) {
+				option->index = option->index - 1 < 0 ? option->length - 1 : option->index - 1;
+				option->update(dt);
+				inputTerm = 0;
+			}
+			if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) && inputTerm >= 10) {
+				option->index = option->index + 1 >= option->length ? 0 : option->index + 1;
+				option->update(dt);
+				inputTerm = 0;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) && inputTerm >= 10) {
+				std::cout << "You Select " << option->options.at(option->index) << std::endl;
+				option->update(dt, option->options.at(option->index));
+				this->quit = true;
+			}
 		}
 	}
 }

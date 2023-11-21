@@ -50,6 +50,7 @@ void NPC::updateDirection(const float& dt)
 
 void NPC::update(const float& dt)
 {
+	Entity::update(dt);
 	this->time += 1.f;
 	if (!this->moving && this->time >= this->waitingTime * 60) {
 		updateDirection(dt);

@@ -1,6 +1,9 @@
 #pragma once
+
 #include "State.h"
-#include "Event.h"
+#include "NPCEvent.h"
+#include "OptionSelectionEvent.h"
+
 class EventState : public State
 {
 private:

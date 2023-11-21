@@ -27,7 +27,7 @@ Player::Player() : Entity(10, 5, 100)
 
 	// TODO: 맨 처음에 무기 구석에 있는 거 고치기
 	weaponList.push_back(new Sword(1, 1, .5f));
-	weaponList.push_back(new Spear(2, 2.5f, .5f));
+	// weaponList.push_back(new Spear(2, 2.5f, .5f));
 	weaponList.push_back(new Grinder(0, .5f, .1f));
 }
 
@@ -46,10 +46,20 @@ void Player::attack(const float& dt)
 	}
 }
 
+void Player::updateLevel(const float& dt)
+{
+	if (this->inventory.getXp() >= 10) {
+		this->level = this->level + this->inventory.getXp() / 10;
+		this->inventory.setXp(this->inventory.getXp() - 10);
+	}
+	std::cout << "Level: " << this->level << ", Xp: " << this->inventory.getXp() << std::endl;
+
+}
+
 void Player::updateCollision(Entity* object)
 {
 	if (Mob* mob = dynamic_cast<Mob*>(object)) {
-		this->hp -= mob->power;
+		if (!this->invincible) this->hp -= mob->power;
 	}
 }
 

@@ -37,24 +37,16 @@ void GameState::initStages()
 	}
 }
 
-void GameState::initPlayerHpBar()
-{
-	hpBar[0] = sf::Vertex(sf::Vector2f(100.f, 50.f), sf::Color::Red);
-	hpBar[1] = sf::Vertex(sf::Vector2f(100.f, 100.f), sf::Color::Red);
-	hpBar[2] = sf::Vertex(sf::Vector2f(1180.f, 100.f), sf::Color::Red);
-	hpBar[3] = sf::Vertex(sf::Vector2f(1180.f, 50.f), sf::Color::Red);
-}
-
 GameState::GameState(sf::RenderWindow* window) : State(window) {
 	this->xp = 0;
 	this->level = 0;
 
 	this->initStages();
 	// this->initFirstStage();
-	this->initPlayerHpBar();
 	this->timeUntilItemCooldown = 1.f;
 
 	this->npcList.push_back(new NPC());
+	this->player.invincible = false;
 }
 
 GameState::~GameState() {
@@ -136,12 +128,13 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 	for (int i = 0; i < this->dropItemList.size(); i++) {
 		sf::FloatRect dropItemBounds = dropItemList[i]->shape.getGlobalBounds();
 		if (dropItemBounds.intersects(playerNextPosBounds)) {
-			xp += 1;
-			if (xp % 10 == 0) { 
-				xp = 0; 
-				level += 1;
+			this->player.inventory.setXp(this->player.inventory.getXp() + 1);
+			if (this->player.inventory.getXp() >= 10) {
+				this->level = this->level + this->player.inventory.getXp() / 10;
+				this->player.inventory.setXp(this->player.inventory.getXp() - 10);
+				this->eventQueue.push_back(new OptionSelectionEvent(&this->player));
 			}
-			std::cout << "Level: " << level << ", Xp: " << xp << std::endl;
+			std::cout << "Level: " << this->level << ", Xp: " << this->player.inventory.getXp() << std::endl;
 
 			delete dropItemList[i];
 			this->dropItemList.erase(this->dropItemList.begin() + i);
@@ -217,12 +210,6 @@ void GameState::updateMobSpawn(const float& dt) {
 	
 }
 
-void GameState::updateHpBar()
-{
-	hpBar[2] = sf::Vertex(sf::Vector2f(100.f + this->player.hp * 10.8, 100.f), sf::Color::Red);
-	hpBar[3] = sf::Vertex(sf::Vector2f(100.f + this->player.hp * 10.8, 50.f), sf::Color::Red);
-}
-
 void GameState::updateStageClear()
 {
 	if (this->currentStage.isBossSpawned && this->mobList.empty()) {
@@ -246,8 +233,6 @@ void GameState::update(const float& dt) {
 	for (auto npc : this->npcList) {
 		npc->update(dt);
 	}
-
-	this->updateHpBar();
 
 	if (this->player.hp <= 0) {
 		this->quit = true;
@@ -278,6 +263,4 @@ void GameState::render(sf::RenderTarget* target) {
 			weapon->render(target);
 		}
 	}
-
-	target->draw(hpBar, 4, sf::Quads);
 }

@@ -12,8 +12,10 @@ protected:
 	void initVariables(float movementSpeed, float power, float hp);
 
 public:
+	int level;
 	float power;
 	float hp;
+	float maxHp;
 	Inventory inventory;
 	float cx;
 	float cy;
@@ -21,6 +23,7 @@ public:
 	float gridSize;
 	sf::RectangleShape shape;
 	sf::Vertex hpBar[4];
+	float hpBarLength = 40;
 
 	Entity(float movementSpeed, float power, float hp);
 	virtual ~Entity();

@@ -8,6 +8,7 @@
 #include "NPC.h"
 #include "State.h"
 #include "NPCEvent.h"
+#include "OptionSelectionEvent.h"
 
 class GameState : public State
 {
@@ -18,8 +19,6 @@ private:
 	sf::Vector2f velocity;
 	Map basicMap;
 	std::vector<DropItem*> dropItemList;
-
-	sf::Vertex hpBar[4];
 	
 	std::vector<Stage> stages;
 	std::vector<Stage>::const_iterator currentStageIndex;
@@ -37,7 +36,6 @@ private:
 	// Player한테 넘겨줘야 할 것 같다.
 
 	void initStages();
-	void initPlayerHpBar();
 
 public:
 	GameState(sf::RenderWindow* window);
@@ -51,7 +49,6 @@ public:
 	void updateInput(const float& dt);
 	void updateItemUse(const float& dt);
 	void updateMobSpawn(const float& dt);
-	void updateHpBar();
 	void updateStageClear();
 	void update(const float& dt);
 	void render(sf::RenderTarget* target = nullptr);
