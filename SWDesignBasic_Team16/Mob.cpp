@@ -36,6 +36,12 @@ Mob::Mob(const std::string& name, float movementSpeed, float power, float hp) : 
 	this->initShape(sf::Color::Blue);
 }
 
+Mob::Mob(const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size) : Entity(movementSpeed, power, hp) {
+	this->name = name;
+	this->girdSize = size;
+	this->initShape(color);
+}
+
 
 Mob::~Mob()
 {

@@ -15,6 +15,7 @@ private:
 public:
 	Mob();
 	Mob(const std::string& name, float movementSpeed, float power, float hp);
+	Mob(const std::string& name, float power, float movementSpeed, float hp, const sf::Color& color, float size);
 	~Mob();
 
 	std::string name;
