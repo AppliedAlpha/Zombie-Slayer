@@ -91,13 +91,13 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 {
 	sf::FloatRect playerNextPosBounds = this->player.shape.getGlobalBounds();
 	for (auto weapon : this->player.weaponList) {
-		MeleeWeapon* meleeWeapon = (MeleeWeapon*)weapon;
+		MeleeWeapon* meleeWeapon = (MeleeWeapon*)weapon.second;
 		sf::FloatRect meleeWeaponBounds = meleeWeapon->shape.getGlobalBounds();
 		for (int i = 0; i < this->mobList.size(); i++) {
 			sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
 			if (mobBounds.intersects(meleeWeaponBounds) && meleeWeapon->active) {
 				// printf("Collision\n");
-				mobList[i]->updateCollision(meleeWeapon);
+				mobList[i]->updateCollision(meleeWeapon, this->player.power);
 				if (mobList[i]->getDeath()) {
 					// 
 					DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
@@ -259,8 +259,8 @@ void GameState::render(sf::RenderTarget* target) {
 		dropitem->draw(target);
 	
 	for (auto weapon : this->player.weaponList) {
-		if (weapon->active) {
-			weapon->render(target);
+		if (weapon.second->active) {
+			weapon.second->render(target);
 		}
 	}
 }

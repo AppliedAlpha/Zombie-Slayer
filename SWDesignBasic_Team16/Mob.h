@@ -19,7 +19,7 @@ public:
 
 	std::string name;
 	Inventory inventory;
-	void updateCollision(Weapon* weapon);
+	void updateCollision(Weapon* weapon, float power);
 
 	void move(const float& dt, sf::Vector2f playerPosition);
 

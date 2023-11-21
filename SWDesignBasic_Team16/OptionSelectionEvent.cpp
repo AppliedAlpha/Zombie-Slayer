@@ -4,12 +4,13 @@ OptionSelectionEvent::OptionSelectionEvent(Player* player) : Event(player)
 {
 	this->options.push_back("Power 1 up");
 	this->options.push_back("New Weapon: Spear");
-	this->options.push_back("Weapon upgrade: Sword");
+	this->options.push_back("Weapon Upgrade: Sword");
 	this->initScreen();
 }
 
 OptionSelectionEvent::~OptionSelectionEvent()
 {
+	this->player->hp = this->player->maxHp;
 	for (int i = 0; i < this->length; i++) {
 		delete this->optionFields.at(i);
 	}
@@ -70,7 +71,15 @@ void OptionSelectionEvent::render(sf::RenderTarget* target)
 
 void OptionSelectionEvent::update(const float& dt, std::string option)
 {
-	if (option == "New Weapon: Spear") {
-		this->player->weaponList.push_back(new Spear(2, 2.5f, .5f));
+	if (option == "Power 1 up") {
+		this->player->power += 0.1f;
+	}
+	else if (option == "New Weapon: Spear") {
+		this->player->weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Spear", new Spear(2, 2.5f, .25f)));
+	}
+	else if (option == "Weapon Upgrade: Sword") {
+		auto sword = this->player->weaponList.find("Sword");
+		sword->second->cooltime -= 0.5;
+		sword->second->damage += 1;
 	}
 }

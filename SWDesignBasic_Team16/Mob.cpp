@@ -9,17 +9,12 @@ void Mob::initShape(sf::Color color)
 	this->cy = Random::instance().getFloat(0, 720);
 }
 
-void Mob::updateCollision(Weapon* weapon)
+void Mob::updateCollision(Weapon* weapon, float power)
 {
-	this->hp -= weapon->damage;
+	this->hp -= weapon->damage * power;
 
 	if (this->hp <= 0.f) {
-		printf("Dead\n");
 		this->onDeath();
-	}
-	else {
-		std::cout << "Now " << this->name << ' ';
-		printf("%.1f\n", this->hp);
 	}
 }
 

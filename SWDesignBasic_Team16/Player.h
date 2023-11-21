@@ -6,6 +6,7 @@
 #include "Sword.h"
 #include "Spear.h"
 #include "Grinder.h"
+#include "stdafx.h"
 
 class Player : public Entity
 {
@@ -17,7 +18,7 @@ private:
 public:
 	bool invincible = true;
 	sf::Vector2f viewDirection;
-	std::vector<Weapon*> weaponList;
+	std::unordered_map<std::string, Weapon*> weaponList;
 	Inventory inventory;
 	Player();
 	~Player();
