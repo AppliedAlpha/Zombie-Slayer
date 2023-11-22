@@ -1,170 +1,192 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="AoeItem">
+    <Position X="9.75" Y="8.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAIAAAAABAAAAAAAAAAABAA=</HashCode>
+      <FileName>AoeItem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Bomb">
+    <Position X="12" Y="8.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAAIAAAAIAAAAAAAAAAAAAgAAUAAA=</HashCode>
+      <FileName>Bomb.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CustomMath">
+    <Position X="0.5" Y="8" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>CustomMath.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DropItem">
+    <Position X="12" Y="6.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAIAAAAAAAAAAAAAACAAAAAABAA=</HashCode>
+      <FileName>DropItem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Entity">
+    <Position X="12" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>kAAAAAAAAgAAAACAEGAAAAIAACEEAAAKAgBAgAQUhAA=</HashCode>
+      <FileName>Entity.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Event">
+    <Position X="7.25" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAoAAAAAAAAAACCAEAIAAAIAAgAQAAABAAAAAAAUAAA=</HashCode>
+      <FileName>Event.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="EventState">
+    <Position X="2.5" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAQAAAIAAAAAAAAAAAAACAAAAIAAAAQAAAUAAA=</HashCode>
+      <FileName>EventState.h</FileName>
+    </TypeIdentifier>
+  </Class>
   <Class Name="GameManager">
-    <Position X="0.5" Y="0.5" Width="2" />
+    <Position X="0.5" Y="0.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAgAAAAAAAAACEAAAAAAAAAAAEAIMRBQAAARUAAA=</HashCode>
       <FileName>GameManager.h</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="GameState">
+    <Position X="4.75" Y="0.5" Width="2.25" />
+    <InheritanceLine Type="State" FixedFromPoint="true">
+      <Path>
+        <Point X="4.5" Y="2.437" />
+        <Point X="4.75" Y="2.437" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAIBQAQAAYAgEAAAAAQEAAoAAAgACCIBAAQQgBAVIAQ=</HashCode>
+      <FileName>GameState.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameUI">
+    <Position X="7.25" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>kBAAABIAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAQgAA=</HashCode>
+      <FileName>GameUI.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Grinder">
+    <Position X="19.5" Y="4" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAAAAACAAAIAAAAAAAAAAAAAgAAUACA=</HashCode>
+      <FileName>Grinder.h</FileName>
+    </TypeIdentifier>
+  </Class>
   <Class Name="Inventory">
-    <Position X="13" Y="4.75" Width="1.5" />
+    <Position X="17" Y="5.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAQAAAEAAAABAAAiAAAAQAAABAEAAAAYAAkAAAAA=</HashCode>
       <FileName>Inventory.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Item">
-    <Position X="9" Y="6.75" Width="1.5" />
+    <Position X="9.75" Y="5.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAIAACAAgAAABAAAAAAEAAAAAAAAAAAEIAAUBAA=</HashCode>
       <FileName>Item.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Map">
-    <Position X="0.5" Y="4.5" Width="2" />
+    <Position X="2.5" Y="7.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAIAAAUIAA=</HashCode>
       <FileName>Map.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="MeleeWeapon">
-    <Position X="16.5" Y="0.5" Width="1.5" />
+    <Position X="21.5" Y="0.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAIAAAAAAAAAAAAAAAAIgAAAAAAAAAAAAgAAUBAA=</HashCode>
       <FileName>MeleeWeapon.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Mob">
-    <Position X="10.75" Y="0.5" Width="2" />
+    <Position X="14" Y="0.5" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAACAAAAACAAAAAAAIAAASEAAACAAAAoAIUAAA=</HashCode>
+      <HashCode>AAAAAQAACAAAAACAAAAAAAIQAASEAAACAABAoEIUAAA=</HashCode>
       <FileName>Mob.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Player">
-    <Position X="13" Y="0.5" Width="1.5" />
+  <Class Name="NPC">
+    <Position X="14" Y="5" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAACAAAAACAASAQAAIAAAEBAQCCAAAAoQAUABA=</HashCode>
+      <HashCode>AAAhAACACAAAIACAAAAAAAIAEACEAAACAAAIIQAUAgA=</HashCode>
+      <FileName>NPC.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="NPCEvent">
+    <Position X="7.25" Y="7.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAIAAABAAAAAACiAAAAAAAIAAAAAAAAACAAAAAAUAAA=</HashCode>
+      <FileName>NPCEvent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="OptionSelectionEvent">
+    <Position X="4.75" Y="7" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AEIAAAAAAAAAACCAAEAAAAIAAIAAAAAQABAAACAVAAA=</HashCode>
+      <FileName>OptionSelectionEvent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Player">
+    <Position X="17" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAAACAASCQAAIAAAEBAQCCAAAAoQAUABA=</HashCode>
       <FileName>Player.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="Stage">
-    <Position X="6.75" Y="0.5" Width="2" />
+  <Class Name="Random">
+    <Position X="0.5" Y="5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AABBAEAAAgAIQAACAAAgAEAAAAMAAARAAAgQAAAAAAA=</HashCode>
+      <HashCode>AIAEAAAAAAAAAAAgAAAAQAAAAABABAAAAAIAAAAAABA=</HashCode>
+      <FileName>Random.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Spear">
+    <Position X="21.5" Y="6" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAAAAAIAAAAAAAAAAIAAgAAUAAA=</HashCode>
+      <FileName>Spear.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Stage">
+    <Position X="9.75" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AABBQAAEBoAAAAACABQAAEIAAAEAACAAAIgAAAAEEAA=</HashCode>
       <FileName>Stage.h</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="State">
+    <Position X="2.5" Y="0.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAoBAAABAUAAAAAAAAAAAAAAAAAAAAAIAQARBBAUAAA=</HashCode>
+      <FileName>State.h</FileName>
+    </TypeIdentifier>
+  </Class>
   <Class Name="Sword">
-    <Position X="18.25" Y="0.5" Width="1.5" />
+    <Position X="21.5" Y="3.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAQAAAAAAAIAAAAAAQAAAAAAgAAUAAA=</HashCode>
       <FileName>Sword.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Weapon">
-    <Position X="14.75" Y="0.5" Width="1.5" />
+    <Position X="19.5" Y="0.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>BAAAAAIAAAAAgAAABAAAAAIAAAAAAAgAAAAEIAAUBAA=</HashCode>
       <FileName>Weapon.h</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GameState">
-    <Position X="4.5" Y="0.5" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAIBQAAAAYAgAAAAAAQAAAoAAAkADCABAAQQgFEVIAA=</HashCode>
-      <FileName>GameState.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="State">
-    <Position X="2.75" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAIBAAABAUAAAAAAAAAAAAAAAAAAAAAIAAARBBAUAAA=</HashCode>
-      <FileName>State.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Entity">
-    <Position X="9" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>kAAAAAAAAgAAAACAEGAAAAIAACEEAAAKAgBAgAQUhAA=</HashCode>
-      <FileName>Entity.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="DropItem">
-    <Position X="6.75" Y="4.25" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAAIAAAAAAAAAAAAAIAAAAAAAAAAAAAACAAAAAABAA=</HashCode>
-      <FileName>DropItem.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="EventState">
-    <Position X="2.75" Y="3.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAIAAAAQAAAIAAAAAAAAAAAAACAAAAIAAAAQAAAUAAA=</HashCode>
-      <FileName>EventState.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="NPC">
-    <Position X="10.75" Y="3.75" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAAhAACACAAAIACAAAAAAAIAEACEAAACAAAIIQAUAgA=</HashCode>
-      <FileName>NPC.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="CustomMath">
-    <Position X="9" Y="5.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>CustomMath.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Random">
-    <Position X="6.75" Y="6.25" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AIAEAAAAAAAAAAAgAAAAQAAAAABABAAAAAIAAAAAABA=</HashCode>
-      <FileName>Random.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Grinder">
-    <Position X="18.25" Y="2.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAIAAAAAAAAAAAAAACAAAIAAAAAAAAAAAAAgAAUACA=</HashCode>
-      <FileName>Grinder.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Spear">
-    <Position X="16.5" Y="3" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAQAAAAAIAAAAAAAAAAIAAgAAUAAA=</HashCode>
-      <FileName>Spear.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Event">
-    <Position X="2.75" Y="6.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAACAAEAIAAAIAAgAQAAABAAAAAAAUAAA=</HashCode>
-      <FileName>Event.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="NPCEvent">
-    <Position X="0.5" Y="6.5" Width="2" />
-    <TypeIdentifier>
-      <HashCode>AAIAAABAAAAAACgAAAAAAAIAAAAAAAAACAAAAAAUAAA=</HashCode>
-      <FileName>NPCEvent.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="OptionSelectionEvent">
-    <Position X="4.5" Y="6.5" Width="2" />
-    <InheritanceLine Type="Event">
-      <InheritanceModifierLabel ManuallyPlaced="true">
-        <Position X="1.571" Y="0.148" />
-      </InheritanceModifierLabel>
-    </InheritanceLine>
-    <TypeIdentifier>
-      <HashCode>AEIAAAAAAAAAACAAAEAAAAIAAAAAAAAQABAAACAVAAA=</HashCode>
-      <FileName>OptionSelectionEvent.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Font Name="AppleSDGothicNeoB00" Size="9" />
+  <Font Name="맑은 고딕" Size="9" />
 </ClassDiagram>
