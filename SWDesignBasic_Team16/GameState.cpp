@@ -115,6 +115,8 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 				// 
 				DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
 				dropItemList.push_back(dropitem);
+				xpList[i] = this->mobList[i]->getXP();
+				goldList[i] = this->mobList[i]->getGold();
 				delete mobList[i];
 				this->mobList.erase(this->mobList.begin() + i);
 			}
@@ -126,6 +128,8 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 				// 
 				DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
 				dropItemList.push_back(dropitem);
+				xpList[i] = this->mobList[i]->getXP();
+				goldList[i] = this->mobList[i]->getGold();
 				delete mobList[i];
 				this->mobList.erase(this->mobList.begin() + i);
 			}
@@ -135,9 +139,10 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 	for (int i = 0; i < this->dropItemList.size(); i++) {
 		sf::FloatRect dropItemBounds = dropItemList[i]->shape.getGlobalBounds();
 		if (dropItemBounds.intersects(playerNextPosBounds)) {
-			xp += mobList[i]->getXP();
-			gold += mobList[i]->getGold();
-
+			//xp += mobList[i]->getXP();
+			xp += xpList[i];
+			//gold += mobList[i]->getGold();
+			gold += goldList[i];
 			if (xp % 10 == 0) {
 				xp = 0;
 				level += 1;
@@ -309,8 +314,7 @@ void GameState::render(sf::RenderTarget* target) {
 	target->draw(xpBar, 4, sf::Quads);
 
 	sf::Font font;
-	font.loadFromFile("C:/Users/USER/source/repos/Zombie-Slayer-master/Zombie-Slayer-master/fonts/Arial.ttf");
-
+	font.loadFromFile("C:/Users/USER/source/repos/Zombie-Slayer/fonts/Arial.ttf");
 	sf::Text goldText;
 	sf::Text levelText;
 	goldText.setFont(font);

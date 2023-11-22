@@ -12,6 +12,8 @@ class GameState : public State
 private:
 	Player player;
 	std::vector<Mob*> mobList;
+	int xpList[100];
+	int goldList[100];
 	sf::Vector2f velocity;
 	Map basicMap;
 	std::vector<DropItem*> dropItemList;
