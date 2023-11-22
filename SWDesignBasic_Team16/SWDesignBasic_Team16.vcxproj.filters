@@ -75,6 +75,12 @@
     <ClCompile Include="CustomMath.cpp">
       <Filter>Custom Static Classes</Filter>
     </ClCompile>
+    <ClCompile Include="AoeItem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Bomb.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameManager.h">
@@ -127,6 +133,12 @@
     </ClInclude>
     <ClInclude Include="CustomMath.h">
       <Filter>Custom Static Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="AoeItem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Bomb.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

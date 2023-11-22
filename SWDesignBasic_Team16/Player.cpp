@@ -13,10 +13,10 @@ void Player::initShape()
 {
 	this->shape.setSize(sf::Vector2f(this->girdSize, this->girdSize));
 	this->shape.setFillColor(sf::Color::White);
-	
+
 	this->shape.setOrigin(sf::Vector2f(this->shape.getLocalBounds().width, this->shape.getLocalBounds().height) / 2.f);
 	this->shape.setPosition(this->shape.getPosition().x + this->shape.getOrigin().x, this->shape.getPosition().y + this->shape.getOrigin().y);
-	
+
 	this->shape.setRotation(45);
 }
 
@@ -26,12 +26,14 @@ Player::Player() : Entity(10, 5, 100)
 	this->initVariables();
 
 	// TODO: 맨 처음에 무기 구석에 있는 거 고치기
-	this->sword = new Sword(1, 1, .5f);
+	this->sword = new Sword(1, 10, .5f);
+	this->bomb = new Bomb(1, 10, .5f);
 }
 
 Player::~Player()
 {
 	delete this->sword;
+	delete this->bomb;
 }
 
 void Player::attack()
@@ -133,4 +135,5 @@ void Player::update(const float& dt, sf::Vector2f velocity) {
 	float angle = getViewAngle();
 	this->move(dt, velocity.x, velocity.y);
 	this->sword->update(dt, this->shape, this->cx, this->cy, angle);
+	this->bomb->update(dt, this->shape, this->cx, this->cy);
 }

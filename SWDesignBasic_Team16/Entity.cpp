@@ -46,3 +46,4 @@ const sf::RectangleShape& Entity::getShape()
 {
 	return this->shape;
 }
+

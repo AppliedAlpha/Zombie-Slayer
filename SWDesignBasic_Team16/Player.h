@@ -1,6 +1,7 @@
 #pragma once
 #include "Entity.h"
 #include "Sword.h"
+#include "Bomb.h"
 
 class Player : public Entity
 {
@@ -12,6 +13,7 @@ private:
 public:
 	sf::Vector2f viewDirection;
 	Sword* sword;
+	Bomb* bomb;
 	Player();
 	~Player();
 	void attack();
@@ -20,6 +22,6 @@ public:
 	void render(sf::RenderTarget* target);
 	void update(const float& dt, sf::Vector2f velocity);
 	float getViewAngle();
-	
+
 	bool getDeath() const { return this->death; }
 };

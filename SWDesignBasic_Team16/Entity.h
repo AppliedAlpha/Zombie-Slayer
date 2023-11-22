@@ -6,7 +6,6 @@
 class Entity {
 private:
 
-
 protected:
 	virtual void initShape();
 	void initVariables(float movementSpeed, float power, float hp);

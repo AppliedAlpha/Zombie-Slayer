@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AoeItem.cpp" />
+    <ClCompile Include="Bomb.cpp" />
     <ClCompile Include="CustomMath.cpp" />
     <ClCompile Include="DropItem.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -38,6 +40,8 @@
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AoeItem.h" />
+    <ClInclude Include="Bomb.h" />
     <ClInclude Include="CustomMath.h" />
     <ClInclude Include="DropItem.h" />
     <ClInclude Include="Entity.h" />
