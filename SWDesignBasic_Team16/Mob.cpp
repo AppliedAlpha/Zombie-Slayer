@@ -3,23 +3,18 @@
 void Mob::initShape(sf::Color color)
 {
 	Entity::initShape();
-	this->shape.setSize(sf::Vector2f(this->girdSize, this->girdSize));
+	this->shape.setSize(sf::Vector2f(this->gridSize, this->gridSize));
 	this->shape.setFillColor(color);
 	this->cx = Random::instance().getFloat(0, 100) + Random::instance().getInt(0, 1) * 1180.f;
 	this->cy = Random::instance().getFloat(0, 720);
 }
 
-void Mob::updateCollision(Sword* sword)
+void Mob::updateCollision(Weapon* weapon, float power)
 {
-	this->hp -= sword->damage;
+	this->hp -= weapon->damage * power;
 
 	if (this->hp <= 0.f) {
-		printf("Dead\n");
 		this->onDeath();
-	}
-	else {
-		std::cout << "Now " << this->name << ' ';
-		printf("%.1f\n", this->hp);
 	}
 }
 
@@ -38,7 +33,7 @@ Mob::Mob(const std::string& name, float movementSpeed, float power, float hp) : 
 
 Mob::Mob(const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size) : Entity(movementSpeed, power, hp) {
 	this->name = name;
-	this->girdSize = size;
+	this->gridSize = size;
 	this->initShape(color);
 }
 
@@ -57,6 +52,7 @@ void Mob::move(const float& dt, sf::Vector2f playerPosition) {
 
 void Mob::update(const float& dt, sf::Vector2f playerPosition) {
 	this->move(dt, playerPosition);
+	Entity::update(dt);
 }
 
 void Mob::render(sf::RenderTarget* target) {

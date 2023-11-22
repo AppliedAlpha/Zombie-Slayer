@@ -12,24 +12,20 @@ void GameState::initStages()
 	printf("%s\n", this->nowStage->mobList.front()->name.c_str());
 }
 
-void GameState::initPlayerHpBar()
-{
-	
-}
-
 GameState::GameState(sf::RenderWindow* window) : State(window) {
 	this->xp = 0;
 	this->level = 0;
 	this->ui = GameUI(sf::Vector2f(640, 360));
 
-	this->view.setCenter(sf::Vector2f(640.f, 360.f));
-	this->view.setSize(sf::Vector2f(1280.f, 720.f));
+
 	this->window->setView(view);
 
 	this->initStages();
-	this->initPlayerHpBar();
-
+	// this->initFirstStage();
 	this->timeUntilItemCooldown = 1.f;
+
+	this->npcList.push_back(new NPC());
+	this->player.invincible = false;
 }
 
 GameState::~GameState() {
@@ -37,6 +33,11 @@ GameState::~GameState() {
 		delete this->mobList.at(i);
 	}
 	this->mobList.clear();
+
+	for (int i = 0; i < this->npcList.size(); i++) {
+		delete this->npcList.at(i);
+	}
+	this->npcList.clear();
 }
 
 void GameState::spawnMob()
@@ -57,33 +58,51 @@ void GameState::endState() {
 void GameState::updateCollision(sf::Vector2f& velocity)
 {
 	sf::FloatRect playerNextPosBounds = this->player.shape.getGlobalBounds();
-	sf::FloatRect swordBounds = this->player.sword->shape.getGlobalBounds();
+	for (auto weapon : this->player.weaponList) {
+		MeleeWeapon* meleeWeapon = (MeleeWeapon*)weapon.second;
+		sf::FloatRect meleeWeaponBounds = meleeWeapon->shape.getGlobalBounds();
+		for (int i = 0; i < this->mobList.size(); i++) {
+			sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
+			if (mobBounds.intersects(meleeWeaponBounds) && meleeWeapon->active) {
+				// printf("Collision\n");
+				mobList[i]->updateCollision(meleeWeapon, this->player.power);
+				if (mobList[i]->getDeath()) {
+					// 
+					DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
+					dropItemList.push_back(dropitem);
+					delete mobList[i];
+					this->mobList.erase(this->mobList.begin() + i);
+				}
+			}
+		}
+	}
 	for (int i = 0; i < this->mobList.size(); i++) {
 		sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
 		if (mobBounds.intersects(playerNextPosBounds)) {
-			this->player.updateCollision(mobList[i], velocity);
+			this->player.updateCollision(mobList[i]);
 		}
-		if (mobBounds.intersects(swordBounds) && this->player.sword->active) {
-			// printf("Collision\n");
-			mobList[i]->updateCollision(this->player.sword);
-			if (mobList[i]->getDeath()) {
-				// 
-				DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
-				dropItemList.push_back(dropitem);
-				delete mobList[i];
-				this->mobList.erase(this->mobList.begin() + i);
+	}
+	for (int i = 0; i < this->npcList.size(); i++) {
+		sf::FloatRect npcBounds = npcList[i]->getShape().getGlobalBounds();
+		if (npcBounds.intersects(playerNextPosBounds)) {
+			if (npcList[i]->active == false) {
+				npcList[i]->active = true;
+				this->eventQueue.push_back(new NPCEvent(&this->player));
 			}
+			delete npcList[i];
+			this->npcList.erase(this->npcList.begin() + i);
 		}
 	}
 	for (int i = 0; i < this->dropItemList.size(); i++) {
 		sf::FloatRect dropItemBounds = dropItemList[i]->shape.getGlobalBounds();
 		if (dropItemBounds.intersects(playerNextPosBounds)) {
-			xp += 1;
-			if (xp % 10 == 0) { 
-				xp = 0; 
-				level += 1;
+			this->player.inventory.setXp(this->player.inventory.getXp() + 1);
+			if (this->player.inventory.getXp() >= 10) {
+				this->level = this->level + this->player.inventory.getXp() / 10;
+				this->player.inventory.setXp(this->player.inventory.getXp() - 10);
+				this->eventQueue.push_back(new OptionSelectionEvent(&this->player));
 			}
-			std::cout << "Level: " << level << ", Xp: " << xp << std::endl;
+			std::cout << "Level: " << this->level << ", Xp: " << this->player.inventory.getXp() << std::endl;
 
 			delete dropItemList[i];
 			this->dropItemList.erase(this->dropItemList.begin() + i);
@@ -91,7 +110,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 	}
 }
 
-void GameState::updateInput(const float& dt, int& keyTime) {
+void GameState::updateInput(const float& dt) {
 	this->checkForQuit();
 	this->velocity.x = 0;
 	this->velocity.y = 0;
@@ -99,25 +118,21 @@ void GameState::updateInput(const float& dt, int& keyTime) {
 	this->player.viewDirection.y = 0.f;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-		keyTime = 0;
 		this->player.viewDirection.x = -1.f;
 		this->velocity.x = -1.f;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		keyTime = 0;
 		this->player.viewDirection.x = 1.f;
 		this->velocity.x = 1.f;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-		keyTime = 0;
 		this->player.viewDirection.y = -1.f;
 		this->velocity.y = -1.f;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		keyTime = 0;
 		this->player.viewDirection.y = 1.f;
 		this->velocity.y = 1.f;
 	}
@@ -166,11 +181,8 @@ void GameState::updateStageClear()
 	}
 }
 
-void GameState::update(const float& dt, int& keyTime) {
-	if (keyTime < 4)
-		keyTime++;
-
-	this->updateInput(dt, keyTime);
+void GameState::update(const float& dt) {
+	this->updateInput(dt);
 	this->updateCollision(this->velocity);
 	this->player.update(dt, this->velocity);
 
@@ -191,7 +203,11 @@ void GameState::update(const float& dt, int& keyTime) {
 		mob->update(dt, sf::Vector2f(this->player.cx, this->player.cy));
 	}
 
-	if (this->player.getDeath()) {
+	for (auto npc : this->npcList) {
+		npc->update(dt);
+	}
+
+	if (this->player.hp <= 0) {
 		this->quit = true;
 	}
 
@@ -208,12 +224,17 @@ void GameState::render(sf::RenderTarget* target) {
 
 	for (auto mob : this->mobList)
 		mob->render(target);
+
+	for (auto npc : this->npcList)
+		npc->render(target);
 	
 	for (auto dropitem : this->dropItemList)
 		dropitem->draw(target);
 	
-	if (this->player.sword->active) {
-		this->player.sword->render(target);
+	for (auto weapon : this->player.weaponList) {
+		if (weapon.second->active) {
+			weapon.second->render(target);
+		}
 	}
 
 	this->ui.render(target);

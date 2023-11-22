@@ -1,11 +1,14 @@
 #pragma once
 
 #include "stdafx.h"
-#include "State.h"
 #include "Player.h"
 #include "Mob.h"
 #include "Stage.h"
 #include "Map.h"
+#include "NPC.h"
+#include "State.h"
+#include "NPCEvent.h"
+#include "OptionSelectionEvent.h"
 #include "GameUI.h"
 
 class GameState : public State 
@@ -14,13 +17,13 @@ private:
 	Player player;
 	GameUI ui;
 	std::vector<Mob*> mobList;
+	std::vector<NPC*> npcList;
 	sf::Vector2f velocity;
 	Map basicMap;
 	std::vector<DropItem*> dropItemList;
 	
 	std::deque<Stage *> stages;
 	Stage* nowStage;
-	sf::View view;
 
 	int xp;
 	int level;
@@ -32,7 +35,6 @@ private:
 	// Player한테 넘겨줘야 할 것 같다.
 
 	void initStages();
-	void initPlayerHpBar();
 
 public:
 	GameState(sf::RenderWindow* window);
@@ -43,12 +45,11 @@ public:
 	void endState();
 
 	void updateCollision(sf::Vector2f& velocity);
-	void updateInput(const float& dt, int& keyTime);
+	void updateInput(const float& dt);
 	void updateItemUse(const float& dt);
 	void updateMobSpawn(const float& dt);
-	void updateHpBar();
 	void updateStageClear();
-	void update(const float& dt, int& keyTime);
+	void update(const float& dt);
 	void render(sf::RenderTarget* target = nullptr);
 };
 

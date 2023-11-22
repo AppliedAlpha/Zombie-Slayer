@@ -7,7 +7,6 @@ void GameManager::initWindow() {
 	sf::VideoMode windowBounds(1280, 720);
 	unsigned int frameRateLimit = 60;
 	bool verticalSyncEnabled = false;
-	this->keyTime = 4;
 
 	if (ifs.is_open()) {
 		std::getline(ifs, title);
@@ -45,6 +44,14 @@ void GameManager::endGame() {
 	std::cout << "Ending Game\n";
 }
 
+void GameManager::pushStates(std::deque<Event*>& eventQueue, sf::View& view)
+{
+	while (!eventQueue.empty()) {
+		this->states.push(new EventState(this->window, view, eventQueue.front()));
+		eventQueue.pop_front();
+	}
+}
+
 void GameManager::updateDt() {
 	this->dt = this->dtClock.restart().asSeconds();
 }
@@ -58,9 +65,13 @@ void GameManager::updateSFMLEvents() {
 
 void GameManager::update() {
 	this->updateSFMLEvents();
-
+	
 	if (!this->states.empty()) {
-		this->states.top()->update(this->dt, this->keyTime);
+		if (!this->states.top()->eventQueue.empty()) {
+			pushStates(this->states.top()->eventQueue, this->states.top()->view);
+			this->states.top()->eventQueue.clear();
+		}
+		this->states.top()->update(this->dt);
 
 		if (this->states.top()->getQuit()) {
 			this->states.top()->endState();
@@ -68,6 +79,7 @@ void GameManager::update() {
 			delete this->states.top();
 			this->states.pop();
 		}
+		
 	}
 	else {
 		this->endGame();
@@ -79,7 +91,7 @@ void GameManager::render() {
 	this->window->clear();
 
 	if (!this->states.empty())
-		this->states.top()->render();
+		this->states.top()->render(this->window);
 
 	this->window->display();
 }
