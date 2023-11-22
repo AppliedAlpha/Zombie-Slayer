@@ -4,7 +4,7 @@ class Sword : public MeleeWeapon
 {
 private:
 public:
-	Sword(float cooltime, float damage, float duration);
+	Sword(float cooltime, float damage, float duration, sf::Vector2f position);
 	~Sword();
 	void initShape();
 	void updateCollision(Entity* object);

@@ -1,6 +1,12 @@
 #pragma once
-#include "Entity.h"
+
+#include "Mob.h"
+#include "NPC.h"
 #include "Sword.h"
+#include "Sword.h"
+#include "Spear.h"
+#include "Grinder.h"
+#include "stdafx.h"
 #include "Bomb.h"
 
 class Player : public Entity
@@ -11,13 +17,16 @@ private:
 	bool death = false;
 
 public:
+	bool invincible = true;
 	sf::Vector2f viewDirection;
-	Sword* sword;
+	std::unordered_map<std::string, Weapon*> weaponList;
+	Inventory inventory;
 	Bomb* bomb;
 	Player();
 	~Player();
-	void attack();
-	void updateCollision(Entity* obejct, sf::Vector2f& velocity);
+	void attack(const float& dt);
+	void updateLevel(const float& dt);
+	void updateCollision(Entity* obejct);
 	void move(const float& dt, const float dx, const float dy);
 	void render(sf::RenderTarget* target);
 	void update(const float& dt, sf::Vector2f velocity);

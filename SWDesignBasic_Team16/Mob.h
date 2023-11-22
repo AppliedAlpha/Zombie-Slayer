@@ -18,14 +18,15 @@ private:
 public:
 	Mob();
 	Mob(int gold, int xp);
-	Mob(const std::string& name, float movementSpeed, float power, float hp);
-	Mob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp);
+	//Mob(const std::string& name, float movementSpeed, float power, float hp);
+	Mob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size);
+	// Mob(const std::string& name, float power, float movementSpeed, float hp, const sf::Color& color, float size);
 	~Mob();
 
 	std::string name;
 	Inventory inventory;
-	void updateCollision(Sword* sword);
 	void updateCollision(Bomb* bomb);
+	void updateCollision(Weapon* weapon, float power);
 
 	void move(const float& dt, sf::Vector2f playerPosition);
 

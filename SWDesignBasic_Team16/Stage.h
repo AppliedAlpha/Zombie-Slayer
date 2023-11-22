@@ -1,33 +1,31 @@
 #pragma once
 #include "stdafx.h"
+#include "Mob.h"
+// #include "Boss.h"  // 만약 보스 헤더 파일이 추가된다면 Mob 대신에 이거로 수정 요망
 
 class Stage
 {
 private:
-	std::map<std::string, int> encounterList;
+	void initStageVariables(int _maxMobCount, int _leftKillCountUntilBoss, float _mobSpawnTime, float _bossSpawnTime);
+	void enqueueMob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size, int count);
+	void setBoss(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size);
 
 public:
-	int stageLevel;
-	int maxMobCount;
-	int killCountUntilBoss;
-	int currentKillCount;
-	int totalMobCount;
+	int level, maxMobCount;
+	int leftKillCountUntilBoss;
+	float nextSpawnTime, mobSpawnTime, bossSpawnTime;
 
-	float nextSpawnTime;
-	float bossSpawnTime;
+	std::deque<Mob *> mobList;
+	Mob *boss;
+	bool isBossSpawned, isClear;
 
-	bool isBossSpawned;
-	std::string boss;
-
-	Stage();
-
-	Stage(int stageLevel, int maxMobCount);
-
-	Stage(int stageLevel, int maxMobCount, int killCountUntilBoss, float nextSpawnTime, float bossSpawnTime);
+	Stage(int level);
 	virtual ~Stage();
 
-	void AddEncounter(std::string name, int count);
-	void SubEncounter(std::string name);
-	void RemoveEncounter(std::string name);
+	Mob* spawnMob();
+	Mob* spawnBoss();
+	
+	void update(const float& dt);
+	void updateSpawnTime(const float& dt);
 };
 

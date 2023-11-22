@@ -2,66 +2,29 @@
 
 void GameState::initStages()
 {
-	Stage stage1(1, 10);
-	Stage stage2(2, 10);
+	// adding stages to deque
+	this->stages.push_back(new Stage(1));
+	this->stages.push_back(new Stage(2));
 
-	// 테스트용
-	stage1.AddEncounter("Normal Zombie", 15);
-	// stage1.AddEncounter("Hello Zombie", 10);
+	this->nowStage = this->stages.front();
+	printf("[Stage %d]\n", this->nowStage->level);
 
-	// stage2.AddEncounter("Normal Zombie", 15);
-	// stage2.AddEncounter("Hello Zombie", 15);
-
-	// adding stages to vector
-	this->stages.push_back(stage1);
-	this->stages.push_back(stage2);
-
-	// set first stage and index
-	this->currentStageIndex = this->stages.begin();
-	this->currentStage = *currentStageIndex;
-
-	std::cout << this->currentStage.stageLevel << ' ' << this->currentStage.maxMobCount << '\n';
-
-	this->currentStage.killCountUntilBoss = 10;
-	this->currentStage.totalMobCount = 15;
-	this->currentStage.bossSpawnTime = 30;
-	this->currentStage.currentKillCount = 0;
-
-	this->timeUntilSpawn = this->currentStage.nextSpawnTime;
-	this->timeUntilBoss = this->currentStage.bossSpawnTime;
-
-	for (int i = 0; i < 10; i++) {
-		Mob* mob = new Mob(2, 2);
-		this->mobList.push_back(mob);
-		this->currentStage.totalMobCount--;
-	}
-}
-
-void GameState::initPlayerHpBar()
-{
-	hpBar[0] = sf::Vertex(sf::Vector2f(100.f, 50.f), sf::Color::Red);
-	hpBar[1] = sf::Vertex(sf::Vector2f(100.f, 100.f), sf::Color::Red);
-	hpBar[2] = sf::Vertex(sf::Vector2f(1180.f, 100.f), sf::Color::Red);
-	hpBar[3] = sf::Vertex(sf::Vector2f(1180.f, 50.f), sf::Color::Red);
-}
-void GameState::initPlayerXpBar()
-{
-	xpBar[0] = sf::Vertex(sf::Vector2f(100.f, 110.f), sf::Color::Blue);
-	xpBar[1] = sf::Vertex(sf::Vector2f(100.f, 140.f), sf::Color::Blue);
-	xpBar[2] = sf::Vertex(sf::Vector2f(1180.f, 140.f), sf::Color::Blue);
-	xpBar[3] = sf::Vertex(sf::Vector2f(1180.f, 110.f), sf::Color::Blue);
+	printf("%s\n", this->nowStage->mobList.front()->name.c_str());
 }
 
 GameState::GameState(sf::RenderWindow* window) : State(window) {
-	this->xp = 0;
-	this->level = 0;
+	this->ui = GameUI(sf::Vector2f(640, 360));
+
+
+	this->window->setView(view);
 
 	this->initStages();
 	// this->initFirstStage();
-	this->initPlayerHpBar();
-	this->initPlayerXpBar();
 
 	this->timeUntilItemCooldown = 1.f;
+
+	this->npcList.push_back(new NPC());
+	this->player.invincible = false;
 	this->bombduration = 0.f;
 }
 
@@ -70,27 +33,22 @@ GameState::~GameState() {
 		delete this->mobList.at(i);
 	}
 	this->mobList.clear();
+
+	for (int i = 0; i < this->npcList.size(); i++) {
+		delete this->npcList.at(i);
+	}
+	this->npcList.clear();
 }
 
 void GameState::spawnMob()
 {
-	Mob* mob = new Mob(2, 2);
+	Mob* mob = this->nowStage->spawnMob();
 	this->mobList.push_back(mob);
-	this->currentStage.totalMobCount--;
-
-	// 원래는 랜덤이거나 앞에 있어야 하는건데 일단
-	/*
-	std::string mobName = "Normal Zombie";
-
-	this->currentStage.SubEncounter(mobName);
-	this->mobs.push_back(mobName);
-	*/
 }
 
 void GameState::spawnBoss() {
-	Mob* boss = new Mob(100, 20, "Boss", 1.f, 3.f, 300.f);
+	Mob* boss = this->nowStage->spawnBoss();
 
-	this->currentStage.isBossSpawned = true;
 	this->mobList.push_back(boss);
 }
 
@@ -101,25 +59,31 @@ void GameState::endState() {
 void GameState::updateCollision(sf::Vector2f& velocity)
 {
 	sf::FloatRect playerNextPosBounds = this->player.shape.getGlobalBounds();
-	sf::FloatRect swordBounds = this->player.sword->shape.getGlobalBounds();
 	sf::FloatRect bombBounds = this->player.bomb->shape.getGlobalBounds();
+	for (auto weapon : this->player.weaponList) {
+		MeleeWeapon* meleeWeapon = (MeleeWeapon*)weapon.second;
+		sf::FloatRect meleeWeaponBounds = meleeWeapon->shape.getGlobalBounds();
+		for (int i = 0; i < this->mobList.size(); i++) {
+			sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
+			if (mobBounds.intersects(meleeWeaponBounds) && meleeWeapon->active) {
+				// printf("Collision\n");
+				mobList[i]->updateCollision(meleeWeapon, this->player.power);
+				if (mobList[i]->getDeath()) {
+					// 
+					DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
+					dropItemList.push_back(dropitem);
+					xpList[i] = this->mobList[i]->getXP();
+					goldList[i] = this->mobList[i]->getGold();
+					delete mobList[i];
+					this->mobList.erase(this->mobList.begin() + i);
+				}
+			}
+		}
+	}
 	for (int i = 0; i < this->mobList.size(); i++) {
 		sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
 		if (mobBounds.intersects(playerNextPosBounds)) {
-			this->player.updateCollision(mobList[i], velocity);
-		}
-		if (mobBounds.intersects(swordBounds) && this->player.sword->active) {
-			// printf("Collision\n");
-			mobList[i]->updateCollision(this->player.sword);
-			if (mobList[i]->getDeath()) {
-				// 
-				DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
-				dropItemList.push_back(dropitem);
-				xpList[i] = this->mobList[i]->getXP();
-				goldList[i] = this->mobList[i]->getGold();
-				delete mobList[i];
-				this->mobList.erase(this->mobList.begin() + i);
-			}
+			this->player.updateCollision(mobList[i]);
 		}
 		if (mobBounds.intersects(bombBounds) && this->player.bomb->active) {
 			// printf("Collision\n");
@@ -134,22 +98,32 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 				this->mobList.erase(this->mobList.begin() + i);
 			}
 		}
-	}
+		}
 
+	for (int i = 0; i < this->npcList.size(); i++) {
+		sf::FloatRect npcBounds = npcList[i]->getShape().getGlobalBounds();
+		if (npcBounds.intersects(playerNextPosBounds)) {
+			if (npcList[i]->active == false) {
+				npcList[i]->active = true;
+				this->eventQueue.push_back(new NPCEvent(&this->player));
+			}
+			delete npcList[i];
+			this->npcList.erase(this->npcList.begin() + i);
+		}
+	}
 	for (int i = 0; i < this->dropItemList.size(); i++) {
 		sf::FloatRect dropItemBounds = dropItemList[i]->shape.getGlobalBounds();
 		if (dropItemBounds.intersects(playerNextPosBounds)) {
-			//xp += mobList[i]->getXP();
-			xp += xpList[i];
-			//gold += mobList[i]->getGold();
-			gold += goldList[i];
-			if (xp % 10 == 0) {
-				xp = 0;
-				level += 1;
+			this->player.inventory.setXp(this->player.inventory.getXp() + xpList[i]);
+			this->player.inventory.setGold(this->player.inventory.getGold() + goldList[i]);
+			if (this->player.inventory.getXp() >= 20) {
+				this->player.level = this->player.level + this->player.inventory.getXp() / 20;
+				this->player.inventory.setXp(this->player.inventory.getXp() - 20);
+				this->eventQueue.push_back(new OptionSelectionEvent(&this->player));
 			}
 
-			std::cout << "Level: " << level << ", Xp: " << xp << std::endl;
-			std::cout << "Gold:  " << gold << std::endl;
+			std::cout << "Level: " << this->player.level << ", Xp: " << this->player.inventory.getXp() << std::endl;
+			std::cout << "Gold:  " << this->player.inventory.getGold() << std::endl;
 
 			delete dropItemList[i];
 			this->dropItemList.erase(this->dropItemList.begin() + i);
@@ -159,7 +133,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 
 }
 
-void GameState::updateInput(const float& dt, int& keyTime) {
+void GameState::updateInput(const float& dt) {
 	this->checkForQuit();
 	this->velocity.x = 0;
 	this->velocity.y = 0;
@@ -167,25 +141,21 @@ void GameState::updateInput(const float& dt, int& keyTime) {
 	this->player.viewDirection.y = 0.f;
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-		keyTime = 0;
 		this->player.viewDirection.x = -1.f;
 		this->velocity.x = -1.f;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		keyTime = 0;
 		this->player.viewDirection.x = 1.f;
 		this->velocity.x = 1.f;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-		keyTime = 0;
 		this->player.viewDirection.y = -1.f;
 		this->velocity.y = -1.f;
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		keyTime = 0;
 		this->player.viewDirection.y = 1.f;
 		this->velocity.y = 1.f;
 	}
@@ -216,72 +186,58 @@ void GameState::updateItemUse(const float& dt) {
 }
 
 void GameState::updateMobSpawn(const float& dt) {
-	if (!this->currentStage.isBossSpawned) {
-		this->timeUntilBoss -= dt;
-
-		if (this->timeUntilBoss <= 0) {
-			this->spawnBoss();
-			this->timeUntilBoss = 0;
-		}
+	if (this->nowStage->nextSpawnTime == 0.f && this->mobList.size() < this->nowStage->maxMobCount) {
+		this->spawnMob();
 	}
 
-	if (this->mobList.size() < this->currentStage.maxMobCount && this->currentStage.totalMobCount > 0) {
-		this->timeUntilSpawn -= dt;
-
-		if (this->timeUntilSpawn <= 0) {
-			this->spawnMob();
-			this->timeUntilSpawn = this->currentStage.nextSpawnTime;
-		}
+	if (!this->nowStage->isBossSpawned && this->nowStage->bossSpawnTime == 0.f) {
+		this->spawnBoss();
 	}
-
-	// std::cout << "Mob count: " << this->mobList.size() << ", until: " << this->timeUntilSpawn << ", boss until: " << this->timeUntilBoss << '\n';
-
 }
-
-void GameState::updateHpBar()
-{
-	hpBar[0] = sf::Vertex(sf::Vector2f(this->player.cx - 450.f, -305.f + this->player.cy), sf::Color::Red);
-	hpBar[1] = sf::Vertex(sf::Vector2f(this->player.cx - 450.f, -350.f + this->player.cy), sf::Color::Red);
-	hpBar[2] = sf::Vertex(sf::Vector2f(this->player.cx - 450.f + this->player.hp * 10, -350.f + this->player.cy), sf::Color::Red);
-	hpBar[3] = sf::Vertex(sf::Vector2f(this->player.cx - 450.f + this->player.hp * 10, -305.f + this->player.cy), sf::Color::Red);
-}
-
-void GameState::updateXpBar()
-{
-	xpBar[0] = sf::Vertex(sf::Vector2f(this->player.cx - 450.f, -270.f + this->player.cy), sf::Color::Blue);
-	xpBar[1] = sf::Vertex(sf::Vector2f(this->player.cx - 450.f, -300.f + this->player.cy), sf::Color::Blue);
-	xpBar[2] = sf::Vertex(sf::Vector2f(this->player.cx - 440.f + this->xp * 30, -300.f + this->player.cy), sf::Color::Blue);
-	xpBar[3] = sf::Vertex(sf::Vector2f(this->player.cx - 440.f + this->xp * 30, -270.f + this->player.cy), sf::Color::Blue);
-}
-
 
 void GameState::updateStageClear()
 {
-	if (this->currentStage.isBossSpawned && this->mobList.empty()) {
-		std::cout << "Stage 1 Clear" << std::endl;
-		this->quit = true;
+	if (this->nowStage->isBossSpawned && this->mobList.empty()) {
+		printf("Stage %d Clear\n", this->nowStage->level);
+
+		this->stages.pop_front();
+		
+		if (this->stages.empty()) {
+			this->quit = true;
+			return;
+		}
+		this->nowStage = this->stages.front();
 	}
 }
 
-void GameState::update(const float& dt, int& keyTime) {
-	if (keyTime < 4)
-		keyTime++;
-
-	this->updateInput(dt, keyTime);
+void GameState::update(const float& dt) {
+	this->updateInput(dt);
 	this->updateCollision(this->velocity);
 	this->player.update(dt, this->velocity);
 
+	if (CustomMath::getLength(this->velocity) != 0.f) {
+		this->view.move(this->player.movementSpeed * dt * 20 * this->velocity);
+		this->window->setView(view);
+	}
+
+	this->ui.updateCenterPos(sf::Vector2f(this->player.cx, this->player.cy));
+	this->ui.updateHpBar(this->player.hp, 100.f);
+	this->ui.updateXpBar(this->player.inventory.getXp(), 20.f);
+
 	this->updateItemUse(dt);
+
+	this->nowStage->update(dt);
 	this->updateMobSpawn(dt);
 
 	for (auto mob : this->mobList) {
 		mob->update(dt, sf::Vector2f(this->player.cx, this->player.cy));
 	}
 
-	this->updateHpBar();
-	this->updateXpBar();
+	for (auto npc : this->npcList) {
+		npc->update(dt);
+	}
 
-	if (this->player.getDeath()) {
+	if (this->player.hp <= 0) {
 		this->quit = true;
 	}
 
@@ -299,22 +255,26 @@ void GameState::render(sf::RenderTarget* target) {
 	for (auto mob : this->mobList)
 		mob->render(target);
 
+	for (auto npc : this->npcList)
+		npc->render(target);
+	
 	for (auto dropitem : this->dropItemList)
 		dropitem->draw(target);
-
-	if (this->player.sword->active) {
-		this->player.sword->render(target);
+	
+	for (auto weapon : this->player.weaponList) {
+		if (weapon.second->active) {
+			weapon.second->render(target);
+		}
 	}
 
 	if (this->player.bomb->active) {
 		this->player.bomb->render(target);
 	}
-
-	target->draw(hpBar, 4, sf::Quads);
-	target->draw(xpBar, 4, sf::Quads);
+	
+	this->ui.render(target);
 
 	sf::Font font;
-	font.loadFromFile("C:/Users/USER/source/repos/Zombie-Slayer/fonts/Arial.ttf");
+	font.loadFromFile("Arial.ttf");
 	sf::Text goldText;
 	sf::Text levelText;
 	goldText.setFont(font);
@@ -325,8 +285,8 @@ void GameState::render(sf::RenderTarget* target) {
 	levelText.setFillColor(sf::Color::White);
 	goldText.setPosition(-620.f + this->player.cx, -340.f + this->player.cy);
 	levelText.setPosition(-620.f + this->player.cx, -360.f + this->player.cy);
-	goldText.setString("Gold: " + std::to_string(gold));
-	levelText.setString("Level: " + std::to_string(level));
+	goldText.setString("Gold: " + std::to_string(this->player.inventory.getGold()));
+	levelText.setString("Level: " + std::to_string(this->player.level));
 
 	target->draw(goldText);
 	target->draw(levelText);

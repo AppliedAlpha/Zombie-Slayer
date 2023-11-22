@@ -22,6 +22,12 @@
     <Filter Include="Custom Static Classes">
       <UniqueIdentifier>{12906c95-16c3-43b1-886e-dbc8a4d04905}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Weapons">
+      <UniqueIdentifier>{06416c36-ef10-4302-9b7d-8d71f874e27a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Events">
+      <UniqueIdentifier>{b867d8a7-05f5-4bd5-ac8d-b7f6a3985fcb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -39,9 +45,6 @@
     <ClCompile Include="Entity.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
-    <ClCompile Include="Stage.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Map.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -49,15 +52,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Inventory.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Weapon.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="MeleeWeapon.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Sword.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Mob.cpp">
@@ -75,6 +69,45 @@
     <ClCompile Include="CustomMath.cpp">
       <Filter>Custom Static Classes</Filter>
     </ClCompile>
+<<<<<<< HEAD
+    <ClCompile Include="GameUI.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+=======
+    <ClCompile Include="NPC.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="MeleeWeapon.cpp">
+      <Filter>Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="Spear.cpp">
+      <Filter>Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="Sword.cpp">
+      <Filter>Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="Weapon.cpp">
+      <Filter>Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="Grinder.cpp">
+      <Filter>Weapons</Filter>
+    </ClCompile>
+    <ClCompile Include="EventState.cpp">
+      <Filter>States</Filter>
+    </ClCompile>
+    <ClCompile Include="Stage.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="NPCEvent.cpp">
+      <Filter>Events</Filter>
+    </ClCompile>
+    <ClCompile Include="Event.cpp">
+      <Filter>Events</Filter>
+    </ClCompile>
+    <ClCompile Include="OptionSelectionEvent.cpp">
+      <Filter>Events</Filter>
+    </ClCompile>
+>>>>>>> sangyun
     <ClCompile Include="AoeItem.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -110,15 +143,6 @@
     <ClInclude Include="Inventory.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Weapon.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="MeleeWeapon.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Sword.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="Mob.h">
       <Filter>Entities</Filter>
     </ClInclude>
@@ -133,6 +157,41 @@
     </ClInclude>
     <ClInclude Include="CustomMath.h">
       <Filter>Custom Static Classes</Filter>
+    </ClInclude>
+<<<<<<< HEAD
+    <ClInclude Include="GameUI.h">
+      <Filter>헤더 파일</Filter>
+=======
+    <ClInclude Include="NPC.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="MeleeWeapon.h">
+      <Filter>Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="Weapon.h">
+      <Filter>Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="Sword.h">
+      <Filter>Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="Spear.h">
+      <Filter>Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="Grinder.h">
+      <Filter>Weapons</Filter>
+    </ClInclude>
+    <ClInclude Include="EventState.h">
+      <Filter>States</Filter>
+    </ClInclude>
+    <ClInclude Include="Event.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="NPCEvent.h">
+      <Filter>Events</Filter>
+    </ClInclude>
+    <ClInclude Include="OptionSelectionEvent.h">
+      <Filter>Events</Filter>
+>>>>>>> sangyun
     </ClInclude>
     <ClInclude Include="AoeItem.h">
       <Filter>헤더 파일</Filter>
