@@ -63,7 +63,6 @@
     <ClInclude Include="OptionSelectionEvent.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Random.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="Spear.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="State.h" />
