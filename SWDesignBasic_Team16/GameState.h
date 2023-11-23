@@ -10,6 +10,8 @@
 #include "NPCEvent.h"
 #include "OptionSelectionEvent.h"
 #include "GameUI.h"
+#include "MeleeWeapon.h"
+#include "RangedWeapon.h"
 
 class GameState : public State 
 {

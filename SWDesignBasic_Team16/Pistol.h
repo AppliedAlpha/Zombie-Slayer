@@ -1,13 +1,14 @@
 #pragma once
-#include "MeleeWeapon.h"
-class Sword : public MeleeWeapon
+#include "RangedWeapon.h"
+class Pistol : public RangedWeapon
 {
 private:
 public:
-	Sword(float cooltime, float damage, float duration, sf::Vector2f position);
-	~Sword();
+	Pistol(float cooltime, float damage, float duration, sf::Vector2f position, float speed);
+	~Pistol();
 	void initShape();
 	void updateCollision(Entity* object);
 	void update(const float& dt, sf::RectangleShape playerPos, float cx, float cy, sf::Vector2f viewDirection);
 	void render(sf::RenderTarget* target);
 };
+

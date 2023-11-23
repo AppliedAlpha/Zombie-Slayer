@@ -61,21 +61,43 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 	sf::FloatRect playerNextPosBounds = this->player.shape.getGlobalBounds();
 	sf::FloatRect bombBounds = this->player.bomb->shape.getGlobalBounds();
 	for (auto weapon : this->player.weaponList) {
-		MeleeWeapon* meleeWeapon = (MeleeWeapon*)weapon.second;
-		sf::FloatRect meleeWeaponBounds = meleeWeapon->shape.getGlobalBounds();
-		for (int i = 0; i < this->mobList.size(); i++) {
-			sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
-			if (mobBounds.intersects(meleeWeaponBounds) && meleeWeapon->active) {
-				// printf("Collision\n");
-				mobList[i]->updateCollision(meleeWeapon, this->player.power);
-				if (mobList[i]->getDeath()) {
-					// 
-					DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
-					dropItemList.push_back(dropitem);
-					xpList[i] = this->mobList[i]->getXP();
-					goldList[i] = this->mobList[i]->getGold();
-					delete mobList[i];
-					this->mobList.erase(this->mobList.begin() + i);
+		if (MeleeWeapon* melee = dynamic_cast<MeleeWeapon*>(weapon.second)) {
+			sf::FloatRect weaponBounds = melee->shape.getGlobalBounds();
+			for (int i = 0; i < this->mobList.size(); i++) {
+				sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
+				if (mobBounds.intersects(weaponBounds) && melee->active) {
+					// printf("Collision\n");
+					mobList[i]->updateCollision(melee, this->player.power);
+					if (mobList[i]->getDeath()) {
+						// 
+						DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
+						dropItemList.push_back(dropitem);
+						xpList[i] = this->mobList[i]->getXP();
+						goldList[i] = this->mobList[i]->getGold();
+						delete mobList[i];
+						this->mobList.erase(this->mobList.begin() + i);
+					}
+				}
+			}
+		}
+		else if (RangedWeapon* ranged = dynamic_cast<RangedWeapon*>(weapon.second)) {
+			for (auto bullet : ranged->bullets) {
+				sf::FloatRect bulletBounds = bullet->shape.getGlobalBounds();
+				for (int i = 0; i < this->mobList.size(); i++) {
+					sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
+					if (mobBounds.intersects(bulletBounds)) {
+						// printf("Collision\n");
+						mobList[i]->updateCollision(ranged, this->player.power);
+						if (mobList[i]->getDeath()) {
+							// 
+							DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
+							dropItemList.push_back(dropitem);
+							xpList[i] = this->mobList[i]->getXP();
+							goldList[i] = this->mobList[i]->getGold();
+							delete mobList[i];
+							this->mobList.erase(this->mobList.begin() + i);
+						}
+					}
 				}
 			}
 		}
@@ -262,8 +284,12 @@ void GameState::render(sf::RenderTarget* target) {
 		dropitem->draw(target);
 	
 	for (auto weapon : this->player.weaponList) {
-		if (weapon.second->active) {
-			weapon.second->render(target);
+		if (MeleeWeapon* melee = dynamic_cast<MeleeWeapon*>(weapon.second)) {
+			if (melee->active)
+				melee->render(target);
+		}
+		else if (RangedWeapon* ranged = dynamic_cast<RangedWeapon*>(weapon.second)) {
+			ranged->render(target);
 		}
 	}
 

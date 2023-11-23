@@ -27,9 +27,9 @@ void Grinder::updateCollision(Entity* object)
 {
 }
 
-void Grinder::update(const float& dt, sf::RectangleShape playerShape, float cx, float cy, float angle)
+void Grinder::update(const float& dt, sf::RectangleShape playerShape, float cx, float cy, sf::Vector2f viewDirection)
 {
-	MeleeWeapon::update(dt, playerShape, cx, cy, angle);
+	MeleeWeapon::update(dt, playerShape, cx, cy, viewDirection);
 	//swordPos.left = swordPos.left - (this->sword->shape.getGlobalBounds().width * 0.5f - 25);
 	//swordPos.top = swordPos.top - (this->sword->shape.getGlobalBounds().height * 0.5f - 25);
 	//this->sword->shape.setOrigin(-this->viewDirection.x * 50, -this->viewDirection.y * 50
@@ -38,6 +38,7 @@ void Grinder::update(const float& dt, sf::RectangleShape playerShape, float cx, 
 	sf::FloatRect pos;
 	pos.left = cx - (this->shape.getGlobalBounds().width * 0.5f);
 	pos.top = cy - (this->shape.getGlobalBounds().height * 0.5f);
+	float angle = this->getViewAngle(viewDirection);
 	this->shape.setRotation(rotation);
 	if (angle != 0.f) {
 		this->shape.setPosition(cx, cy);

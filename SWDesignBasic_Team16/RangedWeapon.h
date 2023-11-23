@@ -1,14 +1,20 @@
 #pragma once
-#include "Weapon.h"
 
-class MeleeWeapon : public Weapon
+#include "Weapon.h"
+#include "Bullet.h"
+#include "stdafx.h"
+
+class RangedWeapon : public Weapon
 {
 private:
 
 protected:
 public:
-	MeleeWeapon(float cooltime, float damage, float duration, sf::Vector2f position);
-	virtual ~MeleeWeapon();
+	RangedWeapon(float cooltime, float damage, float duration, sf::Vector2f position, float speed);
+	virtual ~RangedWeapon();
+	float speed;
+	sf::Vector2f activeDirection;
+	std::deque<Bullet*> bullets;
 
 	virtual void initShape();
 	virtual void updateCollision(Entity* object);

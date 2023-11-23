@@ -9,7 +9,7 @@ public:
 	~Grinder();
 	void initShape();
 	void updateCollision(Entity* object);
-	void update(const float& dt, sf::RectangleShape playerShape, float cx, float cy, float angle);
+	void update(const float& dt, sf::RectangleShape playerShape, float cx, float cy, sf::Vector2f viewDirection);
 	void render(sf::RenderTarget* target);
 };
 

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="AoeItem.cpp" />
     <ClCompile Include="Bomb.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="CustomMath.cpp" />
     <ClCompile Include="DropItem.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -39,8 +40,10 @@
     <ClCompile Include="NPC.cpp" />
     <ClCompile Include="NPCEvent.cpp" />
     <ClCompile Include="OptionSelectionEvent.cpp" />
+    <ClCompile Include="Pistol.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Random.cpp" />
+    <ClCompile Include="RangedWeapon.cpp" />
     <ClCompile Include="Spear.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="State.cpp" />
@@ -50,6 +53,7 @@
   <ItemGroup>
     <ClInclude Include="AoeItem.h" />
     <ClInclude Include="Bomb.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="CustomMath.h" />
     <ClInclude Include="DropItem.h" />
     <ClInclude Include="Entity.h" />
@@ -67,8 +71,10 @@
     <ClInclude Include="NPC.h" />
     <ClInclude Include="NPCEvent.h" />
     <ClInclude Include="OptionSelectionEvent.h" />
+    <ClInclude Include="Pistol.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Random.h" />
+    <ClInclude Include="RangedWeapon.h" />
     <ClInclude Include="Spear.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="State.h" />

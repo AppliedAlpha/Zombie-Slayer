@@ -8,6 +8,7 @@
 #include "Grinder.h"
 #include "stdafx.h"
 #include "Bomb.h"
+#include "Pistol.h"
 
 class Player : public Entity
 {
@@ -30,7 +31,6 @@ public:
 	void move(const float& dt, const float dx, const float dy);
 	void render(sf::RenderTarget* target);
 	void update(const float& dt, sf::Vector2f velocity);
-	float getViewAngle();
 
 	bool getDeath() const { return this->death; }
 };

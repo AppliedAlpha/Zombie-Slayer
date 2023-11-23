@@ -17,20 +17,40 @@ void Weapon::initShape()
 {
 }
 
-void Weapon::update(const float& dt, sf::RectangleShape playerShape, float cx, float cy, float angle)
+void Weapon::update(const float& dt, sf::RectangleShape playerShape, float cx, float cy, sf::Vector2f viewDirection)
 {
-	if (this->active && this->count >= this->duration * 60) {
-		this->active = false;
-		this->count = 0;
-	}
-	if (!this->active && this->count >= this->cooltime * 60) {
-		this->active = true;
-		this->count = 0;
-	}
-
-	this->count++;
 }
 
 void Weapon::render(sf::RenderTarget* target)
 {
+}
+
+float Weapon::getViewAngle(sf::Vector2f viewDirection)
+{
+	float angle = 0.f;
+	if (viewDirection.x == 0.f && viewDirection.y == 1.f) {
+		angle = 45.f;
+	}
+	else if (viewDirection.x == -1.f && viewDirection.y == 1.f) {
+		angle = 90.f;
+	}
+	else if (viewDirection.x == -1.f && viewDirection.y == 0.f) {
+		angle = 135.f;
+	}
+	else if (viewDirection.x == -1.f && viewDirection.y == -1.f) {
+		angle = 180.f;
+	}
+	else if (viewDirection.x == 0.f && viewDirection.y == -1.f) {
+		angle = 225.f;
+	}
+	else if (viewDirection.x == 1.f && viewDirection.y == -1.f) {
+		angle = 270.f;
+	}
+	else if (viewDirection.x == 1.f && viewDirection.y == 0.f) {
+		angle = 315.f;
+ 	}
+	else if (viewDirection.x == 1.f && viewDirection.y == 1.f) {
+		angle = 360.f;
+	}
+	return angle;
 }

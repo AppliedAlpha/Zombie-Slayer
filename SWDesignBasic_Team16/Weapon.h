@@ -16,6 +16,7 @@ public:
 	Weapon(float cooltime, float damage, float duration, sf::Vector2f position);
 	virtual ~Weapon();
 	virtual void initShape();
-	virtual void update(const float& dt, sf::RectangleShape playerShape, float cx, float cy, float angle);
+	virtual void update(const float& dt, sf::RectangleShape playerShape, float cx, float cy, sf::Vector2f viewDirection);
 	virtual void render(sf::RenderTarget* target);
+	float getViewAngle(sf::Vector2f viewDirection);
 };

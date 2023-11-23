@@ -27,6 +27,7 @@ Player::Player() : Entity(10, 1, 100)
 
 	// TODO: 맨 처음에 무기 구석에 있는 거 고치기
 	weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Sword", new Sword(1, 1, .5f, sf::Vector2f(this->cx, this->cy))));
+	weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Pistol", new Pistol(.1f, 5, 1.f, sf::Vector2f(this->cx, this->cy), 10)));
 	// weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Grinder", new Grinder(0, 1, 0)));
 	// weaponList.push_back(new Sword(1, 1, .5f));
 	// weaponList.push_back(new Spear(2, 2.5f, .5f));
@@ -45,9 +46,8 @@ Player::~Player()
 
 void Player::attack(const float& dt)
 {
-	float angle = getViewAngle();
 	for (auto weapon : this->weaponList) {
-		weapon.second->update(dt, this->shape, this->cx, this->cy, angle);
+		weapon.second->update(dt, this->shape, this->cx, this->cy, this->viewDirection);
 	}
 }
 
@@ -77,36 +77,6 @@ void Player::move(const float& dt, const float dx, const float dy) {
 
 void Player::render(sf::RenderTarget* target) {
 	Entity::render(target);
-}
-
-float Player::getViewAngle()
-{
-	float angle = 0.f;
-	if (this->viewDirection.x == 0.f && this->viewDirection.y == 1.f) {
-		angle = 45.f;
-	}
-	else if (this->viewDirection.x == -1.f && this->viewDirection.y == 1.f) {
-		angle = 90.f;
-	}
-	else if (this->viewDirection.x == -1.f && this->viewDirection.y == 0.f) {
-		angle = 135.f;
-	}
-	else if (this->viewDirection.x == -1.f && this->viewDirection.y == -1.f) {
-		angle = 180.f;
-	}
-	else if (this->viewDirection.x == 0.f && this->viewDirection.y == -1.f) {
-		angle = 225.f;
-	}
-	else if (this->viewDirection.x == 1.f && this->viewDirection.y == -1.f) {
-		angle = 270.f;
-	}
-	else if (this->viewDirection.x == 1.f && this->viewDirection.y == 0.f) {
-		angle = 315.f;
-	}
-	else if (this->viewDirection.x == 1.f && this->viewDirection.y == 1.f) {
-		angle = 360.f;
-	}
-	return angle;
 }
 
 void Player::update(const float& dt, sf::Vector2f velocity) {

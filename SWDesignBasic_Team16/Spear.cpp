@@ -26,15 +26,16 @@ void Spear::updateCollision(Entity* object)
 {
 }
 
-void Spear::update(const float& dt, sf::RectangleShape playerShape, float cx, float cy, float angle)
+void Spear::update(const float& dt, sf::RectangleShape playerShape, float cx, float cy, sf::Vector2f viewDirection)
 {
-	MeleeWeapon::update(dt, playerShape, cx, cy, angle);
+	MeleeWeapon::update(dt, playerShape, cx, cy, viewDirection);
 	//swordPos.left = swordPos.left - (this->sword->shape.getGlobalBounds().width * 0.5f - 25);
 	//swordPos.top = swordPos.top - (this->sword->shape.getGlobalBounds().height * 0.5f - 25);
 	//this->sword->shape.setOrigin(-this->viewDirection.x * 50, -this->viewDirection.y * 50);
 	sf::FloatRect pos;
 	pos.left = cx - (this->shape.getGlobalBounds().width * 0.5f);
 	pos.top = cy - (this->shape.getGlobalBounds().height * 0.5f);
+	float angle = this->getViewAngle(viewDirection);
 	// this->shape.setRotation(angle);
 	if (angle != 0.f) {
 		this->shape.setPosition(cx - playerShape.getGlobalBounds().width * 0.5f, cy - playerShape.getGlobalBounds().height * 0.5f);
