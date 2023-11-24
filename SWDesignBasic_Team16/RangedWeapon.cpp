@@ -5,11 +5,27 @@ RangedWeapon::RangedWeapon(float cooltime, float damage, float duration, sf::Vec
 	this->speed = speed;
 	this->shape.setPosition(position);
 	this->activeDirection = sf::Vector2f(0.f, 1.f);
-	
+	this->explosion = false;
+}
+
+RangedWeapon::RangedWeapon(float cooltime, float damage, float duration, sf::Vector2f position, float speed, float radius, float explosionDamage, float explosionDuration) : Weapon(cooltime, damage, duration, position)
+{
+	this->speed = speed;
+	this->shape.setPosition(position);
+	this->activeDirection = sf::Vector2f(0.f, 1.f);
+	this->explosion = true;
+	this->maxHitCount = 0;
+	this->radius = radius;
+	this->explosionDamage = explosionDamage;
+	this->explosionDuration = explosionDuration;
 }
 
 RangedWeapon::~RangedWeapon()
 {
+	for (auto bullet : this->bullets) {
+		delete bullet;
+	}
+	this->bullets.clear();
 }
 
 void RangedWeapon::initShape()
@@ -27,7 +43,7 @@ void RangedWeapon::update(const float& dt, sf::RectangleShape playerPos, float c
 	this->count++;
 	if (this->count >= this->cooltime * 60) {
 		this->active = false;
-		this->bullets.push_back(new Bullet(this->shape, this->activeDirection, this->speed, this->duration));
+		this->bullets.push_back(new Bullet(this->shape, this->activeDirection, this->speed, this->duration, this->maxHitCount, this->explosion));
 		this->count = 0;
 	}
 	else {
@@ -36,9 +52,9 @@ void RangedWeapon::update(const float& dt, sf::RectangleShape playerPos, float c
 
 	for (int i = 0; i < this->bullets.size(); i++) {
 		this->bullets.at(i)->update(dt, cx, cy);
-		if (this->bullets.front()->out) {
-			delete this->bullets.front();
-			this->bullets.pop_front();
+		if (this->bullets.at(i)->out) {
+			delete this->bullets.at(i);
+			this->bullets.erase(this->bullets.begin() + i);
 		}
 	}
 }

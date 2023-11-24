@@ -3,7 +3,7 @@
 void Sword::initShape()
 {
 	MeleeWeapon::initShape();
-	this->shape.setSize(sf::Vector2f(80.f, 80.f)); // 무기마다 shape가 달라지면 전체적으로 손봐야도리듯
+	this->shape.setSize(sf::Vector2f(45.f, 45.f)); // 무기마다 shape가 달라지면 전체적으로 손봐야도리듯
 	this->shape.setFillColor(sf::Color::Transparent);
 	this->shape.setOutlineColor(sf::Color::Red);
 	this->shape.setOutlineThickness(2.f);
@@ -23,9 +23,6 @@ void Sword::update(const float& dt, sf::RectangleShape playerShape, float cx, fl
 	//swordPos.left = swordPos.left - (this->sword->shape.getGlobalBounds().width * 0.5f - 25);
 	//swordPos.top = swordPos.top - (this->sword->shape.getGlobalBounds().height * 0.5f - 25);
 	//this->sword->shape.setOrigin(-this->viewDirection.x * 50, -this->viewDirection.y * 50);
-	sf::FloatRect pos;
-	pos.left = cx - (this->shape.getGlobalBounds().width * 0.5f);
-	pos.top = cy - (this->shape.getGlobalBounds().height * 0.5f);
 	float angle = this->getViewAngle(viewDirection);
 	// this->shape.setRotation(angle);
 	if (angle != 0.f) {

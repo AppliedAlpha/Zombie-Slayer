@@ -20,14 +20,18 @@ void Player::initShape()
 	this->shape.setRotation(45);
 }
 
-Player::Player() : Entity(10, 1, 100)
+Player::Player() : Entity(200, 1, 100)
 {
 	this->initShape();
 	this->initVariables();
 
 	// TODO: 맨 처음에 무기 구석에 있는 거 고치기
 	weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Sword", new Sword(1, 1, .5f, sf::Vector2f(this->cx, this->cy))));
-	weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Pistol", new Pistol(.1f, 5, 1.f, sf::Vector2f(this->cx, this->cy), 10)));
+	weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Spear", new Spear(2, 2.5f, .25f, sf::Vector2f(this->cx, this->cy))));
+	weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Grinder", new Grinder(0, 1, 0, sf::Vector2f(this->cx, this->cy))));
+	weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Pistol", new Pistol(1.f, 20, 2.f, sf::Vector2f(this->cx, this->cy), 10)));
+	weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Brick", new Brick(5.f, .5f, 5.f, sf::Vector2f(this->cx, this->cy), 2)));
+	weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Rocket", new Rocket(3.f, 0.f, 3.f, sf::Vector2f(this->cx, this->cy), 15, 40.f, 3.f, .1f)));
 	// weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Grinder", new Grinder(0, 1, 0)));
 	// weaponList.push_back(new Sword(1, 1, .5f));
 	// weaponList.push_back(new Spear(2, 2.5f, .5f));
@@ -69,9 +73,9 @@ void Player::updateCollision(Entity* object)
 }
 
 void Player::move(const float& dt, const float dx, const float dy) {
-	float multiplyer = 20.f;
-	this->cx += dx * this->movementSpeed * dt * multiplyer;
-	this->cy += dy * this->movementSpeed * dt * multiplyer;
+	auto v = CustomMath::normalize(sf::Vector2f(dx, dy));
+	this->cx += v.x * this->movementSpeed * dt;
+	this->cy += v.y * this->movementSpeed * dt;
 	//this->shape.move(dx * this->movementSpeed * dt * multiplyer, dy * this->movementSpeed * dt * multiplyer);
 }
 

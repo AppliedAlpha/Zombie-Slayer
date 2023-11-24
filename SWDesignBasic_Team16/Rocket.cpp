@@ -1,19 +1,18 @@
-#include "Pistol.h"
+#include "Rocket.h"
 
-Pistol::Pistol(float cooltime, float damage, float duration, sf::Vector2f position, float speed) : RangedWeapon(cooltime, damage, duration, position, speed)
+Rocket::Rocket(float cooltime, float damage, float duration, sf::Vector2f position, float speed, float radius, float explosionDamage, float explosionDuration) : RangedWeapon(cooltime, damage, duration, position, speed, radius, explosionDamage, explosionDuration)
 {
-	this->maxHitCount = 1;
 	this->initShape();
 }
 
-Pistol::~Pistol()
+Rocket::~Rocket()
 {
 }
 
-void Pistol::initShape()
+void Rocket::initShape()
 {
 	RangedWeapon::initShape();
-	this->shape.setSize(sf::Vector2f(10.f, 10.f)); // 무기마다 shape가 달라지면 전체적으로 손봐야도리듯
+	this->shape.setSize(sf::Vector2f(30.f, 30.f)); // 무기마다 shape가 달라지면 전체적으로 손봐야도리듯
 	this->shape.setFillColor(sf::Color::Transparent);
 	this->shape.setOutlineColor(sf::Color::Red);
 	this->shape.setOutlineThickness(2.f);
@@ -23,17 +22,17 @@ void Pistol::initShape()
 	// this->shape.setOrigin(50, 50);
 }
 
-void Pistol::updateCollision(Entity* object)
+void Rocket::updateCollision(Entity* object)
 {
 }
 
-void Pistol::update(const float& dt, sf::RectangleShape playerPos, float cx, float cy, sf::Vector2f viewDirection)
+void Rocket::update(const float& dt, sf::RectangleShape playerPos, float cx, float cy, sf::Vector2f viewDirection)
 {
 	RangedWeapon::update(dt, playerPos, cx, cy, viewDirection);
 	this->shape.setPosition(cx - this->shape.getGlobalBounds().width * 0.5f, cy - this->shape.getGlobalBounds().height * 0.5f);
 }
 
-void Pistol::render(sf::RenderTarget* target)
+void Rocket::render(sf::RenderTarget* target)
 {
 	RangedWeapon::render(target);
 	// target->draw(this->shape);

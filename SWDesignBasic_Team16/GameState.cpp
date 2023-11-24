@@ -38,6 +38,11 @@ GameState::~GameState() {
 		delete this->npcList.at(i);
 	}
 	this->npcList.clear();
+
+	for (int i = 0; i < this->aoeList.size(); i++) {
+		delete this->aoeList.at(i);
+	}
+	this->aoeList.clear();
 }
 
 void GameState::spawnMob()
@@ -86,10 +91,14 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 				for (int i = 0; i < this->mobList.size(); i++) {
 					sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
 					if (mobBounds.intersects(bulletBounds)) {
-						// printf("Collision\n");
 						mobList[i]->updateCollision(ranged, this->player.power);
+						if (bullet->maxHitCount <= bullet->hitCount) {
+							if (bullet->explosion) {
+								this->aoeList.push_back(bullet->explode(ranged->radius, ranged->explosionDuration, ranged->explosionDamage, mobList[i]->shape.getPosition()));
+							}
+							bullet->out = true;
+						}
 						if (mobList[i]->getDeath()) {
-							// 
 							DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
 							dropItemList.push_back(dropitem);
 							xpList[i] = this->mobList[i]->getXP();
@@ -97,11 +106,33 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 							delete mobList[i];
 							this->mobList.erase(this->mobList.begin() + i);
 						}
+						else bullet->hitCount++;
 					}
 				}
 			}
 		}
 	}
+
+	for (auto aoe : this->aoeList) {
+		sf::FloatRect aoeBounds = aoe->shape.getGlobalBounds();
+		for (int i = 0; i < this->mobList.size(); i++) {
+			sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
+			if (mobBounds.intersects(aoeBounds)) {
+				// printf("Collision\n");
+				mobList[i]->updateCollision(aoe);
+				if (mobList[i]->getDeath()) {
+					// 
+					DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
+					dropItemList.push_back(dropitem);
+					xpList[i] = this->mobList[i]->getXP();
+					goldList[i] = this->mobList[i]->getGold();
+					delete mobList[i];
+					this->mobList.erase(this->mobList.begin() + i);
+				}
+			}
+		}
+	}
+
 	for (int i = 0; i < this->mobList.size(); i++) {
 		sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
 		if (mobBounds.intersects(playerNextPosBounds)) {
@@ -238,7 +269,8 @@ void GameState::update(const float& dt) {
 	this->player.update(dt, this->velocity);
 
 	if (CustomMath::getLength(this->velocity) != 0.f) {
-		this->view.move(this->player.movementSpeed * dt * 20 * this->velocity);
+		this->velocity = CustomMath::normalize(this->velocity);
+		this->view.move(this->player.movementSpeed * dt * this->velocity);
 		this->window->setView(view);
 	}
 
@@ -250,6 +282,14 @@ void GameState::update(const float& dt) {
 
 	this->nowStage->update(dt);
 	this->updateMobSpawn(dt);
+
+	for (int i = 0; i < aoeList.size(); i++) {
+		aoeList[i]->update(dt);
+		if (aoeList[i]->disappear) {
+			delete aoeList[i];
+			aoeList.erase(aoeList.begin() + i);
+		}
+	}
 
 	for (auto mob : this->mobList) {
 		mob->update(dt, sf::Vector2f(this->player.cx, this->player.cy));
@@ -273,6 +313,10 @@ void GameState::render(sf::RenderTarget* target) {
 	// 맵 출력이 플레이어보다 앞서야 함
 	this->basicMap.render(target);
 	this->player.render(target);
+
+	for (auto aoe : this->aoeList) {
+		aoe->render(target);
+	}
 
 	for (auto mob : this->mobList)
 		mob->render(target);

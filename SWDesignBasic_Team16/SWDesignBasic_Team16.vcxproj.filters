@@ -31,6 +31,9 @@
     <ClCompile Include="RangedWeapon.cpp" />
     <ClCompile Include="Pistol.cpp" />
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Brick.cpp" />
+    <ClCompile Include="Rocket.cpp" />
+    <ClCompile Include="AoE.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AoeItem.h" />
@@ -63,6 +66,9 @@
     <ClInclude Include="RangedWeapon.h" />
     <ClInclude Include="Pistol.h" />
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Brick.h" />
+    <ClInclude Include="Rocket.h" />
+    <ClInclude Include="AoE.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

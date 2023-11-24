@@ -11,10 +11,16 @@ private:
 protected:
 public:
 	RangedWeapon(float cooltime, float damage, float duration, sf::Vector2f position, float speed);
+	RangedWeapon(float cooltime, float damage, float duration, sf::Vector2f position, float speed, float radius, float explosionDamage, float explosionDuration);
 	virtual ~RangedWeapon();
 	float speed;
 	sf::Vector2f activeDirection;
-	std::deque<Bullet*> bullets;
+	std::vector<Bullet*> bullets;
+	int maxHitCount;
+	bool explosion;
+	float radius;
+	float explosionDamage;
+	float explosionDuration;
 
 	virtual void initShape();
 	virtual void updateCollision(Entity* object);

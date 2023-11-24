@@ -3,7 +3,6 @@
 EventState::EventState(sf::RenderWindow* window, sf::View& view, Event* event) : State(window, view)
 {
 	this->event = event;
-	std::cout << this->center.x - view.getCenter().x << " " << this->center.y - view.getCenter().y << std::endl;
 	this->event->move(view.getCenter() - this->center);
 }
 

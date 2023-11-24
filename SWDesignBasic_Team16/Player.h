@@ -9,6 +9,8 @@
 #include "stdafx.h"
 #include "Bomb.h"
 #include "Pistol.h"
+#include "Brick.h"
+#include "Rocket.h"
 
 class Player : public Entity
 {

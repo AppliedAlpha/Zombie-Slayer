@@ -12,7 +12,7 @@ Spear::~Spear()
 void Spear::initShape()
 {
 	MeleeWeapon::initShape();
-	this->shape.setSize(sf::Vector2f(20.f, 150.f)); // 무기마다 shape가 달라지면 전체적으로 손봐야도리듯
+	this->shape.setSize(sf::Vector2f(20.f, 100.f)); // 무기마다 shape가 달라지면 전체적으로 손봐야도리듯
 	this->shape.setFillColor(sf::Color::Transparent);
 	this->shape.setOutlineColor(sf::Color::Red);
 	this->shape.setOutlineThickness(2.f);

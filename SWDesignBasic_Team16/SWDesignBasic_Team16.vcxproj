@@ -19,8 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AoE.cpp" />
     <ClCompile Include="AoeItem.cpp" />
     <ClCompile Include="Bomb.cpp" />
+    <ClCompile Include="Brick.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="CustomMath.cpp" />
     <ClCompile Include="DropItem.cpp" />
@@ -44,6 +46,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="RangedWeapon.cpp" />
+    <ClCompile Include="Rocket.cpp" />
     <ClCompile Include="Spear.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="State.cpp" />
@@ -51,8 +54,10 @@
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AoE.h" />
     <ClInclude Include="AoeItem.h" />
     <ClInclude Include="Bomb.h" />
+    <ClInclude Include="Brick.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="CustomMath.h" />
     <ClInclude Include="DropItem.h" />
@@ -75,6 +80,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="RangedWeapon.h" />
+    <ClInclude Include="Rocket.h" />
     <ClInclude Include="Spear.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="State.h" />

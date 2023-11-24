@@ -3,6 +3,7 @@
 #include "Entity.h"
 #include "Sword.h"
 #include "Bomb.h"
+#include "AoE.h"
 #include "stdafx.h"
 #include "DropItem.h"
 
@@ -26,6 +27,7 @@ public:
 	std::string name;
 	Inventory inventory;
 	void updateCollision(Bomb* bomb);
+	void updateCollision(AoE* aoe);
 	void updateCollision(Weapon* weapon, float power);
 
 	void move(const float& dt, sf::Vector2f playerPosition);

@@ -12,6 +12,7 @@
 #include "GameUI.h"
 #include "MeleeWeapon.h"
 #include "RangedWeapon.h"
+#include "AoE.h"
 
 class GameState : public State 
 {
@@ -25,6 +26,7 @@ private:
 	sf::Vector2f velocity;
 	Map basicMap;
 	std::vector<DropItem*> dropItemList;
+	std::vector<AoE*> aoeList;
 	
 	std::deque<Stage *> stages;
 	Stage* nowStage;

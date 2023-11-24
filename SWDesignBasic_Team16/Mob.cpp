@@ -33,6 +33,15 @@ void Mob::updateCollision(Bomb* bomb)
 	}
 }
 
+void Mob::updateCollision(AoE* aoe)
+{
+	this->hp -= aoe->damage;
+
+	if (this->hp <= 0.f) {
+		this->onDeath();
+	}
+}
+
 Mob::Mob() : Entity(1.5, 1.5, 100)
 {
 	this->name = "Zombie";
