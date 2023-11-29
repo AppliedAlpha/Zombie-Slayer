@@ -23,7 +23,7 @@ void GameManager::initWindow() {
 }
 
 void GameManager::initStates() {
-	this->states.push(new GameState(this->window));
+	this->states.push_front(new MainMenuState(this->window));
 }
 
 GameManager::GameManager() {
@@ -35,8 +35,27 @@ GameManager::~GameManager() {
 	delete this->window;
 
 	while (!this->states.empty()) {
-		delete this->states.top();
-		this->states.pop();
+		delete this->states.front();
+		this->states.pop_front();
+	}
+}
+
+template <typename CurrentState, typename NextState>
+void GameManager::transitionStates(bool autoTransit) {
+	if (CurrentState* p = dynamic_cast<CurrentState *>(this->states.front())) {
+		if (autoTransit) {
+			this->states.push_back(new NextState(this->window));
+			return;
+		}
+
+		switch (this->states.front()->getExitCode()) {
+		case ExitCode::NEXT:
+			this->states.push_back(new NextState(this->window));
+			break;
+
+		default:
+			break;
+		}
 	}
 }
 
@@ -47,7 +66,7 @@ void GameManager::endGame() {
 void GameManager::pushStates(std::deque<Event*>& eventQueue, sf::View& view)
 {
 	while (!eventQueue.empty()) {
-		this->states.push(new EventState(this->window, view, eventQueue.front()));
+		this->states.push_front(new EventState(this->window, view, eventQueue.front()));
 		eventQueue.pop_front();
 	}
 }
@@ -67,17 +86,22 @@ void GameManager::update() {
 	this->updateSFMLEvents();
 	
 	if (!this->states.empty()) {
-		if (!this->states.top()->eventQueue.empty()) {
-			pushStates(this->states.top()->eventQueue, this->states.top()->view);
-			this->states.top()->eventQueue.clear();
+		if (!this->states.front()->eventQueue.empty()) {
+			pushStates(this->states.front()->eventQueue, this->states.front()->view);
+			this->states.front()->eventQueue.clear();
 		}
-		this->states.top()->update(this->dt);
+		this->states.front()->update(this->dt);
 
-		if (this->states.top()->getQuit()) {
-			this->states.top()->endState();
+		if (this->states.front()->getQuit()) {
+			this->states.front()->endState();
 
-			delete this->states.top();
-			this->states.pop();
+			// 기존 state 종료 시 새로운 state를 뒤에 밀어넣는 작업
+			this->transitionStates<MainMenuState, GameState>(false);
+			this->transitionStates<GameState, GameOverState>(true);
+			this->transitionStates<GameOverState, MainMenuState>(false);
+
+			delete this->states.front();
+			this->states.pop_front();
 		}
 		
 	}
@@ -91,7 +115,7 @@ void GameManager::render() {
 	this->window->clear();
 
 	if (!this->states.empty())
-		this->states.top()->render(this->window);
+		this->states.front()->render(this->window);
 
 	this->window->display();
 }

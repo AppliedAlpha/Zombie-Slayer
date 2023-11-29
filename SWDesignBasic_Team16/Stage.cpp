@@ -3,16 +3,16 @@
 Stage::Stage(int level) : level(level) {
 	switch (this->level) {
 	case 1:
-		enqueueMob(2, 2, "Normal Zombie", 3, 1, 40/*80*/, sf::Color::Green, 20, 20);
-		setBoss(100, 20, "Boss I", 2, 3, 100/*200*/, sf::Color::Blue, 50);
+		enqueueMob(1, 1, "Normal Zombie", 3, 1, 20, sf::Color::Green, 20, 60);
+		setBoss(100, 50, "Boss I", 2, 3, 200, sf::Color::Blue, 50);
 
-		initStageVariables(5, 15, 0.5f, 50.f);
+		initStageVariables(20, 40, 0.15f, 50.f);
 		break;
 
 	case 2:
 		// TODO: NPC도 하나 추가해야 함
-		enqueueMob(2, 2, "Normal Zombie", 3, 1, 40/*80*/, sf::Color::Green, 20, 15);
-		enqueueMob(2, 2, "Fast Zombie", 5, 0.75, 35/*70*/, sf::Color(0, 127, 0, 255), 15, 10);
+		enqueueMob(2, 2, "Normal Zombie", 3, 1, 40/*80*/, sf::Color::Green, 20, 150);
+		enqueueMob(2, 2, "Fast Zombie", 5, 0.75, 35/*70*/, sf::Color(0, 127, 0, 255), 15, 100);
 		setBoss(100, 20, "Boss II", 2, 3, 150/*300*/, sf::Color::Blue, 50);
 
 		initStageVariables(7, 20, 2.5f, 50.f);

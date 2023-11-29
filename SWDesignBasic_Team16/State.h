@@ -3,6 +3,10 @@
 #include "stdafx.h"
 #include "Event.h"
 
+enum ExitCode {
+	DEFAULT = 0, ESC, NEXT
+};
+
 class State
 {
 private:
@@ -12,8 +16,11 @@ protected:
 
 	std::vector<sf::Texture> textures;
 	bool quit;
+	ExitCode exitCode;
 
 public:
+	int inputTerm = 0;
+
 	sf::View view;
 	std::deque<Event*> eventQueue;
 	State(sf::RenderWindow* window);
@@ -22,6 +29,7 @@ public:
 	virtual ~State();
 
 	const bool& getQuit() const;
+	const ExitCode& getExitCode() const;
 	virtual void checkForQuit();
 
 	virtual void endState() = 0;

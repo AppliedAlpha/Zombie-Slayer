@@ -15,3 +15,10 @@ sf::Vector2f CustomMath::normalize(const sf::Vector2f& vector) {
 	else 
 		return vector;
 }
+
+// 레벨에 맞는 최대 xp 반환
+// 경험치 조정이 필요하면 해당 식 수정
+int CustomMath::getMaxXp(const int level)
+{
+	return level * (level + 20);
+}

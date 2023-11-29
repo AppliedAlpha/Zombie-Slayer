@@ -19,6 +19,8 @@ class GameState : public State
 private:
 	Player player;
 	GameUI ui;
+	sf::Font* font;
+
 	std::vector<Mob*> mobList;
 	int xpList[100];
 	int goldList[100];
@@ -33,6 +35,7 @@ private:
 
 	float timeUntilItemCooldown;
 	float bombduration;
+	float playTime = 0.f;
 	// float timeUntilSpawn, timeUntilBoss;
 
 	// int totalKillCount;

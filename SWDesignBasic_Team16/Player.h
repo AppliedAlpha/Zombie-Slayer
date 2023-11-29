@@ -3,7 +3,6 @@
 #include "Mob.h"
 #include "NPC.h"
 #include "Sword.h"
-#include "Sword.h"
 #include "Spear.h"
 #include "Grinder.h"
 #include "stdafx.h"
