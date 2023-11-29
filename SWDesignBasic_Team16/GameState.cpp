@@ -22,8 +22,6 @@ GameState::GameState(sf::RenderWindow* window) : State(window) {
 	// this->initFirstStage();
 
 	this->timeUntilItemCooldown = 1.f;
-
-	this->npcList.push_back(new NPC());
 	this->player.invincible = false;
 	this->bombduration = 0.f;
 }
@@ -53,8 +51,17 @@ void GameState::spawnMob()
 
 void GameState::spawnBoss() {
 	Mob* boss = this->nowStage->spawnBoss();
-
 	this->mobList.push_back(boss);
+}
+
+void GameState::spawnNPC()
+{
+	this->nowStage->isNPCSpawned = true;
+	NPC* npc = this->nowStage->spawnNPC();
+	npc->cx = npc->cx + this->player.cx;
+	npc->cy = npc->cy + this->player.cy;
+	npc->shape.setPosition(npc->cx, npc->cy);
+	this->npcList.push_back(npc);
 }
 
 void GameState::endState() {
@@ -115,34 +122,53 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 
 	for (auto aoe : this->aoeList) {
 		sf::FloatRect aoeBounds = aoe->shape.getGlobalBounds();
-		for (int i = 0; i < this->mobList.size(); i++) {
-			sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
-			if (mobBounds.intersects(aoeBounds)) {
-				// printf("Collision\n");
-				mobList[i]->updateCollision(aoe);
-				if (mobList[i]->getDeath()) {
-					// 
-					DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
-					dropItemList.push_back(dropitem);
-					xpList[i] = this->mobList[i]->getXP();
-					goldList[i] = this->mobList[i]->getGold();
-					delete mobList[i];
-					this->mobList.erase(this->mobList.begin() + i);
+		if (aoe->mobTarget) {
+			for (int i = 0; i < this->mobList.size(); i++) {
+				sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
+				if (mobBounds.intersects(aoeBounds)) {
+					// printf("Collision\n");
+					mobList[i]->updateCollision(aoe);
+					if (mobList[i]->getDeath()) {
+						// 
+						DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
+						dropItemList.push_back(dropitem);
+						xpList[i] = this->mobList[i]->getXP();
+						goldList[i] = this->mobList[i]->getGold();
+						delete mobList[i];
+						this->mobList.erase(this->mobList.begin() + i);
+					}
 				}
+			}
+		}
+		else {
+			if (playerNextPosBounds.intersects(aoeBounds)) {
+				this->player.updateCollision(aoe);
 			}
 		}
 	}
 
 	for (int i = 0; i < this->mobList.size(); i++) {
+		if (mobList[i]->weapon != nullptr) {
+			if (RangedWeapon* ranged = dynamic_cast<RangedWeapon*>(mobList[i]->weapon)) {
+				for (auto bullet : ranged->bullets) {
+					sf::FloatRect bulletBounds = bullet->shape.getGlobalBounds();
+					if (playerNextPosBounds.intersects(bulletBounds)) {
+						this->player.updateCollision(ranged);
+						if (bullet->explosion) {
+							this->aoeList.push_back(bullet->explode(ranged->radius, ranged->explosionDuration, ranged->explosionDamage, mobList[i]->shape.getPosition()));
+						}
+						bullet->out = true;
+					}
+				}
+			}
+		}
 		sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
 		if (mobBounds.intersects(playerNextPosBounds)) {
 			this->player.updateCollision(mobList[i]);
 		}
 		if (mobBounds.intersects(bombBounds) && this->player.bomb->active) {
-			// printf("Collision\n");
 			mobList[i]->updateCollision(this->player.bomb);
 			if (mobList[i]->getDeath()) {
-				// 
 				DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
 				dropItemList.push_back(dropitem);
 				xpList[i] = this->mobList[i]->getXP();
@@ -158,7 +184,13 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		if (npcBounds.intersects(playerNextPosBounds)) {
 			if (npcList[i]->active == false) {
 				npcList[i]->active = true;
-				this->eventQueue.push_back(new NPCEvent(&this->player));
+				if (npcList[i]->positive == 1) {
+					this->eventQueue.push_back(new NPCEvent(&this->player, this->nowStage->level, this->nowStage->dialogArchive.first, npcList[i]->name, this->npcEvent, this->npcList[i]->positive));
+				}
+				else {
+					this->eventQueue.push_back(new NPCEvent(&this->player, this->nowStage->level, this->nowStage->dialogArchive.second, npcList[i]->name, this->npcEvent, this->npcList[i]->positive));
+				}
+				this->npcEventPos = sf::Vector2f(this->npcList[i]->cx, this->npcList[i]->cy);
 			}
 			delete npcList[i];
 			this->npcList.erase(this->npcList.begin() + i);
@@ -246,6 +278,58 @@ void GameState::updateMobSpawn(const float& dt) {
 	if (!this->nowStage->isBossSpawned && this->nowStage->bossSpawnTime == 0.f) {
 		this->spawnBoss();
 	}
+
+	if (!this->nowStage->isNPCSpawned) {
+		this->spawnNPC();
+	}
+}
+
+void GameState::updateNPCEvent(const float& dt) {
+	if (this->npcEvent) {
+		switch (this->nowStage->level)
+		{
+		case 1:
+			this->player.inventory.setGold(this->player.inventory.getGold() + 10);
+		case 2:
+			this->aoeList.push_back(new AoE(200, .5f, 1.f, this->npcEventPos));
+		case 3:
+			this->player.movementSpeed = this->player.movementSpeed + 10;
+		case 4:
+			this->mobList.push_back(new Mob(2, 2, std::string("Normal Zombie"), 3.f, 1.f, 40.f/*80*/, sf::Color::Green, 20.f));
+			this->mobList.at(this->mobList.size() - 1)->cx = this->npcEventPos.x;
+			this->mobList.at(this->mobList.size() - 1)->cy = this->npcEventPos.y;
+			this->mobList.at(this->mobList.size() - 1)->shape.setPosition(this->npcEventPos);
+		case 5:
+
+		case 6:
+
+		default:
+			break;
+		}
+	}
+	else {
+		switch (this->nowStage->level)
+		{
+		case 1:
+			this->player.inventory.setGold(this->player.inventory.getGold() + 10);
+		case 2:
+			this->aoeList.push_back(new AoE(200, .5f, 1.f, this->npcEventPos, false));
+		case 3:
+			this->player.movementSpeed = this->player.movementSpeed - 10;
+		case 4:
+			this->mobList.push_back(new Mob(2, 2, std::string("Normal Zombie"), 3.f, 1.f, 40.f/*80*/, sf::Color::Green, 20.f));
+			this->mobList.at(this->mobList.size() - 1)->cx = this->npcEventPos.x;
+			this->mobList.at(this->mobList.size() - 1)->cy = this->npcEventPos.y;
+			this->mobList.at(this->mobList.size() - 1)->shape.setPosition(this->npcEventPos);
+		case 5:
+
+		case 6:
+			break;
+		default:
+			break;
+		}
+	}
+	this->npcEvent = -1;
 }
 
 void GameState::updateStageClear()
@@ -295,6 +379,10 @@ void GameState::update(const float& dt) {
 		mob->update(dt, sf::Vector2f(this->player.cx, this->player.cy));
 	}
 
+	if (this->npcEvent != -1) {
+		this->updateNPCEvent(dt);
+	}
+
 	for (auto npc : this->npcList) {
 		npc->update(dt);
 	}
@@ -307,19 +395,8 @@ void GameState::update(const float& dt) {
 }
 
 void GameState::render(sf::RenderTarget* target) {
-	if (!target)
-		target = this->window;
-
 	// 맵 출력이 플레이어보다 앞서야 함
 	this->basicMap.render(target);
-	this->player.render(target);
-
-	for (auto aoe : this->aoeList) {
-		aoe->render(target);
-	}
-
-	for (auto mob : this->mobList)
-		mob->render(target);
 
 	for (auto npc : this->npcList)
 		npc->render(target);
@@ -337,12 +414,22 @@ void GameState::render(sf::RenderTarget* target) {
 		}
 	}
 
+
+	for (auto aoe : this->aoeList) {
+		aoe->render(target);
+	}
+
+	for (auto mob : this->mobList)
+		mob->render(target);
+
 	if (this->player.bomb->active) {
 		this->player.bomb->render(target);
 	}
 	
-	this->ui.render(target);
+	this->player.render(target);
 
+	this->ui.render(target);
+	
 	sf::Font font;
 	font.loadFromFile("Arial.ttf");
 	sf::Text goldText;
@@ -360,4 +447,5 @@ void GameState::render(sf::RenderTarget* target) {
 
 	target->draw(goldText);
 	target->draw(levelText);
+	
 }

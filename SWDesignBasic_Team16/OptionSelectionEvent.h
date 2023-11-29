@@ -12,6 +12,10 @@ public:
 	std::vector<std::string> options;
 	std::vector<sf::RectangleShape*> optionFields;
 	std::vector<sf::Text*> optionTexts;
+	sf::String newWeapon = "New: ";
+	sf::String upgradeWeapon = "Upgrade: ";
+	sf::Text title;
+	sf::Text subtitle;
 	sf::Font font;
 	OptionSelectionEvent(Player* player);
 	~OptionSelectionEvent();
@@ -21,5 +25,6 @@ public:
 	void update(const float& dt, std::string option);
 	void render(sf::RenderTarget* target);
 	void move(sf::Vector2f diff);
+	void selectRandomWeapon();
 };
 

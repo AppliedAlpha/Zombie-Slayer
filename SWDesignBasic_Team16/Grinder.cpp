@@ -1,6 +1,6 @@
 #include "Grinder.h"
 
-Grinder::Grinder(float cooltime, float damage, float duration, sf::Vector2f position) : MeleeWeapon(cooltime, damage, duration, position)
+Grinder::Grinder(float cooltime, float damage, float duration, sf::Vector2f position, sf::Color color) : MeleeWeapon(cooltime, damage, duration, position, color)
 {
 	this->rotation = 0;
 	initShape();
@@ -14,13 +14,6 @@ void Grinder::initShape()
 {
 	MeleeWeapon::initShape();
 	this->shape.setSize(sf::Vector2f(40.f, 40.f)); // 무기마다 shape가 달라지면 전체적으로 손봐야도리듯
-	this->shape.setFillColor(sf::Color::Transparent);
-	this->shape.setOutlineColor(sf::Color::Red);
-	this->shape.setOutlineThickness(2.f);
-
-	/*this->shape.setOrigin(sf::Vector2f(this->shape.getLocalBounds().width, this->shape.getLocalBounds().height) / 2.f);
-	this->shape.setPosition(this->shape.getPosition().x + this->shape.getOrigin().x, this->shape.getPosition().y + this->shape.getOrigin().y);*/
-	// this->shape.setOrigin(50, 50);
 }
 
 void Grinder::updateCollision(Entity* object)
@@ -30,9 +23,6 @@ void Grinder::updateCollision(Entity* object)
 void Grinder::update(const float& dt, sf::RectangleShape playerShape, float cx, float cy, sf::Vector2f viewDirection)
 {
 	MeleeWeapon::update(dt, playerShape, cx, cy, viewDirection);
-	//swordPos.left = swordPos.left - (this->sword->shape.getGlobalBounds().width * 0.5f - 25);
-	//swordPos.top = swordPos.top - (this->sword->shape.getGlobalBounds().height * 0.5f - 25);
-	//this->sword->shape.setOrigin(-this->viewDirection.x * 50, -this->viewDirection.y * 50
 	rotation += 1 * 10;
 	if (rotation == 360) rotation = 0;
 	sf::FloatRect pos;
@@ -40,16 +30,31 @@ void Grinder::update(const float& dt, sf::RectangleShape playerShape, float cx, 
 	pos.top = cy - (this->shape.getGlobalBounds().height * 0.5f);
 	float angle = this->getViewAngle(viewDirection);
 	this->shape.setRotation(rotation);
-	if (angle != 0.f) {
-		this->shape.setPosition(cx, cy);
-		// this->shape.setOrigin(playerShape.getOrigin());
-		// this->shape.setOrigin(sf::Vector2f(this->shape.getLocalBounds().width, this->shape.getLocalBounds().height) / 2.f);
-		// this->shape.setPosition(this->shape.getPosition().x + this->shape.getOrigin().x, this->shape.getPosition().y + this->shape.getOrigin().y);
-		// this->shape.setRotation(angle - 45);
-	}
+	this->shape.setPosition(cx - this->shape.getOutlineThickness(), cy - this->shape.getOutlineThickness());
 }
 
 void Grinder::render(sf::RenderTarget* target)
 {
 	target->draw(this->shape);
+}
+
+void Grinder::levelUp()
+{
+	switch (this->level)
+	{
+	case 1:
+		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->level++;
+		break;
+	case 2:
+		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->level++;
+		break;
+	case 3:
+		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->level++;
+		break;
+	default:
+		break;
+	}
 }

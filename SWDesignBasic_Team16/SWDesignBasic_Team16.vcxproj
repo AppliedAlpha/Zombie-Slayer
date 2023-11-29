@@ -33,6 +33,7 @@
     <ClCompile Include="GameState.cpp" />
     <ClCompile Include="GameUI.cpp" />
     <ClCompile Include="Grinder.cpp" />
+    <ClCompile Include="HolyWater.cpp" />
     <ClCompile Include="Inventory.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="main.cpp" />
@@ -68,6 +69,7 @@
     <ClInclude Include="GameState.h" />
     <ClInclude Include="GameUI.h" />
     <ClInclude Include="Grinder.h" />
+    <ClInclude Include="HolyWater.h" />
     <ClInclude Include="Inventory.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="Map.h" />

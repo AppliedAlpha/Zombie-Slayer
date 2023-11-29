@@ -27,6 +27,8 @@ private:
 	Map basicMap;
 	std::vector<DropItem*> dropItemList;
 	std::vector<AoE*> aoeList;
+	int npcEvent = -1;
+	sf::Vector2f npcEventPos;
 	
 	std::deque<Stage *> stages;
 	Stage* nowStage;
@@ -47,14 +49,16 @@ public:
 
 	void spawnMob();
 	void spawnBoss();
+	void spawnNPC();
 	void endState();
 
+	void updateNPCEvent(const float& dt);
 	void updateCollision(sf::Vector2f& velocity);
 	void updateInput(const float& dt);
 	void updateItemUse(const float& dt);
 	void updateMobSpawn(const float& dt);
 	void updateStageClear();
 	void update(const float& dt);
-	void render(sf::RenderTarget* target = nullptr);
+	void render(sf::RenderTarget* target);
 };
 

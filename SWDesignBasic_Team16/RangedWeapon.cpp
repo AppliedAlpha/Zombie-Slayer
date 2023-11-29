@@ -1,14 +1,15 @@
 #include "RangedWeapon.h"
 
-RangedWeapon::RangedWeapon(float cooltime, float damage, float duration, sf::Vector2f position, float speed) : Weapon(cooltime, damage, duration, position)
+RangedWeapon::RangedWeapon(float cooltime, float damage, float duration, sf::Vector2f position, float speed, sf::Color color) : Weapon(cooltime, damage, duration, position, color)
 {
 	this->speed = speed;
 	this->shape.setPosition(position);
 	this->activeDirection = sf::Vector2f(0.f, 1.f);
 	this->explosion = false;
+	initShape();
 }
 
-RangedWeapon::RangedWeapon(float cooltime, float damage, float duration, sf::Vector2f position, float speed, float radius, float explosionDamage, float explosionDuration) : Weapon(cooltime, damage, duration, position)
+RangedWeapon::RangedWeapon(float cooltime, float damage, float duration, sf::Vector2f position, float speed, sf::Color color, float radius, float explosionDamage, float explosionDuration) : Weapon(cooltime, damage, duration, position, color)
 {
 	this->speed = speed;
 	this->shape.setPosition(position);
@@ -18,6 +19,7 @@ RangedWeapon::RangedWeapon(float cooltime, float damage, float duration, sf::Vec
 	this->radius = radius;
 	this->explosionDamage = explosionDamage;
 	this->explosionDuration = explosionDuration;
+	initShape();
 }
 
 RangedWeapon::~RangedWeapon()
@@ -64,4 +66,8 @@ void RangedWeapon::render(sf::RenderTarget* target)
 	for (int i = 0; i < this->bullets.size(); i++) {
 		this->bullets.at(i)->render(target);
 	}
+}
+
+void RangedWeapon::levelUp()
+{
 }

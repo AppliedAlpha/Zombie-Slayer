@@ -1,13 +1,12 @@
 #include "NPC.h"
 
-void NPC::initShape(sf::Color color)
+void NPC::initShape(sf::Color color, float size)
 {
 	Entity::initShape();
-	this->shape.setSize(sf::Vector2f(this->gridSize, this->gridSize));
+	this->shape.setSize(sf::Vector2f(size, size));
 	this->shape.setFillColor(color);
-	this->cx = Random::instance().getFloat(500, 600);
-	this->cy = Random::instance().getFloat(300, 500);
-	this->shape.setPosition(this->cx, this->cy);
+	this->cx = pow(-1, Random::instance().getInt(0, 1)) * Random::instance().getInt(200, 250);
+	this->cy = pow(-1, Random::instance().getInt(0, 1)) * Random::instance().getInt(150, 200);
 }
 
 NPC::NPC() : Entity(5, 1.5, 100)
@@ -17,17 +16,20 @@ NPC::NPC() : Entity(5, 1.5, 100)
 	this->waitingTime = 1.f;
 	this->movingTime = .5f;
 	this->time = 0.f;
-	initShape(sf::Color::Yellow);
+	initShape(sf::Color::Yellow, 20);
+	setPositive();
 }
 
-NPC::NPC(const std::string& name, float movementSpeed, float power, float hp) : Entity(movementSpeed, power, hp)
+NPC::NPC(const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size) : Entity(movementSpeed, power, hp)
 {
+	this->name = name;
 	this->moving = false;
 	this->direction = sf::Vector2f(0, 0);
 	this->waitingTime = 3.f;
 	this->movingTime = 1.f;
 	this->time = 0.f;
-	initShape(sf::Color::Yellow);
+	initShape(color, size);
+	setPositive();
 }
 
 NPC::~NPC()
@@ -69,6 +71,11 @@ void NPC::update(const float& dt)
 void NPC::render(sf::RenderTarget* target)
 {
 	Entity::render(target);
+}
+
+void NPC::setPositive()
+{
+	this->positive = Random::instance().getInt(0, 1);
 }
 
 void NPC::onDeath()

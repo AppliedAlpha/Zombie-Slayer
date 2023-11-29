@@ -1,18 +1,17 @@
 #include "NPCEvent.h"
 
-NPCEvent::NPCEvent(Player* player) : Event(player)
+NPCEvent::NPCEvent(Player* player, int level, std::deque<std::string>& dialog, std::string npc, int& npcEvent, int positive) : Event(player), dialog(dialog), npcEvent(npcEvent)
 {
-	this->dialog.push_back("Hello? You are not Zombie!");
-	this->dialog.push_back("Survive here if you can.");
-	this->dialog.push_back("I have a present for you. Good Luck!");
-	this->dialog.push_back("You got 10 golds.");
 	initScreen();
+	this->level = level;
+	this->title.setString(npc);
+	this->subtitle.setString("Press Z");
+	this->positive = positive;
 }
 
 NPCEvent::~NPCEvent()
 {
-	this->player->inventory.setGold(this->player->inventory.getGold() + 10);
-	std::cout << "Your Golds: " << this->player->inventory.getGold() << std::endl;
+	this->npcEvent = this->positive;
 }
 
 void NPCEvent::initScreen()
@@ -29,6 +28,13 @@ void NPCEvent::initScreen()
 	this->currentDialog.setPosition(80, 680 - 200 + 75);
 	this->currentDialog.setString(this->dialog.front());
 	this->dialog.pop_front();
+
+	this->title.setFont(this->font);
+	this->title.setPosition(80, 680 - 250);
+	this->title.setFillColor(sf::Color::Yellow);
+
+	this->subtitle.setFont(this->font);
+	this->subtitle.setPosition(1100, 680 - 50);
 }
 
 void NPCEvent::showSelectionScreen()
@@ -45,10 +51,15 @@ void NPCEvent::render(sf::RenderTarget* target)
 {
 	target->draw(this->textField);
 	target->draw(this->currentDialog);
+	target->draw(this->title);
+	target->draw(this->subtitle);
 }
 
 void NPCEvent::move(sf::Vector2f diff)
 {
 	Event::move(diff);
 	textField.move(diff);
+	currentDialog.move(diff);
+	title.move(diff);
+	subtitle.move(diff);
 }

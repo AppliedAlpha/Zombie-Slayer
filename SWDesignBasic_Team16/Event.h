@@ -8,8 +8,6 @@ class Event
 private:
 public:
 	Player* player;
-	std::deque<std::string> dialog;
-	sf::Text currentDialog;
 	std::string fontDir;
 	sf::Font font;
 	Event(Player* player);

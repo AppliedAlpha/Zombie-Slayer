@@ -2,9 +2,9 @@
 
 OptionSelectionEvent::OptionSelectionEvent(Player* player) : Event(player)
 {
-	this->options.push_back("New Weapon: Grinder");
-	this->options.push_back("New Weapon: Spear");
-	this->options.push_back("Weapon Upgrade: Sword");
+	selectRandomWeapon();
+	this->title.setString("LEVEL UP!");
+	this->subtitle.setString("Press Arrow Keys to Choose a Option and Press Z to Select");
 	this->initScreen();
 }
 
@@ -44,6 +44,11 @@ void OptionSelectionEvent::initScreen()
 		optionTexts.push_back(text);
 	}
 	optionFields.at(0)->setOutlineColor(sf::Color::Red);
+	this->title.setFont(this->font);
+	this->subtitle.setFont(this->font);
+	this->title.setPosition(width * 0.5 - this->title.getGlobalBounds().width * 0.5, 70);
+	this->subtitle.setPosition(width * 0.5 - this->subtitle.getGlobalBounds().width * 0.5, 120);
+	this->title.setFillColor(sf::Color::Yellow);
 }
 
 void OptionSelectionEvent::showSelectionScreen()
@@ -64,28 +69,130 @@ void OptionSelectionEvent::render(sf::RenderTarget* target)
 		target->draw(*(this->optionFields.at(i)));
 		target->draw(*(this->optionTexts.at(i)));
 	}
+	target->draw(this->title);
+	target->draw(this->subtitle);
 }
 
 void OptionSelectionEvent::update(const float& dt, std::string option)
 {
-	if (option == "New Weapon: Grinder") {
-		this->player->weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Grinder", new Grinder(0, 1, 0, sf::Vector2f(this->player->cx, this->player->cy))));
+	int split = option.find(":");
+	auto type = option.substr(0, split);
+	auto weapon = option.substr(split + 2);
+	int index = this->player->weaponNameToIndex(weapon);
+	if (type == "New") {
+		switch (index)
+		{
+		case 0:
+			this->player->weaponList.insert(std::unordered_map<int, Weapon*>::value_type(index, new Sword(1, 1, .5f, sf::Vector2f(this->player->cx, this->player->cy), sf::Color::Red)));
+			break;
+		case 1:
+			this->player->weaponList.insert(std::unordered_map<int, Weapon*>::value_type(index, new Spear(2, 2.5f, .25f, sf::Vector2f(this->player->cx, this->player->cy), sf::Color::Red)));
+			break;
+		case 2:
+			this->player->weaponList.insert(std::unordered_map<int, Weapon*>::value_type(index, new Grinder(0, 1, 0, sf::Vector2f(this->player->cx, this->player->cy), sf::Color::Red)));
+			break;
+		case 3:
+			this->player->weaponList.insert(std::unordered_map<int, Weapon*>::value_type(index, new Pistol(1.f, 20, 2.f, sf::Vector2f(this->player->cx, this->player->cy), 5, sf::Color::Red)));
+			break;
+		case 4:
+			this->player->weaponList.insert(std::unordered_map<int, Weapon*>::value_type(index, new Brick(5.f, .5f, 5.f, sf::Vector2f(this->player->cx, this->player->cy), 2, sf::Color::Red)));
+			break;
+		case 5:
+			this->player->weaponList.insert(std::unordered_map<int, Weapon*>::value_type(index, new Rocket(3.f, 0.f, 3.f, sf::Vector2f(this->player->cx, this->player->cy), 10, sf::Color::Red, 40.f, 3.f, .1f)));
+			break;
+		}
+		int i = std::find(this->player->unselected.begin(), this->player->unselected.end(), index) - this->player->unselected.begin();
+		this->player->unselected.erase(this->player->unselected.begin() + i);
+		this->player->selected.push_back(index);
 	}
-	else if (option == "New Weapon: Spear") {
-		this->player->weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Spear", new Spear(2, 2.5f, .25f, sf::Vector2f(this->player->cx, this->player->cy))));
+	else if (type == "Upgrade") {
+		auto weapon = this->player->weaponList.find(index)->second;
+		if (weapon->level < weapon->maxLevel) {
+			weapon->levelUp();
+			if (weapon->level == weapon->maxLevel) {
+				int i = std::find(this->player->selected.begin(), this->player->selected.end(), index) - this->player->selected.begin();
+				this->player->selected.erase(this->player->selected.begin() + i);
+			}
+		}
 	}
-	else if (option == "Weapon Upgrade: Sword") {
-		auto sword = this->player->weaponList.find("Sword");
-		sword->second->cooltime -= 0.5;
-		sword->second->damage += 1;
+	else {
+		this->player->hp = this->player->maxHp;
 	}
 }
 
 void OptionSelectionEvent::move(sf::Vector2f diff)
 {
 	Event::move(diff);
+	this->title.move(diff);
+	this->subtitle.move(diff);
 	for (int i = 0; i < optionFields.size(); i++) {
 		optionFields.at(i)->move(diff);
 		optionTexts.at(i)->move(diff);
+	}
+}
+
+void OptionSelectionEvent::selectRandomWeapon()
+{
+	int option[3] = {-1, -1, -1};
+	if (player->unselected.size() > 3) {
+		for (;;) {
+			option[0] = Random::instance().getInt(0, player->unselected.size() - 1);
+			option[1] = Random::instance().getInt(0, player->unselected.size() - 1);
+			option[2] = Random::instance().getInt(0, player->unselected.size() - 1);
+			if (option[0] != option[1] && option[0] != option[2] && option[1] != option[2]) break;
+		}
+		for (int i = 0; i < 3; i++)
+			this->options.push_back(this->newWeapon + player->indexToWeaponName(player->unselected.at(option[i])));
+	}
+	else if (player->unselected.size() > 0 && player->unselected.size() <= 3) {
+		// 3
+		// 2 1
+		// 2 0
+		// 1 2
+		// 1 1
+		// 1 0
+		int left = 3 - player->unselected.size();
+		int empty = left - player->selected.size();
+		for (int i = 0; i < 3; i++) {
+			option[i] = i;
+		}
+		if (empty <= 0) {
+			for (;;) {
+				for (int i = player->unselected.size(); i < 3; i++) {
+					option[i] = Random::instance().getInt(0, player->selected.size() - 1);
+				}
+				if (left != 2 || (left == 2 && option[1] != option[2])) break;
+			}
+		}
+		else {
+			if (player->selected.size() > 0)
+				option[player->unselected.size()] = Random::instance().getInt(0, player->selected.size() - 1);
+		}
+		for (int i = 0; i < player->unselected.size(); i++)
+			this->options.push_back(this->newWeapon + player->indexToWeaponName(player->unselected.at(option[i])));
+		for (int i = player->unselected.size(); i < 3; i++) {
+			if (option[i] == -1) this->options.push_back("Heal: All HP");
+			else this->options.push_back(this->upgradeWeapon + player->indexToWeaponName(player->selected.at(option[i])));
+		}
+	}
+	else if (player->selected.size() > 3) {
+		for (;;) {
+			option[0] = Random::instance().getInt(0, player->selected.size() - 1);
+			option[1] = Random::instance().getInt(0, player->selected.size() - 1);
+			option[2] = Random::instance().getInt(0, player->selected.size() - 1);
+			if (option[0] != option[1] && option[0] != option[2] && option[1] != option[2]) break;
+		}
+		for (int i = 0; i < 3; i++)
+			this->options.push_back(this->upgradeWeapon + player->indexToWeaponName(player->selected.at(option[i])));
+	}
+	else {
+		int left = 3 - player->selected.size();
+		for (int i = 0; i < player->selected.size(); i++) {
+			option[i] = i;
+		}
+		for (int i = 0; i < 3; i++) {
+			if (option[i] == -1) this->options.push_back("Heal: All HP");
+			else this->options.push_back(this->upgradeWeapon + player->indexToWeaponName(player->selected.at(option[i])));
+		}
 	}
 }

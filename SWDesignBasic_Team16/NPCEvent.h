@@ -1,12 +1,21 @@
 #pragma once
 #include "Event.h"
+#include "Player.h"
+
 class NPCEvent : public Event
 {
 private:
 public:
 	sf::RectangleShape textField;
+	std::deque<std::string>& dialog;
+	sf::Text currentDialog;
+	sf::Text title;
+	sf::Text subtitle;
 	sf::Font font;
-	NPCEvent(Player* player);
+	int level;
+	int& npcEvent;
+	int positive;
+	NPCEvent(Player* player, int level, std::deque<std::string>& dialog, std::string npc, int& npcEvent, int positive);
 	~NPCEvent();
 	void initScreen();
 	void showSelectionScreen();

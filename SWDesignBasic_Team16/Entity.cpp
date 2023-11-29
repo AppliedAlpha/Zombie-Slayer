@@ -2,6 +2,8 @@
 
 void Entity::initShape()
 {
+	this->shape.setOutlineColor(sf::Color::Black);
+	this->shape.setOutlineThickness(2.f);
 }
 
 void Entity::initVariables(float movementSpeed, float power, float hp)
@@ -19,6 +21,7 @@ void Entity::initVariables(float movementSpeed, float power, float hp)
 Entity::Entity(float movementSpeed, float power, float hp) {
 	initVariables(movementSpeed, power, hp);
 	initHpBar();
+	Entity::initShape();
 }
 
 Entity::~Entity() {

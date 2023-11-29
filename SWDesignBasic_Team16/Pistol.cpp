@@ -1,6 +1,6 @@
 #include "Pistol.h"
 
-Pistol::Pistol(float cooltime, float damage, float duration, sf::Vector2f position, float speed) : RangedWeapon(cooltime, damage, duration, position, speed)
+Pistol::Pistol(float cooltime, float damage, float duration, sf::Vector2f position, float speed, sf::Color color) : RangedWeapon(cooltime, damage, duration, position, speed, color)
 {
 	this->maxHitCount = 1;
 	this->initShape();
@@ -14,13 +14,6 @@ void Pistol::initShape()
 {
 	RangedWeapon::initShape();
 	this->shape.setSize(sf::Vector2f(10.f, 10.f)); // 무기마다 shape가 달라지면 전체적으로 손봐야도리듯
-	this->shape.setFillColor(sf::Color::Transparent);
-	this->shape.setOutlineColor(sf::Color::Red);
-	this->shape.setOutlineThickness(2.f);
-
-	/*this->shape.setOrigin(sf::Vector2f(this->shape.getLocalBounds().width, this->shape.getLocalBounds().height) / 2.f);
-	this->shape.setPosition(this->shape.getPosition().x + this->shape.getOrigin().x, this->shape.getPosition().y + this->shape.getOrigin().y);*/
-	// this->shape.setOrigin(50, 50);
 }
 
 void Pistol::updateCollision(Entity* object)
@@ -30,11 +23,31 @@ void Pistol::updateCollision(Entity* object)
 void Pistol::update(const float& dt, sf::RectangleShape playerPos, float cx, float cy, sf::Vector2f viewDirection)
 {
 	RangedWeapon::update(dt, playerPos, cx, cy, viewDirection);
-	this->shape.setPosition(cx - this->shape.getGlobalBounds().width * 0.5f, cy - this->shape.getGlobalBounds().height * 0.5f);
+	this->shape.setPosition(cx - this->shape.getGlobalBounds().width * 0.5f - this->shape.getOutlineThickness(), cy - this->shape.getGlobalBounds().height * 0.5f - this->shape.getOutlineThickness());
 }
 
 void Pistol::render(sf::RenderTarget* target)
 {
 	RangedWeapon::render(target);
-	// target->draw(this->shape);
+}
+
+void Pistol::levelUp()
+{
+	switch (this->level)
+	{
+	case 1:
+		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->level++;
+		break;
+	case 2:
+		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->level++;
+		break;
+	case 3:
+		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->level++;
+		break;
+	default:
+		break;
+	}
 }

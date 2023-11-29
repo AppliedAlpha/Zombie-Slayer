@@ -10,8 +10,8 @@ private:
 
 protected:
 public:
-	RangedWeapon(float cooltime, float damage, float duration, sf::Vector2f position, float speed);
-	RangedWeapon(float cooltime, float damage, float duration, sf::Vector2f position, float speed, float radius, float explosionDamage, float explosionDuration);
+	RangedWeapon(float cooltime, float damage, float duration, sf::Vector2f position, float speed, sf::Color color);
+	RangedWeapon(float cooltime, float damage, float duration, sf::Vector2f position, float speed, sf::Color color, float radius, float explosionDamage, float explosionDuration);
 	virtual ~RangedWeapon();
 	float speed;
 	sf::Vector2f activeDirection;
@@ -26,4 +26,5 @@ public:
 	virtual void updateCollision(Entity* object);
 	virtual void update(const float& dt, sf::RectangleShape playerShape, float cx, float cy, sf::Vector2f viewDirection);
 	virtual void render(sf::RenderTarget* target);
+	virtual void levelUp();
 };

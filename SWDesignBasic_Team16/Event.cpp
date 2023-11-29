@@ -11,5 +11,4 @@ Event::~Event()
 }
 
 void Event::move(sf::Vector2f diff) {
-	currentDialog.move(diff);
 }

@@ -1,8 +1,9 @@
 #include "MeleeWeapon.h"
 
-MeleeWeapon::MeleeWeapon(float cooltime, float damage, float duration, sf::Vector2f position) : Weapon(cooltime, damage, duration, position)
+MeleeWeapon::MeleeWeapon(float cooltime, float damage, float duration, sf::Vector2f position, sf::Color color) : Weapon(cooltime, damage, duration, position, color)
 {
 	this->shape.setPosition(position);
+	initShape();
 }
 
 MeleeWeapon::~MeleeWeapon()
@@ -33,5 +34,9 @@ void MeleeWeapon::update(const float& dt, sf::RectangleShape playerShape, float 
 }
 
 void MeleeWeapon::render(sf::RenderTarget* target)
+{
+}
+
+void MeleeWeapon::levelUp()
 {
 }
