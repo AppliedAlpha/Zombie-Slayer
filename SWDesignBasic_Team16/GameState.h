@@ -36,11 +36,9 @@ private:
 	float timeUntilItemCooldown;
 	float bombduration;
 	float playTime = 0.f;
-	// float timeUntilSpawn, timeUntilBoss;
 
-	// int totalKillCount;
-	// 이거 여기서 관리해줘도 되는건가?
-	// Player한테 넘겨줘야 할 것 같다.
+	sf::Texture* allTextures;
+	std::map<std::string, sf::Sprite *> mappedSprite;
 
 	void initStages();
 

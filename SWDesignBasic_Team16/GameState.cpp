@@ -15,6 +15,12 @@ void GameState::initStages()
 GameState::GameState(sf::RenderWindow* window) : State(window) {
 	this->font = new sf::Font();
 	this->font->loadFromFile("./Resources/Arial.ttf");
+
+	this->allTextures = new sf::Texture();
+	this->allTextures->loadFromFile("./Resources/Textures.png");
+
+	this->mappedSprite["Normal Zombie"] = new sf::Sprite(*this->allTextures, sf::IntRect(0, 0, 20, 20));
+
 	this->ui = GameUI(sf::Vector2f(640, 360), this->font);
 
 	this->window->setView(view);
@@ -34,7 +40,9 @@ GameState::~GameState() {
 	std::vector<Mob *>().swap(this->mobList);
 	std::vector<NPC *>().swap(this->npcList);
 	std::vector<AoE *>().swap(this->aoeList);
+	std::map<std::string, sf::Sprite*>().swap(this->mappedSprite);
 
+	delete this->allTextures;
 	delete this->font;
 }
 

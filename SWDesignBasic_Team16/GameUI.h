@@ -11,6 +11,8 @@ private:
 
 	sf::RectangleShape hpBackBar, xpBackBar;
 	sf::Color red, blue, bottomRed, bottomBlue;
+	sf::Color outlineGold;
+	sf::IntRect hpBarRect, xpBarRect, timeTextRect;
 
 	sf::Font* font;
 	sf::Text levelText, goldText, timeText;
@@ -22,8 +24,11 @@ public:
 	virtual ~GameUI();
 
 	void initColors();
+	void initRectPosValues();
 	void initBars();
 	void initTexts();
+
+	void setBarPos(sf::Vertex* bar, const sf::IntRect& rect, const sf::Color& up, const sf::Color& down, const float fillPercent = 100.0f);
 
 	void updateCenterPos(const sf::Vector2f& center);
 	void updateHpBar(float hp, float maxHp);
