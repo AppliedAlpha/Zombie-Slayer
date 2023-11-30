@@ -1,6 +1,6 @@
 #include "Inventory.h"
 
-Inventory::Inventory() : xp(1), gold(0) {
+Inventory::Inventory() : xp(0), gold(0) {
 
 }
 

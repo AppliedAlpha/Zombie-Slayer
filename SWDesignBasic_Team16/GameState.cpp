@@ -13,8 +13,15 @@ void GameState::initStages()
 }
 
 GameState::GameState(sf::RenderWindow* window) : State(window) {
-	this->ui = GameUI(sf::Vector2f(640, 360));
+	this->font = new sf::Font();
+	this->font->loadFromFile("./Resources/Arial.ttf");
 
+	this->allTextures = new sf::Texture();
+	this->allTextures->loadFromFile("./Resources/Textures.png");
+
+	this->mappedSprite["Normal Zombie"] = new sf::Sprite(*this->allTextures, sf::IntRect(0, 0, 20, 20));
+
+	this->ui = GameUI(sf::Vector2f(640, 360), this->font);
 
 	this->window->setView(view);
 
@@ -27,20 +34,14 @@ GameState::GameState(sf::RenderWindow* window) : State(window) {
 }
 
 GameState::~GameState() {
-	for (int i = 0; i < this->mobList.size(); i++) {
-		delete this->mobList.at(i);
-	}
-	this->mobList.clear();
+	// swap trick
+	std::vector<Mob *>().swap(this->mobList);
+	std::vector<NPC *>().swap(this->npcList);
+	std::vector<AoE *>().swap(this->aoeList);
+	std::map<std::string, sf::Sprite*>().swap(this->mappedSprite);
 
-	for (int i = 0; i < this->npcList.size(); i++) {
-		delete this->npcList.at(i);
-	}
-	this->npcList.clear();
-
-	for (int i = 0; i < this->aoeList.size(); i++) {
-		delete this->aoeList.at(i);
-	}
-	this->aoeList.clear();
+	delete this->allTextures;
+	delete this->font;
 }
 
 void GameState::spawnMob()
@@ -201,9 +202,14 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		if (dropItemBounds.intersects(playerNextPosBounds)) {
 			this->player.inventory.setXp(this->player.inventory.getXp() + xpList[i]);
 			this->player.inventory.setGold(this->player.inventory.getGold() + goldList[i]);
-			if (this->player.inventory.getXp() >= 20) {
-				this->player.level = this->player.level + this->player.inventory.getXp() / 20;
-				this->player.inventory.setXp(this->player.inventory.getXp() - 20);
+
+			int lastMaxXp = CustomMath::getMaxXp(this->player.level);
+
+			while (this->player.inventory.getXp() >= lastMaxXp) {
+				this->player.level++;
+				this->player.inventory.setXp(this->player.inventory.getXp() - lastMaxXp);
+				lastMaxXp = CustomMath::getMaxXp(this->player.level);
+
 				this->eventQueue.push_back(new OptionSelectionEvent(&this->player));
 			}
 
@@ -348,6 +354,10 @@ void GameState::updateStageClear()
 }
 
 void GameState::update(const float& dt) {
+	if (inputTerm < 10) {
+		inputTerm++;
+	}
+
 	this->updateInput(dt);
 	this->updateCollision(this->velocity);
 	this->player.update(dt, this->velocity);
@@ -357,10 +367,6 @@ void GameState::update(const float& dt) {
 		this->view.move(this->player.movementSpeed * dt * this->velocity);
 		this->window->setView(view);
 	}
-
-	this->ui.updateCenterPos(sf::Vector2f(this->player.cx, this->player.cy));
-	this->ui.updateHpBar(this->player.hp, 100.f);
-	this->ui.updateXpBar(this->player.inventory.getXp(), 20.f);
 
 	this->updateItemUse(dt);
 
@@ -390,6 +396,16 @@ void GameState::update(const float& dt) {
 	if (this->player.hp <= 0) {
 		this->quit = true;
 	}
+
+	this->playTime += dt;
+
+	// ui update
+	this->ui.updateCenterPos(sf::Vector2f(this->player.cx, this->player.cy));
+	this->ui.updateHpBar(this->player.hp, 100.f);
+	this->ui.updateXpBar(this->player.inventory.getXp(), CustomMath::getMaxXp(this->player.level));
+	this->ui.updateLevelText(this->player.level);
+	this->ui.updateGoldText(this->player.inventory.getGold());
+	this->ui.updatePlayTimeText(this->playTime);
 
 	this->updateStageClear();
 }
@@ -429,23 +445,4 @@ void GameState::render(sf::RenderTarget* target) {
 	this->player.render(target);
 
 	this->ui.render(target);
-	
-	sf::Font font;
-	font.loadFromFile("Arial.ttf");
-	sf::Text goldText;
-	sf::Text levelText;
-	goldText.setFont(font);
-	levelText.setFont(font);
-	goldText.setCharacterSize(20);
-	levelText.setCharacterSize(20);
-	goldText.setFillColor(sf::Color::Yellow);
-	levelText.setFillColor(sf::Color::White);
-	goldText.setPosition(-620.f + this->player.cx, -340.f + this->player.cy);
-	levelText.setPosition(-620.f + this->player.cx, -360.f + this->player.cy);
-	goldText.setString("Gold: " + std::to_string(this->player.inventory.getGold()));
-	levelText.setString("Level: " + std::to_string(this->player.level));
-
-	target->draw(goldText);
-	target->draw(levelText);
-	
 }

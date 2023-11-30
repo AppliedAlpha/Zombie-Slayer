@@ -62,15 +62,8 @@ void Player::attack(const float& dt)
 	}
 }
 
-void Player::updateLevel(const float& dt)
-{
-	if (this->inventory.getXp() >= 10) {
-		this->level = this->level + this->inventory.getXp() / 10;
-		this->inventory.setXp(this->inventory.getXp() - 10);
-	}
-	std::cout << "Level: " << this->level << ", Xp: " << this->inventory.getXp() << std::endl;
-
-}
+// deprecated
+void Player::updateLevel(const float& dt) {}
 
 void Player::updateCollision(Entity* object)
 {

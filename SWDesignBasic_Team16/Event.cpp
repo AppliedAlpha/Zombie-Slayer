@@ -3,7 +3,7 @@
 Event::Event(Player* player)
 {
 	this->player = player;
-	this->fontDir = "Arial.ttf";
+	this->fontDir = "./Resources/Arial.ttf";
 }
 
 Event::~Event()

@@ -5,7 +5,9 @@
 class Map
 {
 private:
-	sf::Vertex background[4];
+	// sf::Vertex background[4];
+	sf::Texture bgTexture;
+	sf::Sprite bgSprite;
 
 public:
 	Map();

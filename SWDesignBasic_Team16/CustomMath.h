@@ -9,5 +9,7 @@ class CustomMath
 public:
 	static float getLength(const sf::Vector2f& vector);
 	static sf::Vector2f normalize(const sf::Vector2f& vector);
+
+	static int getMaxXp(const int level);
 };
 

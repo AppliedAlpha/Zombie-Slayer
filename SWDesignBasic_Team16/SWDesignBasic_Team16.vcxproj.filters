@@ -34,7 +34,9 @@
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="Rocket.cpp" />
     <ClCompile Include="AoE.cpp" />
-    <ClCompile Include="HolyWater.cpp" />
+    <ClCompile Include="CustomColor.cpp" />
+    <ClCompile Include="MainMenuState.cpp" />
+    <ClCompile Include="GameOverState.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AoeItem.h" />
@@ -70,7 +72,9 @@
     <ClInclude Include="Brick.h" />
     <ClInclude Include="Rocket.h" />
     <ClInclude Include="AoE.h" />
-    <ClInclude Include="HolyWater.h" />
+    <ClInclude Include="CustomColor.h" />
+    <ClInclude Include="MainMenuState.h" />
+    <ClInclude Include="GameOverState.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

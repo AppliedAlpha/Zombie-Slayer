@@ -21,3 +21,6 @@
 
 #include "Random.h"
 #include "CustomMath.h"
+#include "CustomColor.h"
+
+#pragma warning(disable:4996)

@@ -9,7 +9,6 @@ class EventState : public State
 private:
 public:
 	Event* event;
-	int inputTerm = 0;
 	EventState(sf::RenderWindow* window, sf::View& view, Event* event);
 	~EventState();
 	void endState();

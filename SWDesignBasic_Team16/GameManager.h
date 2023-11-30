@@ -3,6 +3,8 @@
 #include "stdafx.h"
 #include "GameState.h"
 #include "EventState.h"
+#include "MainMenuState.h"
+#include "GameOverState.h"
 
 class GameManager
 {
@@ -13,7 +15,7 @@ private:
 	sf::Clock dtClock;
 	float dt;
 
-	std::stack<State*> states;
+	std::deque<State*> states;
 
 	void initWindow();
 	void initStates();
@@ -23,6 +25,9 @@ public:
 	virtual ~GameManager();
 
 	void endGame();
+
+	template <typename CurrentState, typename NextState>
+	void transitionStates(bool autoTransit = false);
 
 	void pushStates(std::deque<Event*>& eventQueue, sf::View& view);
 	void updateDt();
