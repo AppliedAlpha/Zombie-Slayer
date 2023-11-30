@@ -30,6 +30,7 @@ public:
 	void updateCollision(Bomb* bomb);
 	void updateCollision(AoE* aoe);
 	void updateCollision(Weapon* weapon, float power);
+	void updateItemCollision(Item* item, float power);
 
 	void move(const float& dt, sf::Vector2f playerPosition);
 

@@ -23,5 +23,7 @@ public:
 
 	int getInt(int min, int max);
 	float getFloat(float min, float max);
-};
 
+	bool eventOccursWithProbability(float probability);
+
+};

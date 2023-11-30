@@ -19,17 +19,12 @@ void Mob::updateCollision(Weapon* weapon, float power)
 	}
 }
 
-void Mob::updateCollision(Bomb* bomb)
+void Mob::updateItemCollision(Item* item, float power)
 {
-	this->hp -= bomb->damage;
+	this->hp -= item->damage * power;
 
 	if (this->hp <= 0.f) {
-		printf("Dead\n");
 		this->onDeath();
-	}
-	else {
-		std::cout << "Now " << this->name << ' ';
-		printf("%.1f\n", this->hp);
 	}
 }
 

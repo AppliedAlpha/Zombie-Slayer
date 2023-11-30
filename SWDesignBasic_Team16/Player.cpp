@@ -43,7 +43,7 @@ Player::Player() : Entity(200, 1, 100)
 	// weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Pistol", new Pistol(1.f, 20, 2.f, sf::Vector2f(this->cx, this->cy), 10)));
 	// weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Brick", new Brick(5.f, .5f, 5.f, sf::Vector2f(this->cx, this->cy), 2)));
 	// weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Rocket", new Rocket(3.f, 0.f, 3.f, sf::Vector2f(this->cx, this->cy), 15, 40.f, 3.f, .1f)));
-	this->bomb = new Bomb(1, 10, .5f);
+	remainPotion = 0;
 }
 
 Player::~Player()
@@ -52,13 +52,20 @@ Player::~Player()
 		delete weapon.second;
 	}
 	this->weaponList.clear();
-	delete this->bomb;
+	
+	for (auto item : this->itemList) {
+		delete item.second;
+	}
+	this->itemList.clear();
 }
 
 void Player::attack(const float& dt)
 {
 	for (auto weapon : this->weaponList) {
 		weapon.second->update(dt, this->shape, this->cx, this->cy, this->viewDirection);
+	}
+	for (auto item : this->itemList) {
+		item.second->update(dt, this->shape, this->cx, this->cy);
 	}
 }
 
@@ -97,7 +104,32 @@ void Player::update(const float& dt, sf::Vector2f velocity) {
 	this->move(dt, velocity.x, velocity.y);
 	this->attack(dt);
 	Entity::update(dt);
-	this->bomb->update(dt, this->shape, this->cx, this->cy);
+}
+
+void Player::getPotion() {
+	remainPotion++;
+}
+
+void Player::useItem(int i) {
+	if (i == 1) {
+		if (remainPotion >= 1) {
+			if (this->hp + 10 <= this->maxHp) {
+				this->hp += 10;
+				remainPotion--;
+				std::cout << "Hp UP" << std::endl;
+			}
+			else if (this->hp + 10 > this->maxHp && this->hp < this->maxHp) {
+				this->hp = this->maxHp;
+				remainPotion--;
+				std::cout << "Hp UP" << std::endl;
+			}
+			else if (this->hp == this->maxHp) {
+				std::cout << "Your HP is already FULL" << std::endl;
+			}
+		}
+		else std::cout << "There's No Item!!!" << std::endl;
+	}
+
 }
 
 std::string Player::indexToWeaponName(int index)

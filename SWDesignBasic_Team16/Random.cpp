@@ -19,3 +19,11 @@ float Random::getFloat(float min = 0.f, float max = 1.f)
 	std::uniform_real_distribution<float> dis(min, max);
 	return dis(*gen);
 }
+
+bool Random::eventOccursWithProbability(float probability)
+{
+	Random& rand = Random::instance();
+	float randomFloat = rand.getFloat(0.0f, 1.0f);
+
+	return randomFloat < probability;
+}

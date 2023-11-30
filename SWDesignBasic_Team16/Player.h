@@ -18,14 +18,16 @@ private:
 	void initVariables();
 	bool death = false;
 
+	int remainPotion;
+
 public:
 	bool invincible = true;
 	sf::Vector2f viewDirection;
 	std::unordered_map<int, Weapon*> weaponList;
 	std::vector<int> selected;
 	std::vector<int> unselected;
+	std::unordered_map<std::string, Item*> itemList;
 	Inventory inventory;
-	Bomb* bomb;
 	Player();
 	~Player();
 	void attack(const float& dt);
@@ -40,4 +42,7 @@ public:
 	int weaponNameToIndex(std::string name);
 
 	bool getDeath() const { return this->death; }
+
+	void getPotion();
+	void useItem(int i);
 };

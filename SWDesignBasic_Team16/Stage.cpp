@@ -6,6 +6,8 @@ Stage::Stage(int level) : level(level) {
 		setDialogArchive(this->level);
 		setNPC("Survivor", 3, 1, 20, sf::Color::Yellow, 20);
 		enqueueMob(1, 1, "Normal Zombie", 3, 1, 20, sf::Color::Green, 20, 60, true);
+		enqueueMob(1, 1, "Fast Zombie", 5, 2, 15, sf::Color::Magenta, 15, 20, false);
+		enqueueMob(1, 1, "Helmet Zombie", 3, 3, 40, sf::Color::Cyan, 25, 20, true);
 		setBoss(100, 50, "Boss I", 2, 3, 200, sf::Color::Blue, 50);
 		initStageVariables(20, 40, 0.15f, 50.f);
 		break;

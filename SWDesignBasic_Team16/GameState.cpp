@@ -48,6 +48,7 @@ void GameState::spawnMob()
 {
 	Mob* mob = this->nowStage->spawnMob();
 	this->mobList.push_back(mob);
+	std::cout << mobList.size() << std::endl;
 }
 
 void GameState::spawnBoss() {
@@ -72,83 +73,17 @@ void GameState::endState() {
 void GameState::updateCollision(sf::Vector2f& velocity)
 {
 	sf::FloatRect playerNextPosBounds = this->player.shape.getGlobalBounds();
-	sf::FloatRect bombBounds = this->player.bomb->shape.getGlobalBounds();
-	for (auto weapon : this->player.weaponList) {
-		if (MeleeWeapon* melee = dynamic_cast<MeleeWeapon*>(weapon.second)) {
-			sf::FloatRect weaponBounds = melee->shape.getGlobalBounds();
-			for (int i = 0; i < this->mobList.size(); i++) {
-				sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
-				if (mobBounds.intersects(weaponBounds) && melee->active) {
-					// printf("Collision\n");
-					mobList[i]->updateCollision(melee, this->player.power);
-					if (mobList[i]->getDeath()) {
-						// 
-						DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
-						dropItemList.push_back(dropitem);
-						xpList[i] = this->mobList[i]->getXP();
-						goldList[i] = this->mobList[i]->getGold();
-						delete mobList[i];
-						this->mobList.erase(this->mobList.begin() + i);
-					}
-				}
-			}
-		}
-		else if (RangedWeapon* ranged = dynamic_cast<RangedWeapon*>(weapon.second)) {
-			for (auto bullet : ranged->bullets) {
-				sf::FloatRect bulletBounds = bullet->shape.getGlobalBounds();
-				for (int i = 0; i < this->mobList.size(); i++) {
-					sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
-					if (mobBounds.intersects(bulletBounds)) {
-						mobList[i]->updateCollision(ranged, this->player.power);
-						if (bullet->maxHitCount <= bullet->hitCount) {
-							if (bullet->explosion) {
-								this->aoeList.push_back(bullet->explode(ranged->radius, ranged->explosionDuration, ranged->explosionDamage, mobList[i]->shape.getPosition()));
-							}
-							bullet->out = true;
-						}
-						if (mobList[i]->getDeath()) {
-							DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
-							dropItemList.push_back(dropitem);
-							xpList[i] = this->mobList[i]->getXP();
-							goldList[i] = this->mobList[i]->getGold();
-							delete mobList[i];
-							this->mobList.erase(this->mobList.begin() + i);
-						}
-						else bullet->hitCount++;
-					}
-				}
-			}
+	
+	for (int i = 0; i < this->mobList.size(); i++) {
+		sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
+		if (mobBounds.intersects(playerNextPosBounds)) {
+			player.updateCollision(mobList[i]);
 		}
 	}
 
-	for (auto aoe : this->aoeList) {
-		sf::FloatRect aoeBounds = aoe->shape.getGlobalBounds();
-		if (aoe->mobTarget) {
-			for (int i = 0; i < this->mobList.size(); i++) {
-				sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
-				if (mobBounds.intersects(aoeBounds)) {
-					// printf("Collision\n");
-					mobList[i]->updateCollision(aoe);
-					if (mobList[i]->getDeath()) {
-						// 
-						DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
-						dropItemList.push_back(dropitem);
-						xpList[i] = this->mobList[i]->getXP();
-						goldList[i] = this->mobList[i]->getGold();
-						delete mobList[i];
-						this->mobList.erase(this->mobList.begin() + i);
-					}
-				}
-			}
-		}
-		else {
-			if (playerNextPosBounds.intersects(aoeBounds)) {
-				this->player.updateCollision(aoe);
-			}
-		}
-	}
 
 	for (int i = 0; i < this->mobList.size(); i++) {
+		sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
 		if (mobList[i]->weapon != nullptr) {
 			if (RangedWeapon* ranged = dynamic_cast<RangedWeapon*>(mobList[i]->weapon)) {
 				for (auto bullet : ranged->bullets) {
@@ -163,22 +98,86 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 				}
 			}
 		}
-		sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
-		if (mobBounds.intersects(playerNextPosBounds)) {
-			this->player.updateCollision(mobList[i]);
-		}
-		if (mobBounds.intersects(bombBounds) && this->player.bomb->active) {
-			mobList[i]->updateCollision(this->player.bomb);
-			if (mobList[i]->getDeath()) {
-				DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
-				dropItemList.push_back(dropitem);
-				xpList[i] = this->mobList[i]->getXP();
-				goldList[i] = this->mobList[i]->getGold();
-				delete mobList[i];
-				this->mobList.erase(this->mobList.begin() + i);
+		for (auto item : this->player.itemList) {
+			AoeItem* aoeItem = (AoeItem*)item.second;
+			sf::FloatRect aoeItemBounds = aoeItem->shape.getGlobalBounds();
+			if (mobBounds.intersects(aoeItemBounds) && aoeItem->active) {
+				mobList[i]->updateItemCollision(aoeItem, this->player.power);
 			}
 		}
+		for (auto weapon : this->player.weaponList) {
+			if (MeleeWeapon* melee = dynamic_cast<MeleeWeapon*>(weapon.second)) {
+				sf::FloatRect weaponBounds = melee->shape.getGlobalBounds();
+				for (int i = 0; i < this->mobList.size(); i++) {
+					sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
+					if (mobBounds.intersects(weaponBounds) && melee->active) {
+						// printf("Collision\n");
+						mobList[i]->updateCollision(melee, this->player.power);
+					}
+				}
+			}
+			else if (RangedWeapon* ranged = dynamic_cast<RangedWeapon*>(weapon.second)) {
+				for (auto bullet : ranged->bullets) {
+					sf::FloatRect bulletBounds = bullet->shape.getGlobalBounds();
+					for (int i = 0; i < this->mobList.size(); i++) {
+						sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
+						if (mobBounds.intersects(bulletBounds)) {
+							mobList[i]->updateCollision(ranged, this->player.power);
+							if (bullet->maxHitCount <= bullet->hitCount) {
+								if (bullet->explosion) {
+									this->aoeList.push_back(bullet->explode(ranged->radius, ranged->explosionDuration, ranged->explosionDamage, mobList[i]->shape.getPosition()));
+								}
+								bullet->out = true;
+							}
+							else bullet->hitCount++;
+						}
+					}
+				}
+			}
 		}
+
+		if (mobList[i]->getDeath()) {
+			// 
+			//DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
+			DropItem* dropGold = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(10.f, 10.f), mobList[i]->inventory, sf::Color(255, 255, 0));
+			dropGoldList.push_back(dropGold);
+			DropItem* dropXp = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(-10.f, 10.f), mobList[i]->inventory, sf::Color(0, 0, 255));
+			dropXpList.push_back(dropXp);
+
+			Random* random = NULL;
+			if (random->eventOccursWithProbability(0.5f)) {
+				DropItem* dropBomb = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(10.f, -10.f), mobList[i]->inventory, sf::Color(0, 0, 0));
+				dropBombList.push_back(dropBomb);
+			}
+			if (random->eventOccursWithProbability(0.5f)) {
+				DropItem* dropPotion = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(-10.f, -10.f), mobList[i]->inventory, sf::Color(255, 0, 0));
+				dropPotionList.push_back(dropPotion);
+			}
+
+			this->xpList.push_back(this->mobList[i]->getXP());
+			this->goldList.push_back(this->mobList[i]->getGold());
+
+			delete mobList[i];
+			this->mobList.erase(this->mobList.begin() + i);
+		}
+	}
+
+	for (auto aoe : this->aoeList) {
+		sf::FloatRect aoeBounds = aoe->shape.getGlobalBounds();
+		if (aoe->mobTarget) {
+			for (int i = 0; i < this->mobList.size(); i++) {
+				sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
+				if (mobBounds.intersects(aoeBounds)) {
+					mobList[i]->updateCollision(aoe);
+				}
+			}
+		}
+		else {
+			if (playerNextPosBounds.intersects(aoeBounds)) {
+				this->player.updateCollision(aoe);
+			}
+		}
+	}
 
 	for (int i = 0; i < this->npcList.size(); i++) {
 		sf::FloatRect npcBounds = npcList[i]->getShape().getGlobalBounds();
@@ -197,31 +196,68 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			this->npcList.erase(this->npcList.begin() + i);
 		}
 	}
-	for (int i = 0; i < this->dropItemList.size(); i++) {
-		sf::FloatRect dropItemBounds = dropItemList[i]->shape.getGlobalBounds();
-		if (dropItemBounds.intersects(playerNextPosBounds)) {
-			this->player.inventory.setXp(this->player.inventory.getXp() + xpList[i]);
-			this->player.inventory.setGold(this->player.inventory.getGold() + goldList[i]);
-
-			int lastMaxXp = CustomMath::getMaxXp(this->player.level);
-
-			while (this->player.inventory.getXp() >= lastMaxXp) {
-				this->player.level++;
-				this->player.inventory.setXp(this->player.inventory.getXp() - lastMaxXp);
-				lastMaxXp = CustomMath::getMaxXp(this->player.level);
-
-				this->eventQueue.push_back(new OptionSelectionEvent(&this->player));
+	for (int i = 0; i < this->dropGoldList.size(); i++) {
+		sf::FloatRect dropGoldBounds = dropGoldList[i]->shape.getGlobalBounds();
+		if (dropGoldBounds.intersects(playerNextPosBounds)) {
+			if (goldList[i] != NULL) {
+				//this->player.inventory.setGold(this->player.inventory.getGold() + goldList[i]);
+				this->player.inventory.setGold(this->player.inventory.getGold() + this->goldList[i]);
 			}
-
-			std::cout << "Level: " << this->player.level << ", Xp: " << this->player.inventory.getXp() << std::endl;
 			std::cout << "Gold:  " << this->player.inventory.getGold() << std::endl;
 
-			delete dropItemList[i];
-			this->dropItemList.erase(this->dropItemList.begin() + i);
+			delete dropGoldList[i];
+			this->goldList.erase(this->goldList.begin() + i);
+			this->dropGoldList.erase(this->dropGoldList.begin() + i);
 		}
 	}
 
+	for (int i = 0; i < this->dropXpList.size(); i++) {
+		sf::FloatRect dropXpBounds = dropXpList[i]->shape.getGlobalBounds();
+		if (dropXpBounds.intersects(playerNextPosBounds)) {
+			if (xpList[i] != NULL) {
+				//this->player.inventory.setXp(this->player.inventory.getXp() + xpList[i]);
+				this->player.inventory.setXp(this->player.inventory.getXp() + this->xpList[i]);
+				if (this->player.inventory.getXp() >= 20) {
+					this->player.level = this->player.level + this->player.inventory.getXp() / 20;
+					this->player.inventory.setXp(this->player.inventory.getXp() % 20 +1);
+					this->eventQueue.push_back(new OptionSelectionEvent(&this->player));
+				}
+			}
 
+			std::cout << "Level: " << this->player.level << ", Xp: " << this->player.inventory.getXp() << std::endl;
+
+			delete dropXpList[i];
+			this->xpList.erase(this->xpList.begin() + i);
+			this->dropXpList.erase(this->dropXpList.begin() + i);
+		}
+	}
+
+	for (int i = 0; i < this->dropBombList.size(); i++) {
+		sf::FloatRect dropBombBounds = dropBombList[i]->shape.getGlobalBounds();
+		if (dropBombBounds.intersects(playerNextPosBounds)) {
+			this->aoeList.push_back(new AoE(400.f, 0.3f, 1.f, dropBombList[i]->shape.getPosition()));
+			/*
+			for (auto item : this->player.itemList) {
+				item.second->active = true;
+			}
+			std::cout << "Bomb!!!" << std::endl;
+			*/
+			delete dropBombList[i];
+			this->dropBombList.erase(this->dropBombList.begin() + i);
+		}
+	}
+
+	for (int i = 0; i < this->dropPotionList.size(); i++) {
+		sf::FloatRect dropPotionBounds = dropPotionList[i]->shape.getGlobalBounds();
+		if (dropPotionBounds.intersects(playerNextPosBounds)) {
+
+			player.getPotion();
+			std::cout << "Get a Potion!!!" << std::endl;
+
+			delete dropPotionList[i];
+			this->dropPotionList.erase(this->dropPotionList.begin() + i);
+		}
+	}
 }
 
 void GameState::updateInput(const float& dt) {
@@ -253,23 +289,23 @@ void GameState::updateInput(const float& dt) {
 
 	for (auto i = 1; i <= 9; i++) {
 		if (this->timeUntilItemCooldown < 0.01f && sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(sf::Keyboard::Num1 - 1 + i))) {
-			// this->player.useItem(i);
-			if (this->player.bomb->active == false) this->player.bomb->active = true;
+			this->player.useItem(i);
 
-			std::cout << "Item Used: No. " << i << '\n';
 			this->timeUntilItemCooldown = 1.f;
 		}
 	}
+
 }
 
 void GameState::updateItemUse(const float& dt) {
 	this->timeUntilItemCooldown -= dt;
-	if (this->player.bomb->active == true) this->bombduration += dt;
-	if (this->bombduration >= 0.3f) {
-		this->player.bomb->active = false;
-		bombduration = 0.f;
+	for (auto item : this->player.itemList) {
+		if (item.second->active == true) this->bombduration += dt;
+		if (this->bombduration >= 0.3f) {
+			item.second->active = false;
+			bombduration = 0.f;
+		}
 	}
-
 	if (this->timeUntilItemCooldown <= 0)
 		this->timeUntilItemCooldown = 0.f;
 
@@ -344,7 +380,7 @@ void GameState::updateStageClear()
 		printf("Stage %d Clear\n", this->nowStage->level);
 
 		this->stages.pop_front();
-		
+
 		if (this->stages.empty()) {
 			this->quit = true;
 			return;
@@ -416,10 +452,19 @@ void GameState::render(sf::RenderTarget* target) {
 
 	for (auto npc : this->npcList)
 		npc->render(target);
-	
-	for (auto dropitem : this->dropItemList)
-		dropitem->draw(target);
-	
+
+	for (auto dropGold : this->dropGoldList)
+		dropGold->draw(target);
+
+	for (auto dropXp : this->dropXpList)
+		dropXp->draw(target);
+
+	for (auto dropBomb : this->dropBombList)
+		dropBomb->draw(target);
+
+	for (auto dropPotion : this->dropPotionList)
+		dropPotion->draw(target);
+
 	for (auto weapon : this->player.weaponList) {
 		if (MeleeWeapon* melee = dynamic_cast<MeleeWeapon*>(weapon.second)) {
 			if (melee->active)
@@ -431,15 +476,18 @@ void GameState::render(sf::RenderTarget* target) {
 	}
 
 
+	for (auto mob : this->mobList) {
+		mob->render(target);
+	}
+
 	for (auto aoe : this->aoeList) {
 		aoe->render(target);
 	}
-
-	for (auto mob : this->mobList)
-		mob->render(target);
-
-	if (this->player.bomb->active) {
-		this->player.bomb->render(target);
+	
+	for (auto item : this->player.itemList) {
+		if (item.second->active) {
+			item.second->render(target);
+		}
 	}
 	
 	this->player.render(target);

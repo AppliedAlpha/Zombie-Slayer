@@ -13,8 +13,9 @@
 #include "MeleeWeapon.h"
 #include "RangedWeapon.h"
 #include "AoE.h"
+#include "Random.h"
 
-class GameState : public State 
+class GameState : public State
 {
 private:
 	Player player;
@@ -22,17 +23,24 @@ private:
 	sf::Font* font;
 
 	std::vector<Mob*> mobList;
-	int xpList[100];
-	int goldList[100];
+
+	//int* xpList = new int;
+	//int* goldList = new int;
+	std::vector<int> xpList;
+	std::vector<int> goldList;
+
 	std::vector<NPC*> npcList;
 	sf::Vector2f velocity;
 	Map basicMap;
-	std::vector<DropItem*> dropItemList;
 	std::vector<AoE*> aoeList;
 	int npcEvent = -1;
 	sf::Vector2f npcEventPos;
 	
-	std::deque<Stage *> stages;
+	std::deque<Stage*> stages;
+	std::vector<DropItem*> dropGoldList;
+	std::vector<DropItem*> dropXpList;
+	std::vector<DropItem*> dropBombList;
+	std::vector<DropItem*> dropPotionList;
 	Stage* nowStage;
 
 	float timeUntilItemCooldown;
