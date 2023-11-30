@@ -5,6 +5,8 @@ void GameState::initStages()
 	// adding stages to deque
 	this->stages.push_back(new Stage(1));
 	this->stages.push_back(new Stage(2));
+	this->stages.push_back(new Stage(3));
+	this->stages.push_back(new Stage(4));
 
 	this->nowStage = this->stages.front();
 	printf("[Stage %d]\n", this->nowStage->level);
@@ -48,7 +50,7 @@ void GameState::spawnMob()
 {
 	Mob* mob = this->nowStage->spawnMob();
 	this->mobList.push_back(mob);
-	std::cout << mobList.size() << std::endl;
+	//std::cout << mobList.size() << std::endl;
 }
 
 void GameState::spawnBoss() {
@@ -98,6 +100,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 				}
 			}
 		}
+
 		for (auto item : this->player.itemList) {
 			AoeItem* aoeItem = (AoeItem*)item.second;
 			sf::FloatRect aoeItemBounds = aoeItem->shape.getGlobalBounds();
@@ -108,19 +111,16 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		for (auto weapon : this->player.weaponList) {
 			if (MeleeWeapon* melee = dynamic_cast<MeleeWeapon*>(weapon.second)) {
 				sf::FloatRect weaponBounds = melee->shape.getGlobalBounds();
-				for (int i = 0; i < this->mobList.size(); i++) {
-					sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
 					if (mobBounds.intersects(weaponBounds) && melee->active) {
 						// printf("Collision\n");
 						mobList[i]->updateCollision(melee, this->player.power);
 					}
-				}
+				
 			}
 			else if (RangedWeapon* ranged = dynamic_cast<RangedWeapon*>(weapon.second)) {
 				for (auto bullet : ranged->bullets) {
 					sf::FloatRect bulletBounds = bullet->shape.getGlobalBounds();
-					for (int i = 0; i < this->mobList.size(); i++) {
-						sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
+					
 						if (mobBounds.intersects(bulletBounds)) {
 							mobList[i]->updateCollision(ranged, this->player.power);
 							if (bullet->maxHitCount <= bullet->hitCount) {
@@ -131,7 +131,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 							}
 							else bullet->hitCount++;
 						}
-					}
+					
 				}
 			}
 		}
@@ -235,7 +235,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 	for (int i = 0; i < this->dropBombList.size(); i++) {
 		sf::FloatRect dropBombBounds = dropBombList[i]->shape.getGlobalBounds();
 		if (dropBombBounds.intersects(playerNextPosBounds)) {
-			this->aoeList.push_back(new AoE(400.f, 0.3f, 1.f, dropBombList[i]->shape.getPosition()));
+			this->aoeList.push_back(new AoE(400.f, 0.3f, 6.f, dropBombList[i]->shape.getPosition()));
 			/*
 			for (auto item : this->player.itemList) {
 				item.second->active = true;
@@ -332,15 +332,19 @@ void GameState::updateNPCEvent(const float& dt) {
 		{
 		case 1:
 			this->player.inventory.setGold(this->player.inventory.getGold() + 10);
+			break;
 		case 2:
 			this->aoeList.push_back(new AoE(200, .5f, 1.f, this->npcEventPos));
+			break;
 		case 3:
 			this->player.movementSpeed = this->player.movementSpeed + 10;
+			break;
 		case 4:
 			this->mobList.push_back(new Mob(2, 2, std::string("Normal Zombie"), 3.f, 1.f, 40.f/*80*/, sf::Color::Green, 20.f));
 			this->mobList.at(this->mobList.size() - 1)->cx = this->npcEventPos.x;
 			this->mobList.at(this->mobList.size() - 1)->cy = this->npcEventPos.y;
 			this->mobList.at(this->mobList.size() - 1)->shape.setPosition(this->npcEventPos);
+			break;
 		case 5:
 
 		case 6:
@@ -354,15 +358,19 @@ void GameState::updateNPCEvent(const float& dt) {
 		{
 		case 1:
 			this->player.inventory.setGold(this->player.inventory.getGold() + 10);
+			break;
 		case 2:
 			this->aoeList.push_back(new AoE(200, .5f, 1.f, this->npcEventPos, false));
+			break;
 		case 3:
 			this->player.movementSpeed = this->player.movementSpeed - 10;
+			break;
 		case 4:
 			this->mobList.push_back(new Mob(2, 2, std::string("Normal Zombie"), 3.f, 1.f, 40.f/*80*/, sf::Color::Green, 20.f));
 			this->mobList.at(this->mobList.size() - 1)->cx = this->npcEventPos.x;
 			this->mobList.at(this->mobList.size() - 1)->cy = this->npcEventPos.y;
 			this->mobList.at(this->mobList.size() - 1)->shape.setPosition(this->npcEventPos);
+			break;
 		case 5:
 
 		case 6:

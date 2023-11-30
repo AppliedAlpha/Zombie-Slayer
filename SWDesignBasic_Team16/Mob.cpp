@@ -12,6 +12,7 @@ void Mob::initShape(sf::Color color)
 
 void Mob::updateCollision(Weapon* weapon, float power)
 {
+	//std::cout << this->hp << std::endl;
 	this->hp -= weapon->damage * power;
 
 	if (this->hp <= 0.f) {

@@ -5,10 +5,8 @@ Stage::Stage(int level) : level(level) {
 	case 1:
 		setDialogArchive(this->level);
 		setNPC("Survivor", 3, 1, 20, sf::Color::Yellow, 20);
-		enqueueMob(1, 1, "Normal Zombie", 3, 1, 20, sf::Color::Green, 20, 60, true);
-		enqueueMob(1, 1, "Fast Zombie", 5, 2, 15, sf::Color::Magenta, 15, 20, false);
-		enqueueMob(1, 1, "Helmet Zombie", 3, 3, 40, sf::Color::Cyan, 25, 20, true);
-		setBoss(100, 50, "Boss I", 2, 3, 200, sf::Color::Blue, 50);
+		enqueueMob(1, 1, "Normal Zombie", 3, 1, 100, sf::Color::Green, 20, 100, false);
+		setBoss(100, 50, "Boss I", 2, 3, 500, sf::Color::Blue, 50);
 		initStageVariables(20, 40, 0.15f, 50.f);
 		break;
 
@@ -17,11 +15,31 @@ Stage::Stage(int level) : level(level) {
 		// 하나 추가해야 함
 		setDialogArchive(this->level);
 		setNPC("NPC II", 3, 1, 40/*80*/, sf::Color::Yellow, 20);
-		enqueueMob(2, 2, "Normal Zombie", 3, 1, 40/*80*/, sf::Color::Green, 20, 150, false);
-		enqueueMob(2, 2, "Fast Zombie", 5, 0.75, 35/*70*/, sf::Color(0, 127, 0, 255), 15, 10, false);
-		setBoss(100, 20, "Boss II", 2, 3, 150/*300*/, sf::Color::Blue, 50);
+		enqueueMob(1, 1, "Fast Zombie", 5, 1, 80, sf::Color(0, 63, 0, 255), 15, 100, false);
+		setBoss(120, 60, "Boss II", 3, 4, 700, sf::Color::Blue, 50);
 
-		initStageVariables(7, 20, 2.5f, 50.f);
+		initStageVariables(30, 50, 0.1f, 50.f);
+		break;
+
+	case 3:
+		setDialogArchive(this->level);
+		setNPC("NPC III", 3, 1, 40/*80*/, sf::Color::Yellow, 20);
+		enqueueMob(1, 1, "Shooting Zombie", 3, 1, 100, sf::Color::Green, 20, 100, true);
+		enqueueMob(1, 1, "Helmet Zombie", 1, 2, 300, sf::Color(255,127,0,255), 30, 20, false);
+		setBoss(150, 80, "Boss III", 4, 5, 1000, sf::Color::Blue, 50);
+
+		initStageVariables(40, 60, 0.1f, 50.f);
+		break;
+
+	case 4:
+		setDialogArchive(this->level);
+		setNPC("NPC IV", 3, 1, 40/*80*/, sf::Color::Yellow, 20);
+		enqueueMob(1, 1, "Shooting Zombie", 3, 1, 100, sf::Color::Green, 20, 100, true);
+		enqueueMob(2, 2, "Fast Zombie", 5, 0.75, 35/*70*/, sf::Color(0, 127, 0, 255), 15, 10, false);
+		enqueueMob(1, 1, "Helmet Zombie", 1, 2, 300, sf::Color(255, 127, 0, 255), 30, 20, false);
+		setBoss(200, 100, "Boss IV", 5, 6, 1500, sf::Color::Blue, 50);
+
+		initStageVariables(40, 60, 0.1f, 50.f);
 		break;
 	}
 }
