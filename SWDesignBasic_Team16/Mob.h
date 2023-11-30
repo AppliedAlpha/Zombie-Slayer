@@ -25,8 +25,8 @@ public:
 
 	std::string name;
 	Inventory inventory;
-	void updateCollision(Bomb* bomb);
 	void updateCollision(Weapon* weapon, float power);
+	void updateItemCollision(Item* item, float power);
 
 	void move(const float& dt, sf::Vector2f playerPosition);
 

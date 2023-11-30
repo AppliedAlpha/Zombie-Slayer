@@ -10,21 +10,28 @@
 #include "NPCEvent.h"
 #include "OptionSelectionEvent.h"
 #include "GameUI.h"
+#include "Random.h"
 
-class GameState : public State 
+class GameState : public State
 {
 private:
 	Player player;
 	GameUI ui;
 	std::vector<Mob*> mobList;
-	int xpList[100];
-	int goldList[100];
+
+	int* xpList = new int;
+	int* goldList = new int;
+
 	std::vector<NPC*> npcList;
 	sf::Vector2f velocity;
 	Map basicMap;
-	std::vector<DropItem*> dropItemList;
-	
-	std::deque<Stage *> stages;
+	//std::vector<DropItem*> dropItemList;
+	std::vector<DropItem*> dropGoldList;
+	std::vector<DropItem*> dropXpList;
+	std::vector<DropItem*> dropBombList;
+	std::vector<DropItem*> dropPotionList;
+
+	std::deque<Stage*> stages;
 	Stage* nowStage;
 
 	float timeUntilItemCooldown;
@@ -53,4 +60,3 @@ public:
 	void update(const float& dt);
 	void render(sf::RenderTarget* target = nullptr);
 };
-

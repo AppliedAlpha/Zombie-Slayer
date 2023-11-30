@@ -13,8 +13,9 @@ public:
 	float duration;
 	bool active;
 	sf::CircleShape shape;
-	Item(float cooltime, float damage, float duration);
-	~Item();
-	void update(const float& dt, sf::FloatRect pos);
-	void render(sf::RenderTarget* target);
+	Item(float cooltime, float damage, float duration, sf::Vector2f position);
+	virtual ~Item();
+	virtual void initShape();
+	virtual void update(const float& dt, sf::RectangleShape playerShape, float cx, float cy);
+	virtual void render(sf::RenderTarget* target);
 };

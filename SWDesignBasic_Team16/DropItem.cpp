@@ -1,10 +1,10 @@
 #include "DropItem.h"
 
 // Constructor
-DropItem::DropItem(const sf::Vector2f& position, const Inventory& inventory) {
-    shape.setRadius(10.f);  // 작은 원의 반지름 설정
+DropItem::DropItem(const sf::Vector2f& position, const Inventory& inventory, sf::Color color) {
+    shape.setRadius(7.f);  // 작은 원의 반지름 설정
     shape.setPosition(position);
-    shape.setFillColor(sf::Color::Cyan);  // 색상은 예시로 파란색
+    shape.setFillColor(sf::Color(color));  // 색상은 예시로 파란색
 }
 
 // Accessors

@@ -19,17 +19,12 @@ void Mob::updateCollision(Weapon* weapon, float power)
 	}
 }
 
-void Mob::updateCollision(Bomb* bomb)
+void Mob::updateItemCollision(Item* item, float power)
 {
-	this->hp -= bomb->damage;
+	this->hp -= item->damage * power;
 
 	if (this->hp <= 0.f) {
-		printf("Dead\n");
 		this->onDeath();
-	}
-	else {
-		std::cout << "Now " << this->name << ' ';
-		printf("%.1f\n", this->hp);
 	}
 }
 
@@ -48,19 +43,7 @@ Mob::Mob(int gold, int xp) : Entity(1.5, 1.5, 100)
 	this->initShape(sf::Color::Green);
 	// this->initVariables();
 }
-/*
-Mob::Mob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp) : Entity(movementSpeed, power, hp)
-{
-	this->name = name;
-	this->initShape(sf::Color::Blue);
-}
 
-Mob::Mob(const std::string& name, float movementSpeed, float power, float hp) : Entity(movementSpeed, power, hp)
-{
-	this->name = name;
-	this->initShape(sf::Color::Blue);
-}
-*/
 Mob::Mob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size) : Entity(movementSpeed, power, hp) {
 	this->gold = gold;
 	this->xp = xp;
