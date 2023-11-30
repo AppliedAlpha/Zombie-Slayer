@@ -80,7 +80,7 @@ Mob::~Mob()
 }
 
 void Mob::move(const float& dt, sf::Vector2f playerPosition) {
-	this->direction = CustomMath::normalize(playerPosition - sf::Vector2f(this->cx, this->cy));
+	//this->direction = CustomMath::normalize(playerPosition - sf::Vector2f(this->cx, this->cy));
 	float multiplyer = 20.f;
 	this->cx += this->direction.x * this->movementSpeed * dt * multiplyer;
 	this->cy += this->direction.y * this->movementSpeed * dt * multiplyer;

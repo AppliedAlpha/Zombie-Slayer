@@ -78,6 +78,29 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 	
 	for (int i = 0; i < this->mobList.size(); i++) {
 		sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
+		this->mobList[i]->direction = CustomMath::normalize(sf::Vector2f(this->player.cx, this->player.cy) - sf::Vector2f(this->mobList[i]->cx, this->mobList[i]->cy));
+
+		for (int j = 0; j < this->mobList.size(); j++) {
+			if (i != j) {
+				sf::FloatRect otherMobBounds = mobList[j]->getShape().getGlobalBounds();
+				if (mobBounds.intersects(otherMobBounds)) {
+					//this->mobList[i]->movementSpeed *= 2;
+					float d1 = (this->player.cx - this->mobList[i]->cx) * (this->player.cx - this->mobList[i]->cx) + (this->player.cy - this->mobList[i]->cy) * (this->player.cy - this->mobList[i]->cy);
+					float d2 = (this->player.cx - this->mobList[j]->cx) * (this->player.cx - this->mobList[j]->cx) + (this->player.cy - this->mobList[j]->cy) * (this->player.cy - this->mobList[j]->cy);
+					if (d1 >= d2) {
+						this->mobList[i]->direction = CustomMath::normalize(- this->mobList[i]->direction + this->mobList[j]->direction);
+						//this->mobList[i]->direction = sf::Vector2f(0, 0);
+						//std::cout << this->mobList[i]->direction.x << ", " << this->mobList[i]->direction.y << std::endl;
+					}
+					else {
+						this->mobList[j]->direction = CustomMath::normalize(- this->mobList[j]->direction + this->mobList[i]->direction);
+						//this->mobList[i]->direction = sf::Vector2f(0, 0);
+						//std::cout << this->mobList[j]->direction.x << ", " << this->mobList[j]->direction.y << std::endl;
+					}
+				}
+			}
+		}
+
 		if (mobBounds.intersects(playerNextPosBounds)) {
 			player.updateCollision(mobList[i]);
 		}
@@ -87,6 +110,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 	for (int i = 0; i < this->mobList.size(); i++) {
 		sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
 		if (mobList[i]->weapon != nullptr) {
+
 			if (RangedWeapon* ranged = dynamic_cast<RangedWeapon*>(mobList[i]->weapon)) {
 				for (auto bullet : ranged->bullets) {
 					sf::FloatRect bulletBounds = bullet->shape.getGlobalBounds();
@@ -403,7 +427,6 @@ void GameState::update(const float& dt) {
 	}
 
 	this->updateInput(dt);
-	this->updateCollision(this->velocity);
 	this->player.update(dt, this->velocity);
 
 	if (CustomMath::getLength(this->velocity) != 0.f) {
@@ -425,10 +448,6 @@ void GameState::update(const float& dt) {
 		}
 	}
 
-	for (auto mob : this->mobList) {
-		mob->update(dt, sf::Vector2f(this->player.cx, this->player.cy));
-	}
-
 	if (this->npcEvent != -1) {
 		this->updateNPCEvent(dt);
 	}
@@ -440,7 +459,10 @@ void GameState::update(const float& dt) {
 	if (this->player.hp <= 0) {
 		this->quit = true;
 	}
-
+	this->updateCollision(this->velocity);
+	for (auto mob : this->mobList) {
+		mob->update(dt, sf::Vector2f(mob->direction.x, mob->direction.y));
+	}
 	this->playTime += dt;
 
 	// ui update

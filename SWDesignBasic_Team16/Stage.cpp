@@ -7,7 +7,7 @@ Stage::Stage(int level) : level(level) {
 		setNPC("Survivor", 3, 1, 20, sf::Color::Yellow, 20);
 		enqueueMob(1, 1, "Normal Zombie", 3, 1, 100, sf::Color::Green, 20, 100, false);
 		setBoss(100, 50, "Boss I", 2, 3, 500, sf::Color::Blue, 50);
-		initStageVariables(20, 40, 0.15f, 50.f);
+		initStageVariables(60, 40, 0.15f, 50.f);
 		break;
 
 	case 2:
