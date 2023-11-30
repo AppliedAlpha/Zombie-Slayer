@@ -4,7 +4,7 @@ Stage::Stage(int level) : level(level) {
 	switch (this->level) {
 	case 1:
 		enqueueMob(2, 2, "Normal Zombie", 3, 1, 40/*80*/, sf::Color::Green, 20, 2);
-		enqueueMob(2, 2, "Fast Zombie", 5, 2, 35/*70*/, sf::Color::Magenta, 15, 2);
+		enqueueMob(2, 5, "Fast Zombie", 5, 2, 35/*70*/, sf::Color::Magenta, 15, 20);
 		enqueueMob(2, 2, "Helmet Zombie", 3, 3, 80/*80*/, sf::Color::Cyan, 25, 2);
 		setBoss(100, 20, "Boss I", 2, 3, 100/*200*/, sf::Color::Blue, 50);
 

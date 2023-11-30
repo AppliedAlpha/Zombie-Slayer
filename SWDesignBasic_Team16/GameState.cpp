@@ -101,10 +101,10 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 				dropPotionList.push_back(dropPotion);
 			}
 
-			xpList[i] = this->mobList[i]->getXP();
-			goldList[i] = this->mobList[i]->getGold();
+			this->xpList.push_back(this->mobList[i]->getXP());
+			this->goldList.push_back(this->mobList[i]->getGold());
 
-			//delete mobList[i];
+			delete mobList[i];
 			this->mobList.erase(this->mobList.begin() + i);
 		}
 	}
@@ -123,13 +123,14 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 	for (int i = 0; i < this->dropGoldList.size(); i++) {
 		sf::FloatRect dropGoldBounds = dropGoldList[i]->shape.getGlobalBounds();
 		if (dropGoldBounds.intersects(playerNextPosBounds)) {
-			if (goldList[i] != NULL && this->player.inventory.getGold() != NULL) {
+			if (goldList[i] != NULL) {
 				//this->player.inventory.setGold(this->player.inventory.getGold() + goldList[i]);
-				this->player.inventory.setGold(this->player.inventory.getGold() + this->mobList[i]->getGold());
+				this->player.inventory.setGold(this->player.inventory.getGold() + this->goldList[i]);
 			}
 			std::cout << "Gold:  " << this->player.inventory.getGold() << std::endl;
 
 			delete dropGoldList[i];
+			this->goldList.erase(this->goldList.begin() + i);
 			this->dropGoldList.erase(this->dropGoldList.begin() + i);
 		}
 	}
@@ -137,12 +138,12 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 	for (int i = 0; i < this->dropXpList.size(); i++) {
 		sf::FloatRect dropXpBounds = dropXpList[i]->shape.getGlobalBounds();
 		if (dropXpBounds.intersects(playerNextPosBounds)) {
-			if (xpList[i] != NULL && this->player.inventory.getXp() != NULL) {
+			if (xpList[i] != NULL) {
 				//this->player.inventory.setXp(this->player.inventory.getXp() + xpList[i]);
-				this->player.inventory.setGold(this->player.inventory.getGold() + this->mobList[i]->getGold());
+				this->player.inventory.setXp(this->player.inventory.getXp() + this->xpList[i]);
 				if (this->player.inventory.getXp() >= 20) {
 					this->player.level = this->player.level + this->player.inventory.getXp() / 20;
-					this->player.inventory.setXp(this->player.inventory.getXp() - 20);
+					this->player.inventory.setXp(this->player.inventory.getXp() % 20 +1);
 					this->eventQueue.push_back(new OptionSelectionEvent(&this->player));
 				}
 			}
@@ -150,6 +151,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			std::cout << "Level: " << this->player.level << ", Xp: " << this->player.inventory.getXp() << std::endl;
 
 			delete dropXpList[i];
+			this->xpList.erase(this->xpList.begin() + i);
 			this->dropXpList.erase(this->dropXpList.begin() + i);
 		}
 	}

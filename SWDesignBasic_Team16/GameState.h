@@ -19,8 +19,10 @@ private:
 	GameUI ui;
 	std::vector<Mob*> mobList;
 
-	int* xpList = new int;
-	int* goldList = new int;
+	//int* xpList = new int;
+	//int* goldList = new int;
+	std::vector<int> xpList;
+	std::vector<int> goldList;
 
 	std::vector<NPC*> npcList;
 	sf::Vector2f velocity;
