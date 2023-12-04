@@ -17,8 +17,8 @@ AoE::AoE(float radius, float duration, float damage, sf::Vector2f position)
 
 AoE::AoE(float radius, float duration, float damage, sf::Vector2f position, bool mobTarget) {
 	this->shape.setRadius(radius);
-	this->shape.setFillColor(sf::Color(128, 0, 128, 100));
-	this->shape.setOutlineColor(sf::Color(128, 0, 128));
+	this->shape.setFillColor(sf::Color(0, 255, 0, 100));
+	this->shape.setOutlineColor(sf::Color(0, 255, 0));
 	this->shape.setOutlineThickness(2.f);
 	this->shape.setPosition(position);
 	this->shape.setOrigin(radius, radius);

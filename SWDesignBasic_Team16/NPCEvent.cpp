@@ -2,6 +2,8 @@
 
 NPCEvent::NPCEvent(Player* player, int level, std::deque<std::string>& dialog, std::string npc, int& npcEvent, int positive) : Event(player), dialog(dialog), npcEvent(npcEvent)
 {
+	this->bgTexture.loadFromFile("./Resources/NpcEvent.png");
+	this->bgSprite.setTexture(bgTexture);
 	initScreen();
 	this->level = level;
 	this->title.setString(npc);
@@ -30,7 +32,7 @@ void NPCEvent::initScreen()
 	this->dialog.pop_front();
 
 	this->title.setFont(this->font);
-	this->title.setPosition(80, 680 - 250);
+	this->title.setPosition(80, 680 - 180);
 	this->title.setFillColor(sf::Color::Yellow);
 
 	this->subtitle.setFont(this->font);
@@ -39,7 +41,7 @@ void NPCEvent::initScreen()
 
 void NPCEvent::showSelectionScreen()
 {
-}
+};
 
 void NPCEvent::update(const float& dt)
 {
@@ -49,6 +51,7 @@ void NPCEvent::update(const float& dt)
 
 void NPCEvent::render(sf::RenderTarget* target)
 {
+	target->draw(bgSprite);
 	target->draw(this->textField);
 	target->draw(this->currentDialog);
 	target->draw(this->title);
@@ -58,6 +61,7 @@ void NPCEvent::render(sf::RenderTarget* target)
 void NPCEvent::move(sf::Vector2f diff)
 {
 	Event::move(diff);
+	bgSprite.move(diff);
 	textField.move(diff);
 	currentDialog.move(diff);
 	title.move(diff);

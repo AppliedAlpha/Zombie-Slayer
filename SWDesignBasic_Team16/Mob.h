@@ -27,7 +27,6 @@ public:
 	std::string name;
 	Inventory inventory;
 	sf::Vector2f direction;
-	void updateCollision(Bomb* bomb);
 	void updateCollision(AoE* aoe);
 	void updateCollision(Weapon* weapon, float power);
 	void updateItemCollision(Item* item, float power);

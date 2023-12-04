@@ -9,6 +9,7 @@
 #include "State.h"
 #include "NPCEvent.h"
 #include "OptionSelectionEvent.h"
+#include "StoreEvent.h"
 #include "GameUI.h"
 #include "MeleeWeapon.h"
 #include "RangedWeapon.h"

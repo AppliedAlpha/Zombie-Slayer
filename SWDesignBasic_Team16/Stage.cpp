@@ -5,7 +5,7 @@ Stage::Stage(int level) : level(level) {
 	case 1:
 		setDialogArchive(this->level);
 		setNPC("Survivor", 3, 1, 20, sf::Color::Yellow, 20);
-		enqueueMob(1, 1, "Normal Zombie", 3, 1, 100, sf::Color::Green, 20, 100, false);
+		enqueueMob(1, 1, "Normal Zombie", 3, 1, 100, sf::Color::Green, 20, 100, true);
 		setBoss(100, 50, "Boss I", 2, 3, 500, sf::Color::Blue, 50);
 		initStageVariables(60, 40, 0.15f, 50.f);
 		break;
@@ -65,7 +65,7 @@ void Stage::enqueueMob(int gold, int xp, const std::string& name, float movement
 	while (count--) {
 		auto mob = new Mob(gold, xp, name, movementSpeed, power, hp, color, size);
 		if (weapon)
-			mob->weapon = new Pistol(3.f, 2.f, 2.f, sf::Vector2f(mob->cx, mob->cy), 5, sf::Color(128, 0, 128));
+			mob->weapon = new Pistol(3.f, 2.f, 2.f, sf::Vector2f(mob->cx, mob->cy), 5, sf::Color::Green);
 		this->mobList.push_back(mob);
 	}
 }
