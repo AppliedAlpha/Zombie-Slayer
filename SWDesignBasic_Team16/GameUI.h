@@ -9,13 +9,14 @@ private:
 	sf::Vector2f centerPos, diff;
 	sf::Vertex hpBar[4];
 	sf::Vertex xpBar[4];
+	sf::Vertex itemSlotCoolBar[1][4];
 
 	sf::RectangleShape hpBackBar, xpBackBar;
 	sf::RectangleShape itemSlot[1];
 
 	sf::Color red, blue, bottomRed, bottomBlue;
-	sf::Color outlineGold;
-	sf::IntRect hpBarRect, xpBarRect;
+	sf::Color outlineGold, itemCoolBarColor;
+	sf::IntRect hpBarRect, xpBarRect, itemSlotCoolBarRect;
 	sf::Vector2f levelTextPos, goldTextPos, timeTextPos, stageTextPos;
 
 	sf::Font* font;

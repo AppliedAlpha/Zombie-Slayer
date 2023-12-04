@@ -26,6 +26,7 @@ void GameUI::initColors() {
 	bottomBlue = sf::Color(17, 50, 255, 255);
 
 	outlineGold = sf::Color(224, 160, 37, 255);
+	itemCoolBarColor = sf::Color(63, 63, 63, 255);
 }
 
 void GameUI::initRectPosValues() {
@@ -72,6 +73,11 @@ void GameUI::initBars() {
 		itemSlot[i].setOutlineColor(CustomColor::Gray(0.1f));
 		itemSlot[i].setOutlineThickness(2.f);
 	}
+
+	itemSlotCoolBar[0][0] = sf::Vertex(centerPos + sf::Vector2f(-620, 280), itemCoolBarColor);
+	itemSlotCoolBar[0][1] = sf::Vertex(centerPos + sf::Vector2f(-620, 340), itemCoolBarColor);
+	itemSlotCoolBar[0][2] = sf::Vertex(centerPos + sf::Vector2f(-560, 340), itemCoolBarColor);
+	itemSlotCoolBar[0][3] = sf::Vertex(centerPos + sf::Vector2f(-560, 280), itemCoolBarColor);
 }
 
 void GameUI::initTexts() {
@@ -119,8 +125,14 @@ void GameUI::updateXpBar(float xp, float maxXp) {
 }
 
 void GameUI::updateItemSlot(float coolDown) {
-	for (int i = 0; i < 1; i++)
+	itemSlotCoolBar[0][0] = sf::Vertex(centerPos + sf::Vector2f(-620, 340 - 60 * coolDown), itemCoolBarColor);
+	itemSlotCoolBar[0][1] = sf::Vertex(centerPos + sf::Vector2f(-620, 340), itemCoolBarColor);
+	itemSlotCoolBar[0][2] = sf::Vertex(centerPos + sf::Vector2f(-560, 340), itemCoolBarColor);
+	itemSlotCoolBar[0][3] = sf::Vertex(centerPos + sf::Vector2f(-560, 340 - 60 * coolDown), itemCoolBarColor);
+
+	for (int i = 0; i < 1; i++) {
 		itemSlot[i].setPosition(centerPos + sf::Vector2f(-620 + i * 70, 280));
+	}
 }
 
 void GameUI::updatePlayTimeText(float playTime) {
@@ -156,6 +168,8 @@ void GameUI::render(sf::RenderTarget* target) {
 	
 	for (int i = 0; i < 1; i++)
 		target->draw(itemSlot[i]);
+
+	target->draw(itemSlotCoolBar[0], 4, sf::Quads);
 
 	// render bars
 	target->draw(hpBar, 4, sf::Quads);

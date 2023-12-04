@@ -21,7 +21,8 @@ GameState::GameState(sf::RenderWindow* window) : State(window) {
 	this->allTextures = new sf::Texture();
 	this->allTextures->loadFromFile("./Resources/Textures.png");
 
-	this->mappedSprite["Normal Zombie"] = new sf::Sprite(*this->allTextures, sf::IntRect(0, 0, 20, 20));
+	this->mappedSprite = new std::map<std::string, sf::Sprite*>();
+	this->mappedSprite->emplace("Normal Zombie", new sf::Sprite(*this->allTextures, sf::IntRect(0, 0, 20, 20)));
 
 	this->ui = GameUI(sf::Vector2f(640, 360), this->font);
 
@@ -40,7 +41,7 @@ GameState::~GameState() {
 	std::vector<Mob *>().swap(this->mobList);
 	std::vector<NPC *>().swap(this->npcList);
 	std::vector<AoE *>().swap(this->aoeList);
-	std::map<std::string, sf::Sprite*>().swap(this->mappedSprite);
+	std::map<std::string, sf::Sprite*>().swap(*this->mappedSprite);
 
 	delete this->allTextures;
 	delete this->font;
@@ -49,6 +50,13 @@ GameState::~GameState() {
 void GameState::spawnMob()
 {
 	Mob* mob = this->nowStage->spawnMob();
+
+	// 몹의 위치를 스폰되고 나서 GameState에서 정해주는 것으로 변경
+	// 반지름 크기는 나중에 변경해줘도 좋을듯
+	auto diff = CustomMath::getRandomCoordWithRadius(480.f);
+
+	mob->cx = this->player.cx + diff.first;
+	mob->cy = this->player.cy + diff.second;
 	this->mobList.push_back(mob);
 	//std::cout << mobList.size() << std::endl;
 }

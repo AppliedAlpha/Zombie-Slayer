@@ -4,10 +4,10 @@ void Mob::initShape(sf::Color color)
 {
 	Entity::initShape();
 	this->shape.setSize(sf::Vector2f(this->gridSize, this->gridSize));
-	if (color == sf::Color::Blue) this->shape.setSize(sf::Vector2f(this->gridSize + 20.f, this->gridSize + 20.f));
+	// if (color == sf::Color::Blue) this->shape.setSize(sf::Vector2f(this->gridSize + 20.f, this->gridSize + 20.f));
 	this->shape.setFillColor(color);
-	this->cx = Random::instance().getFloat(0, 100) + Random::instance().getInt(0, 1) * 1180.f;
-	this->cy = Random::instance().getFloat(0, 720);
+	this->cx = 0;
+	this->cy = 0;
 }
 
 void Mob::updateCollision(Weapon* weapon, float power)

@@ -48,7 +48,7 @@ private:
 	float playTime = 0.f;
 
 	sf::Texture* allTextures;
-	std::map<std::string, sf::Sprite *> mappedSprite;
+	std::map<std::string, sf::Sprite *>* mappedSprite;
 
 	void initStages();
 
