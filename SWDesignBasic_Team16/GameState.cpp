@@ -11,7 +11,7 @@ void GameState::initStages()
 	this->nowStage = this->stages.front();
 	printf("[Stage %d]\n", this->nowStage->level);
 
-	printf("%s\n", this->nowStage->mobList.front()->name.c_str());
+	// printf("%s\n", this->nowStage->mobList.front()->name.c_str());
 }
 
 GameState::GameState(sf::RenderWindow* window) : State(window) {
@@ -467,10 +467,12 @@ void GameState::update(const float& dt) {
 
 	// ui update
 	this->ui.updateCenterPos(sf::Vector2f(this->player.cx, this->player.cy));
-	this->ui.updateHpBar(this->player.hp, 100.f);
+	this->ui.updateHpBar(this->player.hp, this->player.maxHp);
 	this->ui.updateXpBar(this->player.inventory.getXp(), CustomMath::getMaxXp(this->player.level));
+	this->ui.updateItemSlot(this->timeUntilItemCooldown);
 	this->ui.updateLevelText(this->player.level);
 	this->ui.updateGoldText(this->player.inventory.getGold());
+	this->ui.updateStageText(this->nowStage->level);
 	this->ui.updatePlayTimeText(this->playTime);
 
 	this->updateStageClear();

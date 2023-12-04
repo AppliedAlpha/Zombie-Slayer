@@ -6,6 +6,7 @@ GameUI::GameUI() {
 
 GameUI::GameUI(const sf::Vector2f& center, sf::Font* font) {
 	updateCenterPos(center);
+	diff = sf::Vector2f(640, 360);
 	this->font = font;
 
 	initColors();
@@ -30,7 +31,11 @@ void GameUI::initColors() {
 void GameUI::initRectPosValues() {
 	hpBarRect = sf::IntRect(20, 20, 1280 - 20 * 2, 30);
 	xpBarRect = sf::IntRect(20, 60, 1280 - 20 * 2, 15);
-	timeTextRect = sf::IntRect(640 - 160 / 2, 85, 160, 40);
+
+	timeTextPos = sf::Vector2f(640 - 160 / 2, 80);
+	goldTextPos = sf::Vector2f(20, 85);
+	levelTextPos = sf::Vector2f(1166, 85);
+	stageTextPos = sf::Vector2f(1160, 670);
 }
 
 void GameUI::setBarPos(sf::Vertex* bar, const sf::IntRect& rect, const sf::Color& up, const sf::Color& down, const float fillPercent) {
@@ -59,25 +64,39 @@ void GameUI::initBars() {
 	xpBackBar.setPosition(centerPos + sf::Vector2f(-xpBarRect.width / 2, -360 + xpBarRect.top));
 	xpBackBar.setOutlineColor(outlineGold);
 	xpBackBar.setOutlineThickness(2.f);
+
+	for (int i = 0; i < 1; i++) {
+		itemSlot[i].setFillColor(sf::Color::White);
+		itemSlot[i].setSize(sf::Vector2f(60, 60));
+		itemSlot[i].setPosition(centerPos + sf::Vector2f(-620 + i * 70, 280));
+		itemSlot[i].setOutlineColor(CustomColor::Gray(0.1f));
+		itemSlot[i].setOutlineThickness(2.f);
+	}
 }
 
 void GameUI::initTexts() {
 	levelText.setFont(*font);
-	levelText.setCharacterSize(20);
+	levelText.setCharacterSize(24);
 	levelText.setFillColor(sf::Color::White);
-	levelText.setPosition(-620.f + centerPos.x, -360.f + centerPos.y);
-	levelText.setString("Level: 1");
+	levelText.setPosition(centerPos - diff + levelTextPos);
+	levelText.setString("Level 1");
 
 	goldText.setFont(*font);
-	goldText.setCharacterSize(20);
+	goldText.setCharacterSize(24);
 	goldText.setFillColor(sf::Color::Yellow);
-	goldText.setPosition(-620.f + centerPos.x, -340.f + centerPos.y);
+	goldText.setPosition(centerPos - diff + goldTextPos);
 	goldText.setString("Gold: 0");
+
+	stageText.setFont(*font);
+	stageText.setCharacterSize(30);
+	stageText.setFillColor(sf::Color::White);
+	stageText.setPosition(centerPos - diff + stageTextPos);
+	stageText.setString("Stage 1");
 
 	timeText.setFont(*font);
 	timeText.setCharacterSize(48);
 	timeText.setFillColor(sf::Color::White);
-	timeText.setPosition(centerPos + sf::Vector2f(-timeTextRect.width / 2, -360 + timeTextRect.top));
+	timeText.setPosition(centerPos - diff + timeTextPos);
 	timeText.setString("0:00.0");
 }
 
@@ -99,23 +118,33 @@ void GameUI::updateXpBar(float xp, float maxXp) {
 	xpBackBar.setPosition(centerPos + sf::Vector2f(-xpBarRect.width / 2, -360 + xpBarRect.top));
 }
 
+void GameUI::updateItemSlot(float coolDown) {
+	for (int i = 0; i < 1; i++)
+		itemSlot[i].setPosition(centerPos + sf::Vector2f(-620 + i * 70, 280));
+}
+
 void GameUI::updatePlayTimeText(float playTime) {
 	int secTime = (int) playTime;
 	int underSecTime = (int) (playTime * 10) % 10;
-	timeText.setPosition(centerPos + sf::Vector2f(-timeTextRect.width / 2, -360 + timeTextRect.top));
+	timeText.setPosition(centerPos - diff + timeTextPos);
 
 	std::sprintf(timeTextBuffer, "%02d:%02d.%01d", secTime / 60, secTime % 60, underSecTime);
 	timeText.setString(std::string(timeTextBuffer));
 }
 
 void GameUI::updateLevelText(int level) {
-	levelText.setPosition(-620.f + centerPos.x, -360.f + centerPos.y);
-	levelText.setString("Level: " + std::to_string(level));
+	levelText.setPosition(centerPos - diff + levelTextPos);
+	levelText.setString("Level " + std::to_string(level));
 }
 
 void GameUI::updateGoldText(int gold) {
-	goldText.setPosition(-620.f + centerPos.x, -340.f + centerPos.y);
+	goldText.setPosition(centerPos - diff + goldTextPos);
 	goldText.setString("Gold: " + std::to_string(gold));
+}
+
+void GameUI::updateStageText(int stage) {
+	stageText.setPosition(centerPos - diff + stageTextPos);
+	stageText.setString("Stage " + std::to_string(stage));
 }
 
 
@@ -124,6 +153,9 @@ void GameUI::render(sf::RenderTarget* target) {
 	// render back bars
 	target->draw(hpBackBar);
 	target->draw(xpBackBar);
+	
+	for (int i = 0; i < 1; i++)
+		target->draw(itemSlot[i]);
 
 	// render bars
 	target->draw(hpBar, 4, sf::Quads);
@@ -133,4 +165,5 @@ void GameUI::render(sf::RenderTarget* target) {
 	target->draw(levelText);
 	target->draw(goldText);
 	target->draw(timeText);
+	target->draw(stageText);
 }
