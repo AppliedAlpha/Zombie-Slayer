@@ -24,7 +24,7 @@ GameState::GameState(sf::RenderWindow* window) : State(window) {
 	this->mappedSprite = new std::map<std::string, sf::Sprite*>();
 	this->mappedSprite->emplace("Normal Zombie", new sf::Sprite(*this->allTextures, sf::IntRect(0, 0, 20, 20)));
 
-	this->ui = GameUI(sf::Vector2f(640, 360), this->font);
+	this->ui = GameUI(sf::Vector2f(640, 360), this->font, this->allTextures);
 
 	this->window->setView(view);
 
@@ -249,9 +249,9 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			if (xpList[i] != NULL) {
 				//this->player.inventory.setXp(this->player.inventory.getXp() + xpList[i]);
 				this->player.inventory.setXp(this->player.inventory.getXp() + this->xpList[i]);
-				if (this->player.inventory.getXp() >= 20) {
-					this->player.level = this->player.level + this->player.inventory.getXp() / 20;
-					this->player.inventory.setXp(this->player.inventory.getXp() % 20 +1);
+				while (this->player.inventory.getXp() >= CustomMath::getMaxXp(this->player.level)) {
+					this->player.inventory.setXp(this->player.inventory.getXp() - CustomMath::getMaxXp(this->player.level));
+					this->player.level++;
 					this->eventQueue.push_back(new OptionSelectionEvent(&this->player));
 				}
 			}
@@ -423,9 +423,12 @@ void GameState::updateStageClear()
 
 		if (this->stages.empty()) {
 			this->quit = true;
+			this->allClear = true;
 			return;
 		}
+
 		this->nowStage = this->stages.front();
+		this->backgroundMap.changeSpriteByStage(this->nowStage->level);
 	}
 }
 
@@ -477,7 +480,7 @@ void GameState::update(const float& dt) {
 	this->ui.updateCenterPos(sf::Vector2f(this->player.cx, this->player.cy));
 	this->ui.updateHpBar(this->player.hp, this->player.maxHp);
 	this->ui.updateXpBar(this->player.inventory.getXp(), CustomMath::getMaxXp(this->player.level));
-	this->ui.updateItemSlot(this->timeUntilItemCooldown);
+	this->ui.updateItemSlot(this->timeUntilItemCooldown, this->player.remainPotion);
 	this->ui.updateLevelText(this->player.level);
 	this->ui.updateGoldText(this->player.inventory.getGold());
 	this->ui.updateStageText(this->nowStage->level);
@@ -488,7 +491,7 @@ void GameState::update(const float& dt) {
 
 void GameState::render(sf::RenderTarget* target) {
 	// 맵 출력이 플레이어보다 앞서야 함
-	this->basicMap.render(target);
+	this->backgroundMap.render(target);
 
 	for (auto npc : this->npcList)
 		npc->render(target);

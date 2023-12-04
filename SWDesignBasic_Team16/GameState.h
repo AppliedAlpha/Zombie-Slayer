@@ -21,6 +21,7 @@ private:
 	Player player;
 	GameUI ui;
 	sf::Font* font;
+	bool allClear = false;
 
 	std::vector<Mob*> mobList;
 
@@ -31,7 +32,7 @@ private:
 
 	std::vector<NPC*> npcList;
 	sf::Vector2f velocity;
-	Map basicMap;
+	Map backgroundMap;
 	std::vector<AoE*> aoeList;
 	int npcEvent = -1;
 	sf::Vector2f npcEventPos;

@@ -5,6 +5,8 @@
 class GameUI
 {
 private:
+	sf::Texture* allTextures;
+	sf::Sprite itemPotion;
 
 	sf::Vector2f centerPos, diff;
 	sf::Vertex hpBar[4];
@@ -18,14 +20,17 @@ private:
 	sf::Color outlineGold, itemCoolBarColor;
 	sf::IntRect hpBarRect, xpBarRect, itemSlotCoolBarRect;
 	sf::Vector2f levelTextPos, goldTextPos, timeTextPos, stageTextPos;
+	sf::Vector2f itemPotionCountTextPos;
 
 	sf::Font* font;
 	sf::Text levelText, goldText, timeText, stageText;
+	sf::Text itemPotionCountText;
+
 	char timeTextBuffer[13];
 
 public:
 	GameUI();
-	GameUI(const sf::Vector2f& center, sf::Font* font);
+	GameUI(const sf::Vector2f& center, sf::Font* font, sf::Texture* texture);
 	virtual ~GameUI();
 
 	void initColors();
@@ -38,7 +43,7 @@ public:
 	void updateCenterPos(const sf::Vector2f& center);
 	void updateHpBar(float hp, float maxHp);
 	void updateXpBar(float xp, float maxXp);
-	void updateItemSlot(float coolDown);
+	void updateItemSlot(float coolDown, int potionCount);
 	void updatePlayTimeText(float playTime);
 	void updateLevelText(int level);
 	void updateGoldText(int gold);
