@@ -23,9 +23,10 @@ public:
 	bool isBossSpawned, isClear;
 	bool isNPCSpawned;
 	NPC* npc;
+	std::map<std::string, sf::Sprite*>* mappedSprite;
 	std::pair<std::deque<std::string>, std::deque<std::string>> dialogArchive;
 
-	Stage(int level);
+	Stage(int level, std::map<std::string, sf::Sprite*>* mappedSprite);
 	virtual ~Stage();
 
 	Mob* spawnMob();

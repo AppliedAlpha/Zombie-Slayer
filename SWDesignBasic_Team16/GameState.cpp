@@ -3,10 +3,10 @@
 void GameState::initStages()
 {
 	// adding stages to deque
-	this->stages.push_back(new Stage(1));
-	this->stages.push_back(new Stage(2));
-	this->stages.push_back(new Stage(3));
-	this->stages.push_back(new Stage(4));
+	this->stages.push_back(new Stage(1, this->mappedSprite));
+	this->stages.push_back(new Stage(2, this->mappedSprite));
+	this->stages.push_back(new Stage(3, this->mappedSprite));
+	this->stages.push_back(new Stage(4, this->mappedSprite));
 
 	this->nowStage = this->stages.front();
 	printf("[Stage %d]\n", this->nowStage->level);
@@ -63,6 +63,12 @@ void GameState::spawnMob()
 
 void GameState::spawnBoss() {
 	Mob* boss = this->nowStage->spawnBoss();
+
+	auto diff = CustomMath::getRandomCoordWithRadius(480.f);
+
+	boss->cx = this->player.cx + diff.first;
+	boss->cy = this->player.cy + diff.second;
+
 	this->mobList.push_back(boss);
 }
 
@@ -169,19 +175,17 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		}
 
 		if (mobList[i]->getDeath()) {
-			// 
-			//DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
+			// DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
 			DropItem* dropGold = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(10.f, 10.f), mobList[i]->inventory, sf::Color(255, 255, 0));
 			dropGoldList.push_back(dropGold);
 			DropItem* dropXp = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(-10.f, 10.f), mobList[i]->inventory, sf::Color(0, 0, 255));
 			dropXpList.push_back(dropXp);
 
-			Random* random = NULL;
-			if (random->eventOccursWithProbability(0.5f)) {
+			if (Random::instance().eventOccursWithProbability(0.5f)) {
 				DropItem* dropBomb = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(10.f, -10.f), mobList[i]->inventory, sf::Color(0, 0, 0));
 				dropBombList.push_back(dropBomb);
 			}
-			if (random->eventOccursWithProbability(0.5f)) {
+			if (Random::instance().eventOccursWithProbability(0.5f)) {
 				DropItem* dropPotion = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(-10.f, -10.f), mobList[i]->inventory, sf::Color(255, 0, 0));
 				dropPotionList.push_back(dropPotion);
 			}
@@ -191,6 +195,8 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 
 			delete mobList[i];
 			this->mobList.erase(this->mobList.begin() + i);
+
+			this->nowStage->leftKillCountUntilBoss--;
 		}
 	}
 
@@ -349,7 +355,8 @@ void GameState::updateMobSpawn(const float& dt) {
 		this->spawnMob();
 	}
 
-	if (!this->nowStage->isBossSpawned && this->nowStage->bossSpawnTime == 0.f) {
+	if (!this->nowStage->isBossSpawned && 
+		(this->nowStage->bossSpawnTime == 0.f || this->nowStage->leftKillCountUntilBoss <= 0)) {
 		this->spawnBoss();
 	}
 
@@ -423,7 +430,7 @@ void GameState::updateStageClear()
 
 		if (this->stages.empty()) {
 			this->quit = true;
-			this->allClear = true;
+			this->allClear = true; // TODO: 올 클리어 추가해야함
 			return;
 		}
 

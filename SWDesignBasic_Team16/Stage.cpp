@@ -1,13 +1,13 @@
 #include "Stage.h"
 
-Stage::Stage(int level) : level(level) {
+Stage::Stage(int level, std::map<std::string, sf::Sprite*>* mappedSprite) : level(level), mappedSprite(mappedSprite) {
 	switch (this->level) {
 	case 1:
 		setDialogArchive(this->level);
 		setNPC("Survivor", 3, 1, 20, sf::Color::Yellow, 20);
-		enqueueMob(1, 1, "Normal Zombie", 2, 1, 30, sf::Color::Green, 20, 100, false);
+		enqueueMob(1, 1, "Normal Zombie", 2, 1, 20, sf::Color::Green, 20, 120, false);
 		setBoss(100, 50, "Boss I", 2, 3, 500, sf::Color::Blue, 50);
-		initStageVariables(60, 40, 1.f, 50.f);
+		initStageVariables(60, 60, 1.f, 80.f);
 		break;
 
 	case 2:
@@ -60,8 +60,12 @@ void Stage::initStageVariables(int _maxMobCount, int _leftKillCountUntilBoss, fl
 }
 
 void Stage::enqueueMob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size, int count, bool weapon) {
+	sf::Sprite* sp_ptr = nullptr;
+	if (this->mappedSprite->find(name) != this->mappedSprite->end())
+		sp_ptr = this->mappedSprite->at(name);
+	
 	while (count--) {
-		auto mob = new Mob(gold, xp, name, movementSpeed, power, hp, color, size);
+		auto mob = new Mob(gold, xp, name, movementSpeed, power, hp, color, size, sp_ptr);
 		if (weapon)
 			mob->weapon = new Pistol(3.f, 2.f, 2.f, sf::Vector2f(mob->cx, mob->cy), 5, sf::Color(128, 0, 128));
 		this->mobList.push_back(mob);
@@ -93,6 +97,7 @@ Mob* Stage::spawnBoss() {
 		this->isBossSpawned = true;
 		return boss;
 	}
+	return nullptr;
 }
 
 NPC* Stage::spawnNPC()
