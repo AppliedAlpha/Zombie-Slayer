@@ -8,6 +8,7 @@ void Mob::initShape(sf::Color color)
 	this->shape.setFillColor(color);
 	this->cx = 0;
 	this->cy = 0;
+	this->initHpBar();
 }
 
 void Mob::updateCollision(Weapon* weapon, float power)
@@ -31,7 +32,8 @@ void Mob::updateItemCollision(Item* item, float power)
 
 void Mob::updateCollision(AoE* aoe)
 {
-	this->hp -= aoe->damage;
+	if (aoe->damage > 0) this->hp -= aoe->damage;
+	if (this->movementSpeed - aoe->slowRate >= 0) this->movementSpeed -= aoe->slowRate;
 
 	if (this->hp <= 0.f) {
 		this->onDeath();
@@ -57,6 +59,7 @@ Mob::Mob(int gold, int xp) : Entity(1.5, 1.5, 100)
 
 /*
 Mob::Mob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size) : Entity(movementSpeed, power, hp) {
+	this->speedZeroDuration = 0.f;
 	this->gold = gold;
 	this->xp = xp;
 	this->name = name;
@@ -93,6 +96,7 @@ void Mob::move(const float& dt, sf::Vector2f playerPosition) {
 }
 
 void Mob::update(const float& dt, sf::Vector2f playerPosition) {
+	this->updateHpBar();
 	this->move(dt, playerPosition);
 	if (this->weapon)
 		this->weapon->update(dt, this->shape, this->cx, this->cy, this->direction);
@@ -100,6 +104,7 @@ void Mob::update(const float& dt, sf::Vector2f playerPosition) {
 }
 
 void Mob::render(sf::RenderTarget* target) {
+	this->renderHpBar(target);
 	if (this->weapon)
 		this->weapon->render(target);
 
@@ -144,10 +149,4 @@ void Mob::render(sf::RenderTarget* target, sf::Sprite* sprite) {
 
 void Mob::onDeath() {
 	this->death = true;
-	/*
-	sf::Vector2f deathPosition = this->shape.getPosition();
-	Inventory dropInventory;
-
-	this->dropItems.push_back(DropItem(deathPosition, dropInventory));
-	*/
 }

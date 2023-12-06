@@ -9,6 +9,7 @@
 #include "State.h"
 #include "NPCEvent.h"
 #include "OptionSelectionEvent.h"
+#include "StoreEvent.h"
 #include "GameUI.h"
 #include "MeleeWeapon.h"
 #include "RangedWeapon.h"
@@ -24,6 +25,8 @@ private:
 	bool allClear = false;
 
 	std::vector<Mob*> mobList;
+	std::vector<Mob*> mobSpeedList;
+
 	std::vector<int> xpList;
 	std::vector<int> goldList;
 	std::vector<NPC*> npcList;
@@ -39,11 +42,11 @@ private:
 	std::vector<DropItem*> dropGoldList;
 	std::vector<DropItem*> dropXpList;
 	std::vector<DropItem*> dropBombList;
+	std::vector<DropItem*> dropIceList;
 	std::vector<DropItem*> dropPotionList;
 	Stage* nowStage;
 
 	float timeUntilItemCooldown;
-	float bombduration;
 	float playTime = 0.f;
 
 	sf::Texture* allTextures;

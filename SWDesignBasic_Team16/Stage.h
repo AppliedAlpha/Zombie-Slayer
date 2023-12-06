@@ -1,7 +1,9 @@
 #pragma once
 #include "stdafx.h"
 #include "Mob.h"
+#include "Brick.h"
 #include "Pistol.h"
+#include "Bomb.h"
 #include "NPC.h"
 // #include "Boss.h"  // 만약 보스 헤더 파일이 추가된다면 Mob 대신에 이거로 수정 요망
 
@@ -9,7 +11,9 @@ class Stage
 {
 private:
 	void initStageVariables(int _maxMobCount, int _leftKillCountUntilBoss, float _mobSpawnTime, float _bossSpawnTime);
-	void enqueueMob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size, int count, bool weapon = false);
+	//void enqueueMob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size, int count, bool weapon = false);
+	void enqueueMob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size, int count, bool weapon, int weapontype);
+	void shuffleMob();
 	void setBoss(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size);
 	void setNPC(const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size);
 

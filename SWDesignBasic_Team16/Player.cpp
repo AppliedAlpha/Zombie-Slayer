@@ -24,7 +24,7 @@ void Player::initShape()
 	this->shape.setRotation(45);
 }
 
-Player::Player() : Entity(200, 1, 100)
+Player::Player() : Entity(200, 10, 100)
 {
 	this->initShape();
 	this->initVariables();
@@ -57,6 +57,11 @@ Player::~Player()
 		delete item.second;
 	}
 	this->itemList.clear();
+	
+	for (auto partner : this->partners) {
+		delete partner;
+	}
+	this->partners.clear();
 }
 
 void Player::attack(const float& dt)
@@ -93,7 +98,6 @@ void Player::move(const float& dt, const float dx, const float dy) {
 	auto v = CustomMath::normalize(sf::Vector2f(dx, dy));
 	this->cx += v.x * this->movementSpeed * dt;
 	this->cy += v.y * this->movementSpeed * dt;
-	//this->shape.move(dx * this->movementSpeed * dt * multiplyer, dy * this->movementSpeed * dt * multiplyer);
 }
 
 void Player::render(sf::RenderTarget* target) {
@@ -113,13 +117,13 @@ void Player::getPotion() {
 bool Player::useItem(int i) {
 	if (i == 1) {
 		if (remainPotion >= 1) {
-			if (this->hp + 10 <= this->maxHp) {
-				this->hp += 10;
+			if (this->hp + 20 <= this->maxHp) {
+				this->hp += 20;
 				remainPotion--;
 				std::cout << "Hp UP" << std::endl;
 				return true;
 			}
-			else if (this->hp + 10 > this->maxHp && this->hp < this->maxHp) {
+			else if (this->hp + 20 > this->maxHp && this->hp < this->maxHp) {
 				this->hp = this->maxHp;
 				remainPotion--;
 				std::cout << "Hp UP" << std::endl;
@@ -165,4 +169,9 @@ int Player::weaponNameToIndex(std::string name)
 	if (name == "Pistol") return 3;
 	if (name == "Brick") return 4;
 	if (name == "Rocket") return 5;
+}
+
+void Player::getPartner()
+{
+	this->partners.push_back(new Partner(this->cx, this->cy, this->viewDirection, this->partners.size() + 1));
 }

@@ -3,6 +3,7 @@
 #include "State.h"
 #include "NPCEvent.h"
 #include "OptionSelectionEvent.h"
+#include "StoreEvent.h"
 
 class EventState : public State
 {

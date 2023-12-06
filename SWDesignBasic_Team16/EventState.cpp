@@ -51,6 +51,26 @@ void EventState::update(const float& dt)
 				this->quit = true;
 			}
 		}
+		else if (StoreEvent* store = dynamic_cast<StoreEvent*>(this->event)) {
+			if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Left) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) && inputTerm >= 10) {
+				store->index = store->index - 1 < 0 ? store->length - 1 : store->index - 1;
+				store->update(dt);
+				inputTerm = 0;
+			}
+			if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Right) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) && inputTerm >= 10) {
+				store->index = store->index + 1 >= store->length ? 0 : store->index + 1;
+				store->update(dt);
+				inputTerm = 0;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) && inputTerm >= 10) {
+				store->update(dt, store->options.at(store->index));
+				inputTerm = 0;
+			}
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::X) && inputTerm >= 10) {
+				this->quit = true;
+				inputTerm = 0;
+			}
+		}
 	}
 }
 

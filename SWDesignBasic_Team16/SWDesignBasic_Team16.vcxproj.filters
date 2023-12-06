@@ -37,6 +37,8 @@
     <ClCompile Include="CustomColor.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
     <ClCompile Include="GameOverState.cpp" />
+    <ClCompile Include="StoreEvent.cpp" />
+    <ClCompile Include="Partner.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AoeItem.h" />
@@ -75,6 +77,8 @@
     <ClInclude Include="CustomColor.h" />
     <ClInclude Include="MainMenuState.h" />
     <ClInclude Include="GameOverState.h" />
+    <ClInclude Include="StoreEvent.h" />
+    <ClInclude Include="Partner.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
