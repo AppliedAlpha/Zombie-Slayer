@@ -187,11 +187,11 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			DropItem* dropXp = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(-10.f, 10.f), mobList[i]->inventory, sf::Color(0, 0, 255));
 			dropXpList.push_back(dropXp);
 
-			if (Random::instance().eventOccursWithProbability(0.5f)) {
+			if (Random::instance().eventOccursWithProbability(0.01f)) {
 				DropItem* dropBomb = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(10.f, -10.f), mobList[i]->inventory, sf::Color(0, 0, 0));
 				dropBombList.push_back(dropBomb);
 			}
-			if (Random::instance().eventOccursWithProbability(0.5f)) {
+			if (Random::instance().eventOccursWithProbability(0.2f)) {
 				DropItem* dropPotion = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(-10.f, -10.f), mobList[i]->inventory, sf::Color(255, 0, 0));
 				dropPotionList.push_back(dropPotion);
 			}
@@ -333,9 +333,8 @@ void GameState::updateInput(const float& dt) {
 
 	for (auto i = 1; i <= 9; i++) {
 		if (this->timeUntilItemCooldown < 0.01f && sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(sf::Keyboard::Num1 - 1 + i))) {
-			this->player.useItem(i);
-
-			this->timeUntilItemCooldown = 1.f;
+			bool res = this->player.useItem(i);
+			this->timeUntilItemCooldown = res ? 1.f : .1f;
 		}
 	}
 
