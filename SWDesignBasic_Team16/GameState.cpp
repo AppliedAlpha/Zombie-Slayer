@@ -210,17 +210,22 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		
 
 		if (mobList[i]->getDeath()) {
-			DropItem* dropGold = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7*1.723f, 7*1.f), mobList[i]->inventory, sf::Color(255, 255, 0));
+			DropItem* dropGold = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7 * 1.723f, 7 * 1.f), mobList[i]->inventory, sf::Color(255, 255, 0));
 			dropGoldList.push_back(dropGold);
-			DropItem* dropXp = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7*-1.732f, 7*1.f), mobList[i]->inventory, sf::Color(0, 0, 255));
+			DropItem* dropXp = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7 * -1.732f, 7 * 1.f), mobList[i]->inventory, sf::Color(0, 0, 255));
 			dropXpList.push_back(dropXp);
 
-			if (Random::instance().eventOccursWithProbability(0.01f)) {
-				DropItem* dropBomb = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(10.f, -10.f), mobList[i]->inventory, sf::Color(0, 0, 0));
+			Random* random = NULL;
+			if (random->eventOccursWithProbability(1.f)) {
+				DropItem* dropBomb = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(0.f, 7 * 2.f), mobList[i]->inventory, sf::Color(0, 0, 0));
 				dropBombList.push_back(dropBomb);
 			}
-			if (Random::instance().eventOccursWithProbability(0.2f)) {
-				DropItem* dropPotion = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(-10.f, -10.f), mobList[i]->inventory, sf::Color(255, 0, 0));
+			if (random->eventOccursWithProbability(1.f)) {
+				DropItem* dropIce = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7 * -1.732f, 7 * -1.f), mobList[i]->inventory, sf::Color(0, 183, 235));
+				dropIceList.push_back(dropIce);
+			}
+			if (random->eventOccursWithProbability(1.f)) {
+				DropItem* dropPotion = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(0.f, 7 * -2.f), mobList[i]->inventory, sf::Color(255, 0, 0));
 				dropPotionList.push_back(dropPotion);
 			}
 
@@ -374,6 +379,7 @@ void GameState::updateInput(const float& dt) {
 
 	for (auto i = 1; i <= 9; i++) {
 		if (this->timeUntilItemCooldown < 0.01f && sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(sf::Keyboard::Num1 - 1 + i))) {
+			// 아이템 사용 쿨다운 조정
 			bool res = this->player.useItem(i);
 			this->timeUntilItemCooldown = res ? 1.f : .1f;
 		}
@@ -503,19 +509,6 @@ void GameState::update(const float& dt) {
 
 	this->view.setCenter(this->player.cx, this->player.cy);
 	this->window->setView(view);
-
-	// if (CustomMath::getLength(this->velocity) != 0.f) {
-		// this->velocity = CustomMath::normalize(this->velocity);
-		// this->view.move(this->player.movementSpeed * dt * this->velocity);
-		// this->window->setView(view);
-	// }
-
-	if (CustomMath::getLength(this->velocity) != 0.f) {
-		this->velocity = CustomMath::normalize(this->velocity);
-		this->view.move(this->player.movementSpeed * dt * this->velocity);
-		this->window->setView(view);
-	}
-
 
 	for (auto partner : this->player.partners) {
 		partner->update(dt, this->player.cx, this->player.cy, this->player.viewDirection);
