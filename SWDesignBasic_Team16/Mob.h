@@ -31,7 +31,6 @@ public:
 	sf::Vector2f direction;
 	sf::Sprite sprite;
 
-	void updateCollision(Bomb* bomb);
 	void updateCollision(AoE* aoe);
 	void updateCollision(Weapon* weapon, float power);
 	void updateItemCollision(Item* item, float power);

@@ -33,5 +33,6 @@ public:
 	virtual void updateCollision(Entity* object);
 	virtual void update(const float& dt);
 	virtual void render(sf::RenderTarget* target);
+	void renderHpBar(sf::RenderTarget* target);
 	const sf::RectangleShape& getShape();
 };

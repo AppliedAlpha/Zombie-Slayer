@@ -45,6 +45,7 @@
     <ClCompile Include="NPC.cpp" />
     <ClCompile Include="NPCEvent.cpp" />
     <ClCompile Include="OptionSelectionEvent.cpp" />
+    <ClCompile Include="Partner.cpp" />
     <ClCompile Include="Pistol.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Random.cpp" />
@@ -53,6 +54,7 @@
     <ClCompile Include="Spear.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="State.cpp" />
+    <ClCompile Include="StoreEvent.cpp" />
     <ClCompile Include="Sword.cpp" />
     <ClCompile Include="Weapon.cpp" />
   </ItemGroup>
@@ -82,6 +84,7 @@
     <ClInclude Include="NPC.h" />
     <ClInclude Include="NPCEvent.h" />
     <ClInclude Include="OptionSelectionEvent.h" />
+    <ClInclude Include="Partner.h" />
     <ClInclude Include="Pistol.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Random.h" />
@@ -91,6 +94,7 @@
     <ClInclude Include="Stage.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="StoreEvent.h" />
     <ClInclude Include="Sword.h" />
     <ClInclude Include="Weapon.h" />
   </ItemGroup>

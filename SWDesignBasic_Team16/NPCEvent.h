@@ -6,6 +6,8 @@ class NPCEvent : public Event
 {
 private:
 public:
+	sf::Texture bgTexture;
+	sf::Sprite bgSprite;
 	sf::RectangleShape textField;
 	std::deque<std::string>& dialog;
 	sf::Text currentDialog;

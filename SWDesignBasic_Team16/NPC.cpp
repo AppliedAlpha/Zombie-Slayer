@@ -5,6 +5,7 @@ void NPC::initShape(sf::Color color, float size)
 	Entity::initShape();
 	this->shape.setSize(sf::Vector2f(size, size));
 	this->shape.setFillColor(color);
+	this->shape.setOutlineColor(sf::Color::Blue);
 	this->cx = pow(-1, Random::instance().getInt(0, 1)) * Random::instance().getInt(200, 250);
 	this->cy = pow(-1, Random::instance().getInt(0, 1)) * Random::instance().getInt(150, 200);
 }

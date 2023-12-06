@@ -105,14 +105,12 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			if (i != j) {
 				sf::FloatRect otherMobBounds = mobList[j]->getShape().getGlobalBounds();
 				if (mobBounds.intersects(otherMobBounds)) {
-					float d1 = (this->player.cx - this->mobList[i]->cx) * (this->player.cx - this->mobList[i]->cx) + (this->player.cy - this->mobList[i]->cy) * (this->player.cy - this->mobList[i]->cy);
-					float d2 = (this->player.cx - this->mobList[j]->cx) * (this->player.cx - this->mobList[j]->cx) + (this->player.cy - this->mobList[j]->cy) * (this->player.cy - this->mobList[j]->cy);
-					if (d1 >= d2) {
-						this->mobList[i]->direction = CustomMath::normalize(- this->mobList[i]->direction + this->mobList[j]->direction);
-					}
-					else {
-						this->mobList[j]->direction = CustomMath::normalize(- this->mobList[j]->direction + this->mobList[i]->direction);
-					}
+					auto direction1 = CustomMath::normalize(sf::Vector2f(this->player.cx, this->player.cy) - sf::Vector2f(this->mobList[i]->cx, this->mobList[i]->cy));
+					auto direction2 = CustomMath::normalize(sf::Vector2f(this->player.cx, this->player.cy) - sf::Vector2f(this->mobList[j]->cx, this->mobList[j]->cy));
+					auto distance1 = CustomMath::normalize(sf::Vector2f(this->mobList[i]->cx, this->mobList[i]->cy) - sf::Vector2f(this->mobList[j]->cx, this->mobList[j]->cy));
+					auto distance2 = CustomMath::normalize(sf::Vector2f(this->mobList[j]->cx, this->mobList[j]->cy) - sf::Vector2f(this->mobList[i]->cx, this->mobList[i]->cy));
+					this->mobList[i]->direction = CustomMath::normalize(direction1 + distance1);
+					this->mobList[j]->direction = CustomMath::normalize(direction2 + distance2);
 				}
 			}
 		}
@@ -120,13 +118,17 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		if (mobBounds.intersects(playerNextPosBounds)) {
 			player.updateCollision(mobList[i]);
 		}
+		for (auto partner : this->player.partners) {
+			if (mobBounds.intersects(partner->shape.getGlobalBounds())) {
+				partner->updateCollision(mobList[i]);
+			}
+		}
 	}
 
 
 	for (int i = 0; i < this->mobList.size(); i++) {
 		sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
 		if (mobList[i]->weapon != nullptr) {
-
 			if (RangedWeapon* ranged = dynamic_cast<RangedWeapon*>(mobList[i]->weapon)) {
 				for (auto bullet : ranged->bullets) {
 					sf::FloatRect bulletBounds = bullet->shape.getGlobalBounds();
@@ -136,6 +138,15 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 							this->aoeList.push_back(bullet->explode(ranged->radius, ranged->explosionDuration, ranged->explosionDamage, mobList[i]->shape.getPosition()));
 						}
 						bullet->out = true;
+					}
+					for (auto partner : this->player.partners) {
+						if (bulletBounds.intersects(partner->shape.getGlobalBounds())) {
+							partner->updateCollision(mobList[i]);
+							if (bullet->explosion) {
+								this->aoeList.push_back(bullet->explode(ranged->radius, ranged->explosionDuration, ranged->explosionDamage, mobList[i]->shape.getPosition()));
+							}
+							bullet->out = true;
+						}
 					}
 				}
 			}
@@ -148,6 +159,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 				mobList[i]->updateItemCollision(aoeItem, this->player.power);
 			}
 		}
+		
 		for (auto weapon : this->player.weaponList) {
 			if (MeleeWeapon* melee = dynamic_cast<MeleeWeapon*>(weapon.second)) {
 				sf::FloatRect weaponBounds = melee->shape.getGlobalBounds();
@@ -175,10 +187,29 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 				}
 			}
 		}
+		
+		for (auto partner : this->player.partners) {
+			if (RangedWeapon* partnerRanged = dynamic_cast<RangedWeapon*>(partner->weapon)) {
+				for (auto partnerBullet : partnerRanged->bullets) {
+					sf::FloatRect partnerBulletBounds = partnerBullet->shape.getGlobalBounds();
+
+					if (mobBounds.intersects(partnerBulletBounds)) {
+						mobList[i]->updateCollision(partnerRanged, partner->power);
+						if (partnerBullet->maxHitCount <= partnerBullet->hitCount) {
+							if (partnerBullet->explosion) {
+								this->aoeList.push_back(partnerBullet->explode(partnerRanged->radius, partnerRanged->explosionDuration, partnerRanged->explosionDamage, mobList[i]->shape.getPosition()));
+							}
+							partnerBullet->out = true;
+						}
+						else partnerBullet->hitCount++;
+					}
+
+				}
+			}
+		}
+		
 
 		if (mobList[i]->getDeath()) {
-			// 
-			//DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
 			DropItem* dropGold = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7*1.723f, 7*1.f), mobList[i]->inventory, sf::Color(255, 255, 0));
 			dropGoldList.push_back(dropGold);
 			DropItem* dropXp = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7*-1.732f, 7*1.f), mobList[i]->inventory, sf::Color(0, 0, 255));
@@ -246,7 +277,6 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		sf::FloatRect dropGoldBounds = dropGoldList[i]->shape.getGlobalBounds();
 		if (dropGoldBounds.intersects(playerNextPosBounds)) {
 			if (goldList[i] != NULL) {
-				//this->player.inventory.setGold(this->player.inventory.getGold() + goldList[i]);
 				this->player.inventory.setGold(this->player.inventory.getGold() + this->goldList[i]);
 			}
 			std::cout << "Gold:  " << this->player.inventory.getGold() << std::endl;
@@ -261,7 +291,6 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		sf::FloatRect dropXpBounds = dropXpList[i]->shape.getGlobalBounds();
 		if (dropXpBounds.intersects(playerNextPosBounds)) {
 			if (xpList[i] != NULL) {
-				//this->player.inventory.setXp(this->player.inventory.getXp() + xpList[i]);
 				this->player.inventory.setXp(this->player.inventory.getXp() + this->xpList[i]);
 				while (this->player.inventory.getXp() >= CustomMath::getMaxXp(this->player.level)) {
 					this->player.inventory.setXp(this->player.inventory.getXp() - CustomMath::getMaxXp(this->player.level));
@@ -282,7 +311,6 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		sf::FloatRect dropBombBounds = dropBombList[i]->shape.getGlobalBounds();
 		if (dropBombBounds.intersects(playerNextPosBounds)) {
 			this->aoeList.push_back(new AoE(400.f, 0.3f, 6.f, dropBombList[i]->shape.getPosition()));
-
 			delete dropBombList[i];
 			this->dropBombList.erase(this->dropBombList.begin() + i);
 		}
@@ -310,6 +338,14 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 
 			delete dropPotionList[i];
 			this->dropPotionList.erase(this->dropPotionList.begin() + i);
+		}
+	}
+
+	for (int i = 0; i < this->player.partners.size(); i++) {
+		if (this->player.partners[i]->getDeath()) {
+			delete this->player.partners[i];
+			this->player.partners.erase(this->player.partners.begin() + i);
+			for (int j = i; j < this->player.partners.size(); j++) this->player.partners[j]->index = j + 1;
 		}
 	}
 }
@@ -366,8 +402,6 @@ void GameState::updateItemUse(const float& dt) {
 
 	if (this->timeUntilItemCooldown <= 0)
 		this->timeUntilItemCooldown = 0.f;
-
-	// std::cout << this->itemCoolDownTime << '\n';
 }
 
 void GameState::updateMobSpawn(const float& dt) {
@@ -391,6 +425,10 @@ void GameState::updateNPCEvent(const float& dt) {
 		{
 		case 1:
 			this->player.inventory.setGold(this->player.inventory.getGold() + 10);
+			this->player.getPartner();
+			this->player.getPartner();
+			this->player.getPartner();
+			this->player.getPartner();
 			break;
 		case 2:
 			this->aoeList.push_back(new AoE(200, .5f, 1.f, this->npcEventPos));
@@ -399,14 +437,9 @@ void GameState::updateNPCEvent(const float& dt) {
 			this->player.movementSpeed = this->player.movementSpeed + 10;
 			break;
 		case 4:
-			this->mobList.push_back(new Mob(2, 2, std::string("Normal Zombie"), 3.f, 1.f, 40.f/*80*/, sf::Color::Green, 20.f));
-			this->mobList.at(this->mobList.size() - 1)->cx = this->npcEventPos.x;
-			this->mobList.at(this->mobList.size() - 1)->cy = this->npcEventPos.y;
-			this->mobList.at(this->mobList.size() - 1)->shape.setPosition(this->npcEventPos);
+			this->player.inventory.setGold(this->player.inventory.getGold() + 10);
 			break;
 		case 5:
-
-		case 6:
 
 		default:
 			break;
@@ -417,6 +450,10 @@ void GameState::updateNPCEvent(const float& dt) {
 		{
 		case 1:
 			this->player.inventory.setGold(this->player.inventory.getGold() + 10);
+			this->player.getPartner();
+			this->player.getPartner();
+			this->player.getPartner();
+			this->player.getPartner();
 			break;
 		case 2:
 			this->aoeList.push_back(new AoE(200, .5f, 1.f, this->npcEventPos, false));
@@ -432,8 +469,6 @@ void GameState::updateNPCEvent(const float& dt) {
 			break;
 		case 5:
 
-		case 6:
-			break;
 		default:
 			break;
 		}
@@ -453,7 +488,7 @@ void GameState::updateStageClear()
 			this->allClear = true; // TODO: 올 클리어 추가해야함
 			return;
 		}
-
+		this->eventQueue.push_back(new StoreEvent(&this->player));
 		this->nowStage = this->stages.front();
 		this->backgroundMap.changeSpriteByStage(this->nowStage->level);
 	}
@@ -480,6 +515,19 @@ void GameState::update(const float& dt) {
 		// this->view.move(this->player.movementSpeed * dt * this->velocity);
 		// this->window->setView(view);
 	// }
+
+	if (CustomMath::getLength(this->velocity) != 0.f) {
+		this->velocity = CustomMath::normalize(this->velocity);
+		this->view.move(this->player.movementSpeed * dt * this->velocity);
+		this->window->setView(view);
+	}
+
+
+	for (auto partner : this->player.partners) {
+		partner->update(dt, this->player.cx, this->player.cy, this->player.viewDirection);
+		partner->weapon->update(dt, partner->shape, partner->cx, partner->cy, partner->viewDirection);
+	}
+
 
 	this->updateItemUse(dt);
 
@@ -573,6 +621,12 @@ void GameState::render(sf::RenderTarget* target) {
 	}
 	
 	this->player.render(target);
+	
+	for (auto partner : this->player.partners) {
+		partner->render(target);
+		partner->weapon->render(target);
+	}
+	
 
 	this->ui.render(target);
 }

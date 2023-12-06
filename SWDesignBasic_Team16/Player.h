@@ -10,6 +10,7 @@
 #include "Pistol.h"
 #include "Brick.h"
 #include "Rocket.h"
+#include "Partner.h"
 
 class Player : public Entity
 {
@@ -29,6 +30,7 @@ public:
 	std::vector<int> unselected;
 	std::unordered_map<std::string, Item*> itemList;
 	Inventory inventory;
+	std::vector<Partner*> partners;
 	Player();
 	~Player();
 	void attack(const float& dt);
@@ -41,6 +43,7 @@ public:
 	void update(const float& dt, sf::Vector2f velocity);
 	std::string indexToWeaponName(int index);
 	int weaponNameToIndex(std::string name);
+	void getPartner();
 
 	bool getDeath() const { return this->death; }
 
