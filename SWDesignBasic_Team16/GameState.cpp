@@ -7,6 +7,7 @@ void GameState::initStages()
 	this->stages.push_back(new Stage(2));
 	this->stages.push_back(new Stage(3));
 	this->stages.push_back(new Stage(4));
+	this->stages.push_back(new Stage(5));
 
 	this->nowStage = this->stages.front();
 	printf("[Stage %d]\n", this->nowStage->level);
@@ -32,7 +33,6 @@ GameState::GameState(sf::RenderWindow* window) : State(window) {
 
 	this->timeUntilItemCooldown = 1.f;
 	this->player.invincible = false;
-	this->bombduration = 0.f;
 }
 
 GameState::~GameState() {
@@ -50,12 +50,14 @@ void GameState::spawnMob()
 {
 	Mob* mob = this->nowStage->spawnMob();
 	this->mobList.push_back(mob);
+	mob->originSpeed = mob->movementSpeed;
 	//std::cout << mobList.size() << std::endl;
 }
 
 void GameState::spawnBoss() {
 	Mob* boss = this->nowStage->spawnBoss();
 	this->mobList.push_back(boss);
+	boss->originSpeed = boss->movementSpeed;
 }
 
 void GameState::spawnNPC()
@@ -84,18 +86,13 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			if (i != j) {
 				sf::FloatRect otherMobBounds = mobList[j]->getShape().getGlobalBounds();
 				if (mobBounds.intersects(otherMobBounds)) {
-					//this->mobList[i]->movementSpeed *= 2;
 					float d1 = (this->player.cx - this->mobList[i]->cx) * (this->player.cx - this->mobList[i]->cx) + (this->player.cy - this->mobList[i]->cy) * (this->player.cy - this->mobList[i]->cy);
 					float d2 = (this->player.cx - this->mobList[j]->cx) * (this->player.cx - this->mobList[j]->cx) + (this->player.cy - this->mobList[j]->cy) * (this->player.cy - this->mobList[j]->cy);
 					if (d1 >= d2) {
 						this->mobList[i]->direction = CustomMath::normalize(- this->mobList[i]->direction + this->mobList[j]->direction);
-						//this->mobList[i]->direction = sf::Vector2f(0, 0);
-						//std::cout << this->mobList[i]->direction.x << ", " << this->mobList[i]->direction.y << std::endl;
 					}
 					else {
 						this->mobList[j]->direction = CustomMath::normalize(- this->mobList[j]->direction + this->mobList[i]->direction);
-						//this->mobList[i]->direction = sf::Vector2f(0, 0);
-						//std::cout << this->mobList[j]->direction.x << ", " << this->mobList[j]->direction.y << std::endl;
 					}
 				}
 			}
@@ -163,18 +160,22 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		if (mobList[i]->getDeath()) {
 			// 
 			//DropItem* dropitem = new DropItem(mobList[i]->shape.getPosition(), mobList[i]->inventory);
-			DropItem* dropGold = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(10.f, 10.f), mobList[i]->inventory, sf::Color(255, 255, 0));
+			DropItem* dropGold = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7*1.723f, 7*1.f), mobList[i]->inventory, sf::Color(255, 255, 0));
 			dropGoldList.push_back(dropGold);
-			DropItem* dropXp = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(-10.f, 10.f), mobList[i]->inventory, sf::Color(0, 0, 255));
+			DropItem* dropXp = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7*-1.732f, 7*1.f), mobList[i]->inventory, sf::Color(0, 0, 255));
 			dropXpList.push_back(dropXp);
 
 			Random* random = NULL;
-			if (random->eventOccursWithProbability(0.5f)) {
-				DropItem* dropBomb = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(10.f, -10.f), mobList[i]->inventory, sf::Color(0, 0, 0));
+			if (random->eventOccursWithProbability(0.01f)) {
+				DropItem* dropBomb = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(0.f, 7*2.f), mobList[i]->inventory, sf::Color(0, 0, 0));
 				dropBombList.push_back(dropBomb);
 			}
-			if (random->eventOccursWithProbability(0.5f)) {
-				DropItem* dropPotion = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(-10.f, -10.f), mobList[i]->inventory, sf::Color(255, 0, 0));
+			if (random->eventOccursWithProbability(1.f)) {
+				DropItem* dropIce = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7*-1.732f, 7*-1.f), mobList[i]->inventory, sf::Color(0,183,235));
+				dropIceList.push_back(dropIce);
+			}
+			if (random->eventOccursWithProbability(0.2f)) {
+				DropItem* dropPotion = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(0.f, 7*-2.f), mobList[i]->inventory, sf::Color(255, 0, 0));
 				dropPotionList.push_back(dropPotion);
 			}
 
@@ -260,14 +261,22 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		sf::FloatRect dropBombBounds = dropBombList[i]->shape.getGlobalBounds();
 		if (dropBombBounds.intersects(playerNextPosBounds)) {
 			this->aoeList.push_back(new AoE(400.f, 0.3f, 6.f, dropBombList[i]->shape.getPosition()));
-			/*
-			for (auto item : this->player.itemList) {
-				item.second->active = true;
-			}
-			std::cout << "Bomb!!!" << std::endl;
-			*/
+
 			delete dropBombList[i];
 			this->dropBombList.erase(this->dropBombList.begin() + i);
+		}
+	}
+
+	for (int i = 0; i < this->dropIceList.size(); i++) {
+		sf::FloatRect dropIceBounds = dropIceList[i]->shape.getGlobalBounds();
+		if (dropIceBounds.intersects(playerNextPosBounds)) {
+			for (int j = 0; j < mobList.size(); j++) {
+				mobList[j]->speedZeroDuration = 0.f;
+			}
+			this->aoeList.push_back(new AoE(400.f, 0.3f, dropIceList[i]->shape.getPosition(), 1));
+			
+			delete dropIceList[i];
+			this->dropIceList.erase(this->dropIceList.begin() + i);
 		}
 	}
 
@@ -323,13 +332,17 @@ void GameState::updateInput(const float& dt) {
 
 void GameState::updateItemUse(const float& dt) {
 	this->timeUntilItemCooldown -= dt;
-	for (auto item : this->player.itemList) {
-		if (item.second->active == true) this->bombduration += dt;
-		if (this->bombduration >= 0.3f) {
-			item.second->active = false;
-			bombduration = 0.f;
+
+	for (int i = 0; i < this->mobList.size(); i++) {
+		if (mobList[i]->movementSpeed == 0) {
+			mobList[i]->speedZeroDuration += dt;
+		}
+		if (mobList[i]->speedZeroDuration >= 3.f) {
+			mobList[i]->speedZeroDuration = 0.f;
+			mobList[i]->movementSpeed = mobList[i]->originSpeed;
 		}
 	}
+
 	if (this->timeUntilItemCooldown <= 0)
 		this->timeUntilItemCooldown = 0.f;
 
@@ -491,6 +504,9 @@ void GameState::render(sf::RenderTarget* target) {
 
 	for (auto dropBomb : this->dropBombList)
 		dropBomb->draw(target);
+
+	for (auto dropIce : this->dropIceList)
+		dropIce->draw(target);
 
 	for (auto dropPotion : this->dropPotionList)
 		dropPotion->draw(target);

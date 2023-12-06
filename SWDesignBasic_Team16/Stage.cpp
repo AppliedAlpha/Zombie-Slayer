@@ -5,7 +5,12 @@ Stage::Stage(int level) : level(level) {
 	case 1:
 		setDialogArchive(this->level);
 		setNPC("Survivor", 3, 1, 20, sf::Color::Yellow, 20);
-		enqueueMob(1, 1, "Normal Zombie", 3, 1, 100, sf::Color::Green, 20, 100, false);
+		enqueueMob(1, 1, "Normal Zombie", 3, 1, 100, sf::Color::Green, 20, 10, false, 0);
+		enqueueMob(1, 1, "Fast Zombie", 5, 1, 80, sf::Color(23, 10, 69, 255), 15, 10, false, 0);
+		enqueueMob(1, 1, "Helmet Zombie", 1, 2, 300, sf::Color(255, 127, 0, 255), 30, 10, false, 0);
+		enqueueMob(1, 1, "Shooting Zombie", 3, 1, 100, sf::Color(0, 63, 0, 255), 20, 10, true, 1);
+		enqueueMob(1, 1, "Brick Zombie", 1, 2, 300, sf::Color(245, 151, 0, 255), 30, 10, true, 2);
+		shuffleMob();
 		setBoss(100, 50, "Boss I", 2, 3, 500, sf::Color::Blue, 50);
 		initStageVariables(60, 40, 0.15f, 50.f);
 		break;
@@ -15,30 +20,41 @@ Stage::Stage(int level) : level(level) {
 		// 하나 추가해야 함
 		setDialogArchive(this->level);
 		setNPC("NPC II", 3, 1, 40/*80*/, sf::Color::Yellow, 20);
-		enqueueMob(1, 1, "Fast Zombie", 5, 1, 80, sf::Color(0, 63, 0, 255), 15, 100, false);
+		enqueueMob(1, 1, "Fast Zombie", 5, 1, 80, sf::Color(0, 63, 0, 255), 15, 100, false, 0);
+		shuffleMob();
 		setBoss(120, 60, "Boss II", 3, 4, 700, sf::Color::Blue, 50);
-
 		initStageVariables(30, 50, 0.1f, 50.f);
 		break;
 
 	case 3:
 		setDialogArchive(this->level);
 		setNPC("NPC III", 3, 1, 40/*80*/, sf::Color::Yellow, 20);
-		enqueueMob(1, 1, "Shooting Zombie", 3, 1, 100, sf::Color::Green, 20, 100, true);
-		enqueueMob(1, 1, "Helmet Zombie", 1, 2, 300, sf::Color(255,127,0,255), 30, 20, false);
+		enqueueMob(1, 1, "Shooting Zombie", 3, 1, 100, sf::Color::Green, 20, 100, true, 1);
+		enqueueMob(1, 1, "Helmet Zombie", 1, 2, 300, sf::Color(255,127,0,255), 30, 20, false, 0);
+		shuffleMob();
 		setBoss(150, 80, "Boss III", 4, 5, 1000, sf::Color::Blue, 50);
-
 		initStageVariables(40, 60, 0.1f, 50.f);
 		break;
 
 	case 4:
 		setDialogArchive(this->level);
 		setNPC("NPC IV", 3, 1, 40/*80*/, sf::Color::Yellow, 20);
-		enqueueMob(1, 1, "Shooting Zombie", 3, 1, 100, sf::Color::Green, 20, 100, true);
-		enqueueMob(2, 2, "Fast Zombie", 5, 0.75, 35/*70*/, sf::Color(0, 127, 0, 255), 15, 10, false);
-		enqueueMob(1, 1, "Helmet Zombie", 1, 2, 300, sf::Color(255, 127, 0, 255), 30, 20, false);
+		enqueueMob(1, 1, "Shooting Zombie", 3, 1, 100, sf::Color::Green, 20, 100, true, 1);
+		enqueueMob(2, 2, "Fast Zombie", 5, 0.75, 35/*70*/, sf::Color(0, 127, 0, 255), 15, 10, false, 0);
+		enqueueMob(1, 1, "Helmet Zombie", 1, 2, 300, sf::Color(255, 127, 0, 255), 30, 20, false, 0);
+		shuffleMob();
 		setBoss(200, 100, "Boss IV", 5, 6, 1500, sf::Color::Blue, 50);
+		initStageVariables(40, 60, 0.1f, 50.f);
+		break;
 
+	case 5:
+		setDialogArchive(this->level);
+		setNPC("NPC IV", 3, 1, 40/*80*/, sf::Color::Yellow, 20);
+		enqueueMob(1, 1, "Shooting Zombie", 3, 1, 100, sf::Color::Green, 20, 100, true, 1);
+		enqueueMob(2, 2, "Fast Zombie", 5, 0.75, 35/*70*/, sf::Color(0, 127, 0, 255), 15, 10, false, 0);
+		enqueueMob(1, 1, "Helmet Zombie", 1, 2, 300, sf::Color(255, 127, 0, 255), 30, 20, false, 0);
+		shuffleMob();
+		setBoss(200, 100, "Boss IV", 5, 6, 1500, sf::Color::Blue, 50);
 		initStageVariables(40, 60, 0.1f, 50.f);
 		break;
 	}
@@ -61,13 +77,19 @@ void Stage::initStageVariables(int _maxMobCount, int _leftKillCountUntilBoss, fl
 	this->isNPCSpawned = false;
 }
 
-void Stage::enqueueMob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size, int count, bool weapon) {
+void Stage::enqueueMob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size, int count, bool weapon, int weapontype) {
 	while (count--) {
 		auto mob = new Mob(gold, xp, name, movementSpeed, power, hp, color, size);
-		if (weapon)
-			mob->weapon = new Pistol(3.f, 2.f, 2.f, sf::Vector2f(mob->cx, mob->cy), 5, sf::Color(128, 0, 128));
+		if (weapon) {
+			if (weapontype == 1) mob->weapon = new Pistol(7.f, 2.f, 5.f, sf::Vector2f(mob->cx, mob->cy), 2.5, sf::Color(204, 204, 238));
+			else if (weapontype == 2) mob->weapon = new Brick(10.f, 2.f, 7.f, sf::Vector2f(mob->cx, mob->cy), 1.5, sf::Color(204, 204, 238));
+		}
 		this->mobList.push_back(mob);
 	}
+}
+
+void Stage::shuffleMob() {
+	std::random_shuffle(this->mobList.begin(), this->mobList.end());
 }
 
 void Stage::setBoss(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size) {

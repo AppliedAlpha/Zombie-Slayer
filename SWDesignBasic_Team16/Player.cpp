@@ -24,7 +24,7 @@ void Player::initShape()
 	this->shape.setRotation(45);
 }
 
-Player::Player() : Entity(200, 1, 100)
+Player::Player() : Entity(200, 10, 100)
 {
 	this->initShape();
 	this->initVariables();
@@ -113,12 +113,12 @@ void Player::getPotion() {
 void Player::useItem(int i) {
 	if (i == 1) {
 		if (remainPotion >= 1) {
-			if (this->hp + 10 <= this->maxHp) {
-				this->hp += 10;
+			if (this->hp + 20 <= this->maxHp) {
+				this->hp += 20;
 				remainPotion--;
 				std::cout << "Hp UP" << std::endl;
 			}
-			else if (this->hp + 10 > this->maxHp && this->hp < this->maxHp) {
+			else if (this->hp + 20 > this->maxHp && this->hp < this->maxHp) {
 				this->hp = this->maxHp;
 				remainPotion--;
 				std::cout << "Hp UP" << std::endl;

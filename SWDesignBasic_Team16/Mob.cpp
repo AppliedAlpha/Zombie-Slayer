@@ -31,7 +31,8 @@ void Mob::updateItemCollision(Item* item, float power)
 
 void Mob::updateCollision(AoE* aoe)
 {
-	this->hp -= aoe->damage;
+	if (aoe->damage > 0) this->hp -= aoe->damage;
+	if (this->movementSpeed - aoe->slowRate >= 0) this->movementSpeed -= aoe->slowRate;
 
 	if (this->hp <= 0.f) {
 		this->onDeath();
@@ -56,6 +57,7 @@ Mob::Mob(int gold, int xp) : Entity(1.5, 1.5, 100)
 }
 
 Mob::Mob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size) : Entity(movementSpeed, power, hp) {
+	this->speedZeroDuration = 0.f;
 	this->gold = gold;
 	this->xp = xp;
 	this->name = name;

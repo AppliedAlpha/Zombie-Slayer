@@ -23,9 +23,8 @@ private:
 	sf::Font* font;
 
 	std::vector<Mob*> mobList;
+	std::vector<Mob*> mobSpeedList;
 
-	//int* xpList = new int;
-	//int* goldList = new int;
 	std::vector<int> xpList;
 	std::vector<int> goldList;
 
@@ -40,11 +39,11 @@ private:
 	std::vector<DropItem*> dropGoldList;
 	std::vector<DropItem*> dropXpList;
 	std::vector<DropItem*> dropBombList;
+	std::vector<DropItem*> dropIceList;
 	std::vector<DropItem*> dropPotionList;
 	Stage* nowStage;
 
 	float timeUntilItemCooldown;
-	float bombduration;
 	float playTime = 0.f;
 
 	sf::Texture* allTextures;

@@ -23,6 +23,8 @@ public:
 	Mob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size, Weapon* weapon);
 	~Mob();
 
+	float speedZeroDuration;
+	float originSpeed;
 	Weapon* weapon = nullptr;
 	std::string name;
 	Inventory inventory;
