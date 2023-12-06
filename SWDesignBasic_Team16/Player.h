@@ -18,9 +18,10 @@ private:
 	void initVariables();
 	bool death = false;
 
-	int remainPotion;
 
 public:
+	int remainPotion;
+
 	bool invincible = true;
 	sf::Vector2f viewDirection;
 	std::unordered_map<int, Weapon*> weaponList;

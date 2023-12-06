@@ -4,10 +4,10 @@ void Mob::initShape(sf::Color color)
 {
 	Entity::initShape();
 	this->shape.setSize(sf::Vector2f(this->gridSize, this->gridSize));
-	if (color == sf::Color::Blue) this->shape.setSize(sf::Vector2f(this->gridSize + 20.f, this->gridSize + 20.f));
+	// if (color == sf::Color::Blue) this->shape.setSize(sf::Vector2f(this->gridSize + 20.f, this->gridSize + 20.f));
 	this->shape.setFillColor(color);
-	this->cx = Random::instance().getFloat(0, 100) + Random::instance().getInt(0, 1) * 1180.f;
-	this->cy = Random::instance().getFloat(0, 720);
+	this->cx = 0;
+	this->cy = 0;
 }
 
 void Mob::updateCollision(Weapon* weapon, float power)
@@ -56,6 +56,7 @@ Mob::Mob(int gold, int xp) : Entity(1.5, 1.5, 100)
 	// this->initVariables();
 }
 
+/*
 Mob::Mob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size) : Entity(movementSpeed, power, hp) {
 	this->speedZeroDuration = 0.f;
 	this->gold = gold;
@@ -65,13 +66,18 @@ Mob::Mob(int gold, int xp, const std::string& name, float movementSpeed, float p
 	this->initShape(color);
 	this->direction = sf::Vector2f(0, 0);
 }
+*/
 
-Mob::Mob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size, Weapon* weapon) : Entity(movementSpeed, power, hp) {
+Mob::Mob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size, sf::Sprite* sprite, Weapon* weapon) : Entity(movementSpeed, power, hp) {
 	this->gold = gold;
 	this->xp = xp;
 	this->name = name;
 	this->gridSize = size;
 	this->initShape(color);
+	if (sprite != nullptr) {
+		this->isSprite = true;
+		this->sprite = *sprite;
+	}
 	this->weapon = weapon;
 	this->direction = sf::Vector2f(0, 0);
 }
@@ -98,8 +104,45 @@ void Mob::update(const float& dt, sf::Vector2f playerPosition) {
 void Mob::render(sf::RenderTarget* target) {
 	if (this->weapon)
 		this->weapon->render(target);
-	Entity::render(target);
+
+	if (this->isSprite) {
+		sf::FloatRect pos = this->sprite.getGlobalBounds();
+		pos.left = this->cx - (pos.width * 0.5f);
+		pos.top = this->cy - (pos.height * 0.5f);
+		this->shape.setPosition(pos.left, pos.top);
+		this->shape.setOrigin(sf::Vector2f(this->shape.getLocalBounds().width, this->shape.getLocalBounds().height) / 2.f);
+		this->shape.setPosition(this->shape.getPosition().x + this->shape.getOrigin().x, this->shape.getPosition().y + this->shape.getOrigin().y);
+
+		this->sprite.setPosition(pos.left, pos.top);
+		target->draw(this->sprite);
+		target->draw(this->hpBar, 4, sf::Quads);
+	}
+	else 
+		Entity::render(target);
 }
+
+/*
+void Mob::render(sf::RenderTarget* target, sf::Sprite* sprite) {
+	if (sprite == nullptr) {
+		Mob::render(target);
+	}
+	else {
+		if (this->weapon)
+			this->weapon->render(target);
+
+		
+		sf::FloatRect pos = this->shape.getGlobalBounds();
+		pos.left = this->cx - (pos.width * 0.5f);
+		pos.top = this->cy - (pos.height * 0.5f);
+		this->shape.setPosition(pos.left, pos.top);
+		this->shape.setOrigin(sf::Vector2f(this->shape.getLocalBounds().width, this->shape.getLocalBounds().height) / 2.f);
+		this->shape.setPosition(this->shape.getPosition().x + this->shape.getOrigin().x, this->shape.getPosition().y + this->shape.getOrigin().y);
+		target->draw(this->shape);
+		target->draw(this->hpBar, 4, sf::Quads);
+		
+	}
+}
+*/
 
 void Mob::onDeath() {
 	this->death = true;

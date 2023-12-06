@@ -15,12 +15,12 @@ private:
 
 	void initShape(sf::Color color);
 	bool death = false;
+	bool isSprite = false;
 
 public:
 	Mob();
 	Mob(int gold, int xp);
-	Mob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size);
-	Mob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size, Weapon* weapon);
+	Mob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size, sf::Sprite* sprite = nullptr, Weapon* weapon = nullptr);
 	~Mob();
 
 	float speedZeroDuration;
@@ -29,6 +29,8 @@ public:
 	std::string name;
 	Inventory inventory;
 	sf::Vector2f direction;
+	sf::Sprite sprite;
+
 	void updateCollision(Bomb* bomb);
 	void updateCollision(AoE* aoe);
 	void updateCollision(Weapon* weapon, float power);

@@ -3,16 +3,15 @@
 void GameState::initStages()
 {
 	// adding stages to deque
-	this->stages.push_back(new Stage(1));
-	this->stages.push_back(new Stage(2));
-	this->stages.push_back(new Stage(3));
-	this->stages.push_back(new Stage(4));
-	this->stages.push_back(new Stage(5));
+	this->stages.push_back(new Stage(1, this->mappedSprite));
+	this->stages.push_back(new Stage(2, this->mappedSprite));
+	this->stages.push_back(new Stage(3, this->mappedSprite));
+	this->stages.push_back(new Stage(4, this->mappedSprite));
+	this->stages.push_back(new Stage(5, this->mappedSprite));
 
 	this->nowStage = this->stages.front();
 	printf("[Stage %d]\n", this->nowStage->level);
 
-	printf("%s\n", this->nowStage->mobList.front()->name.c_str());
 }
 
 GameState::GameState(sf::RenderWindow* window) : State(window) {
@@ -22,9 +21,16 @@ GameState::GameState(sf::RenderWindow* window) : State(window) {
 	this->allTextures = new sf::Texture();
 	this->allTextures->loadFromFile("./Resources/Textures.png");
 
-	this->mappedSprite["Normal Zombie"] = new sf::Sprite(*this->allTextures, sf::IntRect(0, 0, 20, 20));
+	this->mappedSprite = new std::map<std::string, sf::Sprite*>();
+	this->mappedSprite->emplace("Normal Zombie", new sf::Sprite(*this->allTextures, sf::IntRect(0, 0, 20, 20)));
 
-	this->ui = GameUI(sf::Vector2f(640, 360), this->font);
+	this->ui = GameUI(sf::Vector2f(640, 360), this->font, this->allTextures);
+	
+	this->border.setSize(sf::Vector2f(2560, 1440));
+	this->border.setPosition(sf::Vector2f(-645, -365));
+	this->border.setFillColor(sf::Color::Transparent);
+	this->border.setOutlineColor(sf::Color::Red);
+	this->border.setOutlineThickness(1.f);
 
 	this->window->setView(view);
 
@@ -40,7 +46,7 @@ GameState::~GameState() {
 	std::vector<Mob *>().swap(this->mobList);
 	std::vector<NPC *>().swap(this->npcList);
 	std::vector<AoE *>().swap(this->aoeList);
-	std::map<std::string, sf::Sprite*>().swap(this->mappedSprite);
+	std::map<std::string, sf::Sprite*>().swap(*this->mappedSprite);
 
 	delete this->allTextures;
 	delete this->font;
@@ -49,6 +55,13 @@ GameState::~GameState() {
 void GameState::spawnMob()
 {
 	Mob* mob = this->nowStage->spawnMob();
+
+	// 몹의 위치를 스폰되고 나서 GameState에서 정해주는 것으로 변경
+	// 반지름 크기는 나중에 변경해줘도 좋을듯
+	auto diff = CustomMath::getRandomCoordWithRadius(480.f);
+
+	mob->cx = this->player.cx + diff.first;
+	mob->cy = this->player.cy + diff.second;
 	this->mobList.push_back(mob);
 	mob->originSpeed = mob->movementSpeed;
 	//std::cout << mobList.size() << std::endl;
@@ -56,6 +69,12 @@ void GameState::spawnMob()
 
 void GameState::spawnBoss() {
 	Mob* boss = this->nowStage->spawnBoss();
+
+	auto diff = CustomMath::getRandomCoordWithRadius(480.f);
+
+	boss->cx = this->player.cx + diff.first;
+	boss->cy = this->player.cy + diff.second;
+
 	this->mobList.push_back(boss);
 	boss->originSpeed = boss->movementSpeed;
 }
@@ -184,6 +203,8 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 
 			delete mobList[i];
 			this->mobList.erase(this->mobList.begin() + i);
+
+			this->nowStage->leftKillCountUntilBoss--;
 		}
 	}
 
@@ -242,9 +263,9 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			if (xpList[i] != NULL) {
 				//this->player.inventory.setXp(this->player.inventory.getXp() + xpList[i]);
 				this->player.inventory.setXp(this->player.inventory.getXp() + this->xpList[i]);
-				if (this->player.inventory.getXp() >= 20) {
-					this->player.level = this->player.level + this->player.inventory.getXp() / 20;
-					this->player.inventory.setXp(this->player.inventory.getXp() % 20 +1);
+				while (this->player.inventory.getXp() >= CustomMath::getMaxXp(this->player.level)) {
+					this->player.inventory.setXp(this->player.inventory.getXp() - CustomMath::getMaxXp(this->player.level));
+					this->player.level++;
 					this->eventQueue.push_back(new OptionSelectionEvent(&this->player));
 				}
 			}
@@ -354,7 +375,8 @@ void GameState::updateMobSpawn(const float& dt) {
 		this->spawnMob();
 	}
 
-	if (!this->nowStage->isBossSpawned && this->nowStage->bossSpawnTime == 0.f) {
+	if (!this->nowStage->isBossSpawned && 
+		(this->nowStage->bossSpawnTime == 0.f || this->nowStage->leftKillCountUntilBoss <= 0)) {
 		this->spawnBoss();
 	}
 
@@ -428,9 +450,12 @@ void GameState::updateStageClear()
 
 		if (this->stages.empty()) {
 			this->quit = true;
+			this->allClear = true; // TODO: 올 클리어 추가해야함
 			return;
 		}
+
 		this->nowStage = this->stages.front();
+		this->backgroundMap.changeSpriteByStage(this->nowStage->level);
 	}
 }
 
@@ -442,11 +467,19 @@ void GameState::update(const float& dt) {
 	this->updateInput(dt);
 	this->player.update(dt, this->velocity);
 
-	if (CustomMath::getLength(this->velocity) != 0.f) {
-		this->velocity = CustomMath::normalize(this->velocity);
-		this->view.move(this->player.movementSpeed * dt * this->velocity);
-		this->window->setView(view);
-	}
+	if (this->player.cx < -640) this->player.cx = -640;
+	if (this->player.cx > 1920) this->player.cx = 1920;
+	if (this->player.cy < -360) this->player.cy = -360;
+	if (this->player.cy > 1080) this->player.cy = 1080;
+
+	this->view.setCenter(this->player.cx, this->player.cy);
+	this->window->setView(view);
+
+	// if (CustomMath::getLength(this->velocity) != 0.f) {
+		// this->velocity = CustomMath::normalize(this->velocity);
+		// this->view.move(this->player.movementSpeed * dt * this->velocity);
+		// this->window->setView(view);
+	// }
 
 	this->updateItemUse(dt);
 
@@ -480,10 +513,12 @@ void GameState::update(const float& dt) {
 
 	// ui update
 	this->ui.updateCenterPos(sf::Vector2f(this->player.cx, this->player.cy));
-	this->ui.updateHpBar(this->player.hp, 100.f);
+	this->ui.updateHpBar(this->player.hp, this->player.maxHp);
 	this->ui.updateXpBar(this->player.inventory.getXp(), CustomMath::getMaxXp(this->player.level));
+	this->ui.updateItemSlot(this->timeUntilItemCooldown, this->player.remainPotion);
 	this->ui.updateLevelText(this->player.level);
 	this->ui.updateGoldText(this->player.inventory.getGold());
+	this->ui.updateStageText(this->nowStage->level);
 	this->ui.updatePlayTimeText(this->playTime);
 
 	this->updateStageClear();
@@ -491,7 +526,8 @@ void GameState::update(const float& dt) {
 
 void GameState::render(sf::RenderTarget* target) {
 	// 맵 출력이 플레이어보다 앞서야 함
-	this->basicMap.render(target);
+	this->backgroundMap.render(target);
+	target->draw(border);
 
 	for (auto npc : this->npcList)
 		npc->render(target);

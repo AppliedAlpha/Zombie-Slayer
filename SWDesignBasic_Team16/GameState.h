@@ -21,16 +21,18 @@ private:
 	Player player;
 	GameUI ui;
 	sf::Font* font;
+	bool allClear = false;
 
 	std::vector<Mob*> mobList;
 	std::vector<Mob*> mobSpeedList;
 
 	std::vector<int> xpList;
 	std::vector<int> goldList;
-
 	std::vector<NPC*> npcList;
+
+	sf::RectangleShape border;
 	sf::Vector2f velocity;
-	Map basicMap;
+	Map backgroundMap;
 	std::vector<AoE*> aoeList;
 	int npcEvent = -1;
 	sf::Vector2f npcEventPos;
@@ -47,7 +49,7 @@ private:
 	float playTime = 0.f;
 
 	sf::Texture* allTextures;
-	std::map<std::string, sf::Sprite *> mappedSprite;
+	std::map<std::string, sf::Sprite *>* mappedSprite;
 
 	void initStages();
 

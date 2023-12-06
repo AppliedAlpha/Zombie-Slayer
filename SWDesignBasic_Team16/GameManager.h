@@ -11,6 +11,7 @@ class GameManager
 private:
 	sf::RenderWindow* window;
 	sf::Event event;
+	sf::Image icon;
 
 	sf::Clock dtClock;
 	float dt;

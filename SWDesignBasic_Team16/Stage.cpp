@@ -1,23 +1,21 @@
 #include "Stage.h"
 
-Stage::Stage(int level) : level(level) {
+Stage::Stage(int level, std::map<std::string, sf::Sprite*>* mappedSprite) : level(level), mappedSprite(mappedSprite) {
 	switch (this->level) {
 	case 1:
 		setDialogArchive(this->level);
 		setNPC("Survivor", 3, 1, 20, sf::Color::Yellow, 20);
-		enqueueMob(1, 1, "Normal Zombie", 3, 1, 100, sf::Color::Green, 20, 10, false, 0);
+		enqueueMob(1, 1, "Normal Zombie", 2, 1, 20, sf::Color::Green, 20, 120, false, 0);
 		enqueueMob(1, 1, "Fast Zombie", 5, 1, 80, sf::Color(23, 10, 69, 255), 15, 10, false, 0);
 		enqueueMob(1, 1, "Helmet Zombie", 1, 2, 300, sf::Color(255, 127, 0, 255), 30, 10, false, 0);
 		enqueueMob(1, 1, "Shooting Zombie", 3, 1, 100, sf::Color(0, 63, 0, 255), 20, 10, true, 1);
 		enqueueMob(1, 1, "Brick Zombie", 1, 2, 300, sf::Color(245, 151, 0, 255), 30, 10, true, 2);
 		shuffleMob();
 		setBoss(100, 50, "Boss I", 2, 3, 500, sf::Color::Blue, 50);
-		initStageVariables(60, 40, 0.15f, 50.f);
+		initStageVariables(60, 60, 1.f, 80.f);
 		break;
 
 	case 2:
-		// TODO: NPC도 
-		// 하나 추가해야 함
 		setDialogArchive(this->level);
 		setNPC("NPC II", 3, 1, 40/*80*/, sf::Color::Yellow, 20);
 		enqueueMob(1, 1, "Fast Zombie", 5, 1, 80, sf::Color(0, 63, 0, 255), 15, 100, false, 0);
@@ -78,10 +76,14 @@ void Stage::initStageVariables(int _maxMobCount, int _leftKillCountUntilBoss, fl
 }
 
 void Stage::enqueueMob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size, int count, bool weapon, int weapontype) {
+	sf::Sprite* sp_ptr = nullptr;
+	if (this->mappedSprite->find(name) != this->mappedSprite->end())
+		sp_ptr = this->mappedSprite->at(name);
+	
 	while (count--) {
-		auto mob = new Mob(gold, xp, name, movementSpeed, power, hp, color, size);
+		auto mob = new Mob(gold, xp, name, movementSpeed, power, hp, color, size, sp_ptr);
 		if (weapon) {
-			if (weapontype == 1) mob->weapon = new Pistol(7.f, 2.f, 5.f, sf::Vector2f(mob->cx, mob->cy), 2.5, sf::Color(204, 204, 238));
+			if (weapontype == 1) mob->weapon = new Pistol(3.f, 2.f, 5.f, sf::Vector2f(mob->cx, mob->cy), 2.5, sf::Color(204, 204, 238));
 			else if (weapontype == 2) mob->weapon = new Brick(10.f, 2.f, 7.f, sf::Vector2f(mob->cx, mob->cy), 1.5, sf::Color(204, 204, 238));
 		}
 		this->mobList.push_back(mob);
@@ -117,6 +119,7 @@ Mob* Stage::spawnBoss() {
 		this->isBossSpawned = true;
 		return boss;
 	}
+	return nullptr;
 }
 
 NPC* Stage::spawnNPC()
