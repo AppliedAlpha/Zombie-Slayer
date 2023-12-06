@@ -25,6 +25,12 @@ GameState::GameState(sf::RenderWindow* window) : State(window) {
 	this->mappedSprite->emplace("Normal Zombie", new sf::Sprite(*this->allTextures, sf::IntRect(0, 0, 20, 20)));
 
 	this->ui = GameUI(sf::Vector2f(640, 360), this->font, this->allTextures);
+	
+	this->border.setSize(sf::Vector2f(2560, 1440));
+	this->border.setPosition(sf::Vector2f(-645, -365));
+	this->border.setFillColor(sf::Color::Transparent);
+	this->border.setOutlineColor(sf::Color::Red);
+	this->border.setOutlineThickness(1.f);
 
 	this->window->setView(view);
 
@@ -447,11 +453,19 @@ void GameState::update(const float& dt) {
 	this->updateInput(dt);
 	this->player.update(dt, this->velocity);
 
-	if (CustomMath::getLength(this->velocity) != 0.f) {
-		this->velocity = CustomMath::normalize(this->velocity);
-		this->view.move(this->player.movementSpeed * dt * this->velocity);
-		this->window->setView(view);
-	}
+	if (this->player.cx < -640) this->player.cx = -640;
+	if (this->player.cx > 1920) this->player.cx = 1920;
+	if (this->player.cy < -360) this->player.cy = -360;
+	if (this->player.cy > 1080) this->player.cy = 1080;
+
+	this->view.setCenter(this->player.cx, this->player.cy);
+	this->window->setView(view);
+
+	// if (CustomMath::getLength(this->velocity) != 0.f) {
+		// this->velocity = CustomMath::normalize(this->velocity);
+		// this->view.move(this->player.movementSpeed * dt * this->velocity);
+		// this->window->setView(view);
+	// }
 
 	this->updateItemUse(dt);
 
@@ -499,6 +513,7 @@ void GameState::update(const float& dt) {
 void GameState::render(sf::RenderTarget* target) {
 	// 맵 출력이 플레이어보다 앞서야 함
 	this->backgroundMap.render(target);
+	target->draw(border);
 
 	for (auto npc : this->npcList)
 		npc->render(target);

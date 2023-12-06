@@ -24,13 +24,11 @@ private:
 	bool allClear = false;
 
 	std::vector<Mob*> mobList;
-
-	//int* xpList = new int;
-	//int* goldList = new int;
 	std::vector<int> xpList;
 	std::vector<int> goldList;
-
 	std::vector<NPC*> npcList;
+
+	sf::RectangleShape border;
 	sf::Vector2f velocity;
 	Map backgroundMap;
 	std::vector<AoE*> aoeList;
