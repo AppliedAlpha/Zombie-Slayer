@@ -31,8 +31,8 @@ void Entity::initHpBar()
 	float bottomPadding = 5.f;
 	float height = 5.f;
 	
-	hpBar[0] = sf::Vertex(sf::Vector2f(this->cx - (this->gridSize + 4.f) * 0.5, this->cy + this->gridSize * 0.5 + bottomPadding), sf::Color::Red);
-	hpBar[1] = sf::Vertex(sf::Vector2f(this->cx - (this->gridSize + 4.f) * 0.5, this->cy + this->gridSize * 0.5 + height + bottomPadding), sf::Color::Red);
+	hpBar[0] = sf::Vertex(sf::Vector2f(this->cx - (this->gridSize + 8.f) * 0.5, this->cy + this->gridSize * 0.5 + bottomPadding), sf::Color::Red);
+	hpBar[1] = sf::Vertex(sf::Vector2f(this->cx - (this->gridSize + 8.f) * 0.5, this->cy + this->gridSize * 0.5 + height + bottomPadding), sf::Color::Red);
 	hpBar[2] = sf::Vertex(sf::Vector2f(this->cx + (this->gridSize) * 0.5, this->cy + this->gridSize * 0.5 + height + bottomPadding), sf::Color::Red);
 	hpBar[3] = sf::Vertex(sf::Vector2f(this->cx + (this->gridSize) * 0.5, this->cy + this->gridSize * 0.5 + bottomPadding), sf::Color::Red);
 }
