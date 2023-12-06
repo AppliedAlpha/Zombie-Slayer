@@ -41,7 +41,8 @@ void GameUI::initRectPosValues() {
 	levelTextPos = sf::Vector2f(1166, 85);
 	stageTextPos = sf::Vector2f(1160, 670);
 
-	itemPotionCountTextPos = sf::Vector2f(65, 675);
+	itemPotionCountTextPos[0] = sf::Vector2f(64, 675);
+	itemPotionCountTextPos[1] = sf::Vector2f(61, 680);
 }
 
 void GameUI::setBarPos(sf::Vertex* bar, const sf::IntRect& rect, const sf::Color& up, const sf::Color& down, const float fillPercent) {
@@ -114,7 +115,7 @@ void GameUI::initTexts() {
 	itemPotionCountText.setCharacterSize(20);
 	itemPotionCountText.setFillColor(sf::Color::Black);
 	itemPotionCountText.setOutlineColor(sf::Color::White);
-	itemPotionCountText.setPosition(centerPos - diff + itemPotionCountTextPos);
+	itemPotionCountText.setPosition(centerPos - diff + itemPotionCountTextPos[0]);
 	itemPotionCountText.setString("0");
 }
 
@@ -148,8 +149,9 @@ void GameUI::updateItemSlot(float coolDown, int potionCount) {
 
 	this->itemPotion.setPosition(centerPos + sf::Vector2f(-620, 280));
 
+	this->itemPotionCountText.setCharacterSize(potionCount >= 10 ? 14 : 20);
 	this->itemPotionCountText.setString(std::to_string(potionCount));
-	this->itemPotionCountText.setPosition(centerPos - diff + itemPotionCountTextPos);
+	this->itemPotionCountText.setPosition(centerPos - diff + itemPotionCountTextPos[potionCount >= 10]);
 }
 
 void GameUI::updatePlayTimeText(float playTime) {

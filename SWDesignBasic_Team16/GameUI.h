@@ -20,7 +20,7 @@ private:
 	sf::Color outlineGold, itemCoolBarColor;
 	sf::IntRect hpBarRect, xpBarRect, itemSlotCoolBarRect;
 	sf::Vector2f levelTextPos, goldTextPos, timeTextPos, stageTextPos;
-	sf::Vector2f itemPotionCountTextPos;
+	sf::Vector2f itemPotionCountTextPos[2];
 
 	sf::Font* font;
 	sf::Text levelText, goldText, timeText, stageText;

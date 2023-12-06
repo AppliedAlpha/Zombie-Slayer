@@ -20,6 +20,9 @@ void GameManager::initWindow() {
 	this->window = new sf::RenderWindow(windowBounds, title);
 	this->window->setFramerateLimit(frameRateLimit);
 	this->window->setVerticalSyncEnabled(verticalSyncEnabled);
+
+	this->icon.loadFromFile("Resources/Icon.png");
+	this->window->setIcon(this->icon.getSize().x, this->icon.getSize().y, this->icon.getPixelsPtr());
 }
 
 void GameManager::initStates() {
