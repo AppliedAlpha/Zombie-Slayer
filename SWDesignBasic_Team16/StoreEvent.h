@@ -4,6 +4,8 @@ class StoreEvent : public Event
 {
 private:
 public:
+	sf::Texture bgTexture;
+	sf::Sprite bgSprite;
 	int index = 0;
 	int length = 4;
 	std::vector<std::string> options;

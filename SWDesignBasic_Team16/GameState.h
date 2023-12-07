@@ -44,6 +44,7 @@ private:
 	std::vector<DropItem*> dropBombList;
 	std::vector<DropItem*> dropIceList;
 	std::vector<DropItem*> dropPotionList;
+	std::vector<DropItem*> dropMagneticList;
 	Stage* nowStage;
 
 	float timeUntilItemCooldown;

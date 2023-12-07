@@ -114,26 +114,32 @@ void Player::getPotion() {
 	remainPotion++;
 }
 
-void Player::useItem(int i) {
+bool Player::useItem(int i) {
 	if (i == 1) {
 		if (remainPotion >= 1) {
 			if (this->hp + 20 <= this->maxHp) {
 				this->hp += 20;
 				remainPotion--;
 				std::cout << "Hp UP" << std::endl;
+				return true;
 			}
 			else if (this->hp + 20 > this->maxHp && this->hp < this->maxHp) {
 				this->hp = this->maxHp;
 				remainPotion--;
 				std::cout << "Hp UP" << std::endl;
+				return true;
 			}
 			else if (this->hp == this->maxHp) {
 				std::cout << "Your HP is already FULL" << std::endl;
+				return false;
 			}
 		}
-		else std::cout << "There's No Item!!!" << std::endl;
+		else {
+			std::cout << "There's No Item!!!" << std::endl;
+			return false;
+		}
 	}
-
+	return false;
 }
 
 std::string Player::indexToWeaponName(int index)

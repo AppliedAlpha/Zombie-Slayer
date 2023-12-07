@@ -48,5 +48,5 @@ public:
 	bool getDeath() const { return this->death; }
 
 	void getPotion();
-	void useItem(int i);
+	bool useItem(int i);
 };

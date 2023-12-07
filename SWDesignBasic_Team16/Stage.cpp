@@ -6,7 +6,7 @@ Stage::Stage(int level, std::map<std::string, sf::Sprite*>* mappedSprite) : leve
 		setDialogArchive(this->level);
 		setNPC("Survivor", 3, 1, 20, sf::Color::Yellow, 20);
 		enqueueMob(1, 1, "Normal Zombie", 2, 1, 20, sf::Color::Green, 20, 120, false, 0);
-		enqueueMob(1, 1, "Fast Zombie", 5, 1, 80, sf::Color(23, 10, 69, 255), 15, 10, false, 0);
+		enqueueMob(1, 1, "Fast Zombie", 3.5, 1, 80, sf::Color(23, 10, 69, 255), 15, 10, false, 0);
 		enqueueMob(1, 1, "Helmet Zombie", 1, 2, 300, sf::Color(255, 127, 0, 255), 30, 10, false, 0);
 		enqueueMob(1, 1, "Shooting Zombie", 3, 1, 100, sf::Color(0, 63, 0, 255), 20, 10, true, 1);
 		enqueueMob(1, 1, "Brick Zombie", 1, 2, 300, sf::Color(245, 151, 0, 255), 30, 10, true, 2);
@@ -18,7 +18,7 @@ Stage::Stage(int level, std::map<std::string, sf::Sprite*>* mappedSprite) : leve
 	case 2:
 		setDialogArchive(this->level);
 		setNPC("NPC II", 3, 1, 40/*80*/, sf::Color::Yellow, 20);
-		enqueueMob(1, 1, "Fast Zombie", 5, 1, 80, sf::Color(0, 63, 0, 255), 15, 100, false, 0);
+		enqueueMob(1, 1, "Fast Zombie", 3.5, 1, 80, sf::Color(0, 63, 0, 255), 15, 100, false, 0);
 		shuffleMob();
 		setBoss(120, 60, "Boss II", 3, 4, 700, sf::Color::Blue, 50);
 		initStageVariables(30, 50, 0.1f, 50.f);

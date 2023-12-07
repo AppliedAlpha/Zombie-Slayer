@@ -32,8 +32,11 @@ void Mob::updateItemCollision(Item* item, float power)
 
 void Mob::updateCollision(AoE* aoe)
 {
-	if (aoe->damage > 0) this->hp -= aoe->damage;
-	if (this->movementSpeed - aoe->slowRate >= 0) this->movementSpeed -= aoe->slowRate;
+	if (aoe->damage > 0.f) this->hp -= aoe->damage;
+	if (aoe->slowRate > 0.f) {
+		this->movementSpeed = 0;
+		this->freeze = true;
+	}
 
 	if (this->hp <= 0.f) {
 		this->onDeath();

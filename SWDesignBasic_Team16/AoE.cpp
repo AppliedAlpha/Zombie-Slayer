@@ -11,6 +11,7 @@ AoE::AoE(float radius, float duration, float damage, sf::Vector2f position)
 	this->duration = duration;
 	this->damage = damage;
 	this->count = 0;
+	this->slowRate = 0;
 	this->disappear = false;
 	this->mobTarget = true;
 }
@@ -23,6 +24,7 @@ AoE::AoE(float radius, float duration, sf::Vector2f position, float slowRate)
 	this->shape.setOutlineThickness(2.f);
 	this->shape.setPosition(position);
 	this->shape.setOrigin(radius, radius);
+	this->damage = 0;
 	this->duration = duration;
 	this->slowRate = slowRate;
 	this->count = 0;
