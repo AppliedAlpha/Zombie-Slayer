@@ -7,6 +7,8 @@ class OptionSelectionEvent : public Event
 {
 private:
 public:
+	sf::Texture bgTexture;
+	sf::Sprite bgSprite;
 	int index = 0;
 	int length = 3;
 	std::vector<std::string> options;

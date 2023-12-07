@@ -11,9 +11,9 @@ AoE::AoE(float radius, float duration, float damage, sf::Vector2f position)
 	this->duration = duration;
 	this->damage = damage;
 	this->count = 0;
+	this->slowRate = 0;
 	this->disappear = false;
 	this->mobTarget = true;
-	this->slowRate = 0;
 }
 
 AoE::AoE(float radius, float duration, sf::Vector2f position, float slowRate)
@@ -44,7 +44,6 @@ AoE::AoE(float radius, float duration, float damage, sf::Vector2f position, bool
 	this->count = 0;
 	this->disappear = false;
 	this->mobTarget = false;
-	this->slowRate = 0;
 }
 
 AoE::~AoE()

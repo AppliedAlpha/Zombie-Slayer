@@ -2,6 +2,8 @@
 
 StoreEvent::StoreEvent(Player* player) : Event(player)
 {
+	this->bgTexture.loadFromFile("./Resources/StoreEvent.png");
+	this->bgSprite.setTexture(bgTexture);
 	this->index = 0;
 	this->title.setString("Stage Clear!");
 	this->subtitle.setString("Press Arrow Keys to Choose a Option and Press Z to Select, X to Quit");
@@ -75,6 +77,7 @@ void StoreEvent::update(const float& dt)
 
 void StoreEvent::render(sf::RenderTarget* target)
 {
+	target->draw(this->bgSprite);
 	for (int i = 0; i < this->length; i++) {
 		target->draw(*(this->optionFields.at(i)));
 		target->draw(*(this->optionTexts.at(i)));
@@ -124,6 +127,7 @@ void StoreEvent::update(const float& dt, std::string option)
 void StoreEvent::move(sf::Vector2f diff)
 {
 	Event::move(diff);
+	this->bgSprite.move(diff);
 	this->title.move(diff);
 	this->subtitle.move(diff);
 	this->goldText.move(diff);

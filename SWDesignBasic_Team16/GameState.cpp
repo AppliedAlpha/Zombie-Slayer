@@ -23,6 +23,16 @@ GameState::GameState(sf::RenderWindow* window) : State(window) {
 
 	this->mappedSprite = new std::map<std::string, sf::Sprite*>();
 	this->mappedSprite->emplace("Normal Zombie", new sf::Sprite(*this->allTextures, sf::IntRect(0, 0, 20, 20)));
+	this->mappedSprite->emplace("Fast Zombie", new sf::Sprite(*this->allTextures, sf::IntRect(20, 0, 15, 15)));
+	this->mappedSprite->emplace("Helmet Zombie", new sf::Sprite(*this->allTextures, sf::IntRect(0, 20, 30, 30)));
+	this->mappedSprite->emplace("Shooting Zombie", new sf::Sprite(*this->allTextures, sf::IntRect(40, 0, 20, 20)));
+	this->mappedSprite->emplace("Brick Zombie", new sf::Sprite(*this->allTextures, sf::IntRect(30, 20, 30, 30)));
+
+	this->mappedSprite->emplace("Boss I", new sf::Sprite(*this->allTextures, sf::IntRect(80, 0, 50, 50)));
+	this->mappedSprite->emplace("Boss II", new sf::Sprite(*this->allTextures, sf::IntRect(80, 0, 50, 50)));
+	this->mappedSprite->emplace("Boss III", new sf::Sprite(*this->allTextures, sf::IntRect(80, 0, 50, 50)));
+	this->mappedSprite->emplace("Boss IV", new sf::Sprite(*this->allTextures, sf::IntRect(80, 0, 50, 50)));
+	this->mappedSprite->emplace("Boss V", new sf::Sprite(*this->allTextures, sf::IntRect(80, 0, 50, 50)));
 
 	this->ui = GameUI(sf::Vector2f(640, 360), this->font, this->allTextures);
 	
@@ -218,6 +228,8 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			Random* random = NULL;
 			if (random->eventOccursWithProbability(1.f)) {
 				DropItem* dropBomb = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(0.f, 7 * 2.f), mobList[i]->inventory, sf::Color(0, 0, 0));
+				dropBomb->shape.setOutlineColor(sf::Color::White);
+				dropBomb->shape.setOutlineThickness(1.f);
 				dropBombList.push_back(dropBomb);
 			}
 			if (random->eventOccursWithProbability(1.f)) {
@@ -227,6 +239,10 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			if (random->eventOccursWithProbability(1.f)) {
 				DropItem* dropPotion = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(0.f, 7 * -2.f), mobList[i]->inventory, sf::Color(255, 0, 0));
 				dropPotionList.push_back(dropPotion);
+			}
+			if (random->eventOccursWithProbability(1.f)) {
+				DropItem* dropMagnetic = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7 * 1.723f, 7 * -1.f), mobList[i]->inventory, sf::Color(0, 255, 0));
+				dropMagneticList.push_back(dropMagnetic);
 			}
 
 			this->xpList.push_back(this->mobList[i]->getXP());
@@ -320,9 +336,9 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		sf::FloatRect dropIceBounds = dropIceList[i]->shape.getGlobalBounds();
 		if (dropIceBounds.intersects(playerNextPosBounds)) {
 			for (int j = 0; j < mobList.size(); j++) {
-				mobList[j]->speedZeroDuration = 0.f;
+				if (mobList[j]->movementSpeed == 0 && mobList[j]->freeze == true) mobList[j]->speedZeroDuration = 0.f;
 			}
-			this->aoeList.push_back(new AoE(400.f, 0.3f, dropIceList[i]->shape.getPosition(), 1));
+			this->aoeList.push_back(new AoE(400.f, 0.3f, dropIceList[i]->shape.getPosition(), 10));
 			
 			delete dropIceList[i];
 			this->dropIceList.erase(this->dropIceList.begin() + i);
@@ -338,6 +354,55 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 
 			delete dropPotionList[i];
 			this->dropPotionList.erase(this->dropPotionList.begin() + i);
+		}
+	}
+
+	for (int i = 0; i < this->dropMagneticList.size(); i++) {
+		sf::FloatRect dropMagneticBounds = dropMagneticList[i]->shape.getGlobalBounds();
+		if (dropMagneticBounds.intersects(playerNextPosBounds)) {
+			for (int j = 0; j < this->dropBombList.size(); j++) {
+				this->aoeList.push_back(new AoE(400.f, 0.3f, 6.f, sf::Vector2f(this->player.cx, this->player.cy)));
+				delete dropBombList[j];
+			}
+			for (int j = 0; j < this->dropIceList.size(); j++) {
+				for (int k = 0; k < mobList.size(); k++) {
+					mobList[k]->speedZeroDuration = 0.f;
+				}
+				this->aoeList.push_back(new AoE(400.f, 0.3f, sf::Vector2f(this->player.cx, this->player.cy), 1));
+				delete dropIceList[j];
+			}
+			for (int j = 0; j < this->dropPotionList.size(); j++) {
+				player.getPotion();
+				delete dropPotionList[j];
+			}
+			for (int j = 0; j < this->dropXpList.size(); j++) {
+				if (xpList[j] != NULL) {
+					this->player.inventory.setXp(this->player.inventory.getXp() + this->xpList[j]);
+					while (this->player.inventory.getXp() >= CustomMath::getMaxXp(this->player.level)) {
+						this->player.inventory.setXp(this->player.inventory.getXp() - CustomMath::getMaxXp(this->player.level));
+						this->player.level++;
+						this->eventQueue.push_back(new OptionSelectionEvent(&this->player));
+					}
+				}
+				delete dropXpList[j];
+			}
+			for (int j = 0; j < this->dropGoldList.size(); j++) {
+				if (goldList[j] != NULL) {
+					this->player.inventory.setGold(this->player.inventory.getGold() + this->goldList[j]);
+				}
+				delete dropGoldList[j];
+			}
+			this->dropBombList.clear();
+			this->dropIceList.clear();
+			this->dropPotionList.clear();
+			this->dropXpList.clear();
+			this->dropGoldList.clear();
+
+			for (auto dropMagnetic : this->dropMagneticList) {
+				delete dropMagnetic;
+			}
+			this->dropMagneticList.clear();
+			break;
 		}
 	}
 
@@ -391,10 +456,21 @@ void GameState::updateItemUse(const float& dt) {
 	this->timeUntilItemCooldown -= dt;
 
 	for (int i = 0; i < this->mobList.size(); i++) {
-		if (mobList[i]->movementSpeed == 0) {
+		if (mobList[i]->movementSpeed == 0 && mobList[i]->freeze == true) {
+			if (mobList[i]->isSprite)
+				mobList[i]->sprite.setColor(sf::Color(255, 255, 255, 96));
+			else
+				mobList[i]->shape.setFillColor(sf::Color::Blue);
+
 			mobList[i]->speedZeroDuration += dt;
 		}
 		if (mobList[i]->speedZeroDuration >= 3.f) {
+			if (mobList[i]->isSprite)
+				mobList[i]->sprite.setColor(sf::Color::White);
+			else
+				mobList[i]->shape.setFillColor(sf::Color::Green);
+
+			mobList[i]->freeze = false;
 			mobList[i]->speedZeroDuration = 0.f;
 			mobList[i]->movementSpeed = mobList[i]->originSpeed;
 		}
@@ -581,6 +657,9 @@ void GameState::render(sf::RenderTarget* target) {
 
 	for (auto dropPotion : this->dropPotionList)
 		dropPotion->draw(target);
+
+	for (auto dropMagnetic : this->dropMagneticList)
+		dropMagnetic->draw(target);
 
 	for (auto weapon : this->player.weaponList) {
 		if (MeleeWeapon* melee = dynamic_cast<MeleeWeapon*>(weapon.second)) {

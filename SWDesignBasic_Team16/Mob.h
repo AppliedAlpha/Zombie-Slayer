@@ -15,7 +15,6 @@ private:
 
 	void initShape(sf::Color color);
 	bool death = false;
-	bool isSprite = false;
 
 public:
 	Mob();
@@ -23,6 +22,8 @@ public:
 	Mob(int gold, int xp, const std::string& name, float movementSpeed, float power, float hp, const sf::Color& color, float size, sf::Sprite* sprite = nullptr, Weapon* weapon = nullptr);
 	~Mob();
 
+	bool freeze = false;
+	bool isSprite = false;
 	float speedZeroDuration;
 	float originSpeed;
 	Weapon* weapon = nullptr;

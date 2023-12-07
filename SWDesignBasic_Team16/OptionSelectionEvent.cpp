@@ -2,9 +2,12 @@
 
 OptionSelectionEvent::OptionSelectionEvent(Player* player) : Event(player)
 {
+	this->bgTexture.loadFromFile("./Resources/OptionSelectionEvent.jpg");
+	this->bgSprite.setTexture(bgTexture);
 	selectRandomWeapon();
 	this->title.setString("LEVEL UP!");
 	this->subtitle.setString("Press Arrow Keys to Choose a Option and Press Z to Select");
+	this->subtitle.setFillColor(sf::Color::Black);
 	this->initScreen();
 }
 
@@ -65,6 +68,7 @@ void OptionSelectionEvent::update(const float& dt)
 
 void OptionSelectionEvent::render(sf::RenderTarget* target)
 {
+	target->draw(bgSprite);
 	for (int i = 0; i < this->length; i++) {
 		target->draw(*(this->optionFields.at(i)));
 		target->draw(*(this->optionTexts.at(i)));
@@ -123,6 +127,7 @@ void OptionSelectionEvent::update(const float& dt, std::string option)
 void OptionSelectionEvent::move(sf::Vector2f diff)
 {
 	Event::move(diff);
+	bgSprite.move(diff);
 	this->title.move(diff);
 	this->subtitle.move(diff);
 	for (int i = 0; i < optionFields.size(); i++) {
