@@ -3,6 +3,7 @@
 Grinder::Grinder(float cooltime, float damage, float duration, sf::Vector2f position, sf::Color color) : MeleeWeapon(cooltime, damage, duration, position, color)
 {
 	this->rotation = 0;
+	this->rotationSpeed = 10;
 	initShape();
 }
 
@@ -23,7 +24,7 @@ void Grinder::updateCollision(Entity* object)
 void Grinder::update(const float& dt, sf::RectangleShape playerShape, float cx, float cy, sf::Vector2f viewDirection)
 {
 	MeleeWeapon::update(dt, playerShape, cx, cy, viewDirection);
-	rotation += 1 * 10;
+	rotation += 1 * this->rotationSpeed;
 	if (rotation == 360) rotation = 0;
 	sf::FloatRect pos;
 	pos.left = cx - (this->shape.getGlobalBounds().width * 0.5f);
