@@ -57,6 +57,10 @@ void Entity::updateCollision(Entity* object)
 
 void Entity::update(const float& dt)
 {
+	if (this->cx < -640) this->cx = -640;
+	if (this->cx > 1920) this->cx = 1920;
+	if (this->cy < -360) this->cy = -360;
+	if (this->cy > 1080) this->cy = 1080;
 }
 
 void Entity::render(sf::RenderTarget* target) {

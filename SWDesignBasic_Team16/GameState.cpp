@@ -538,7 +538,8 @@ void GameState::updateNPCEvent(const float& dt) {
 			this->player.movementSpeed = this->player.movementSpeed - 10;
 			break;
 		case 4:
-			this->mobList.push_back(new Mob(2, 2, std::string("Normal Zombie"), 3.f, 1.f, 40.f/*80*/, sf::Color::Green, 20.f));
+			// enqueueMob(1, 1, "Normal Zombie", 2, 1, 20, sf::Color::Green, 20, 120, false, 0)
+			this->nowStage->enqueueMob(1, 1, "Normal Zombie", 2, 1, 20, sf::Color::Green, 20, 120, false, 0);
 			this->mobList.at(this->mobList.size() - 1)->cx = this->npcEventPos.x;
 			this->mobList.at(this->mobList.size() - 1)->cy = this->npcEventPos.y;
 			this->mobList.at(this->mobList.size() - 1)->shape.setPosition(this->npcEventPos);
@@ -565,6 +566,10 @@ void GameState::updateStageClear()
 			return;
 		}
 		this->eventQueue.push_back(new StoreEvent(&this->player));
+		for (auto npc : this->npcList) {
+			delete npc;
+		}
+		this->npcList.clear();
 		this->nowStage = this->stages.front();
 		this->backgroundMap.changeSpriteByStage(this->nowStage->level);
 	}
