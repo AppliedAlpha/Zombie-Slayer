@@ -237,21 +237,21 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			dropXpList.push_back(dropXp);
 
 			Random* random = NULL;
-			if (random->eventOccursWithProbability(0.05f)) {
+			if (random->eventOccursWithProbability(10.05f)) {
 				DropItem* dropBomb = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(0.f, 7 * 2.f), mobList[i]->inventory, sf::Color(0, 0, 0));
 				dropBomb->shape.setOutlineColor(sf::Color::White);
 				dropBomb->shape.setOutlineThickness(1.f);
 				dropBombList.push_back(dropBomb);
 			}
-			if (random->eventOccursWithProbability(0.1f)) {
+			if (random->eventOccursWithProbability(10.1f)) {
 				DropItem* dropIce = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7 * -1.732f, 7 * -1.f), mobList[i]->inventory, sf::Color(0, 183, 235));
 				dropIceList.push_back(dropIce);
 			}
-			if (random->eventOccursWithProbability(0.1f)) {
+			if (random->eventOccursWithProbability(01.1f)) {
 				DropItem* dropPotion = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(0.f, 7 * -2.f), mobList[i]->inventory, sf::Color(255, 0, 0));
 				dropPotionList.push_back(dropPotion);
 			}
-			if (random->eventOccursWithProbability(0.1f)) {
+			if (random->eventOccursWithProbability(10.1f)) {
 				DropItem* dropMagnetic = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7 * 1.723f, 7 * -1.f), mobList[i]->inventory, sf::Color(0, 255, 0));
 				dropMagneticList.push_back(dropMagnetic);
 			}
@@ -337,7 +337,12 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 	for (int i = 0; i < this->dropBombList.size(); i++) {
 		sf::FloatRect dropBombBounds = dropBombList[i]->shape.getGlobalBounds();
 		if (dropBombBounds.intersects(playerNextPosBounds)) {
-			this->aoeList.push_back(new AoE(400.f, 0.3f, 16.f, dropBombList[i]->shape.getPosition()));
+			
+			player.getBomb();
+			std::cout << "Get a Bomb" << std::endl;
+			
+			//this->aoeList.push_back(new AoE(400.f, 0.3f, 16.f, dropBombList[i]->shape.getPosition()));
+			
 			delete dropBombList[i];
 			this->dropBombList.erase(this->dropBombList.begin() + i);
 		}
@@ -349,7 +354,10 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			for (int j = 0; j < mobList.size(); j++) {
 				if (mobList[j]->movementSpeed == 0 && mobList[j]->freeze == true) mobList[j]->speedZeroDuration = 0.f;
 			}
-			this->aoeList.push_back(new AoE(400.f, 0.3f, dropIceList[i]->shape.getPosition(), 10));
+			player.getIce();
+			std::cout << "Get a Ice" << std::endl;
+			
+			//this->aoeList.push_back(new AoE(400.f, 0.3f, dropIceList[i]->shape.getPosition(), 10));
 			
 			delete dropIceList[i];
 			this->dropIceList.erase(this->dropIceList.begin() + i);
@@ -361,7 +369,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		if (dropPotionBounds.intersects(playerNextPosBounds)) {
 
 			player.getPotion();
-			std::cout << "Get a Potion!!!" << std::endl;
+			std::cout << "Get a Potion" << std::endl;
 
 			delete dropPotionList[i];
 			this->dropPotionList.erase(this->dropPotionList.begin() + i);
@@ -372,14 +380,16 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		sf::FloatRect dropMagneticBounds = dropMagneticList[i]->shape.getGlobalBounds();
 		if (dropMagneticBounds.intersects(playerNextPosBounds)) {
 			for (int j = 0; j < this->dropBombList.size(); j++) {
-				this->aoeList.push_back(new AoE(400.f, 0.3f, 10.f, sf::Vector2f(this->player.cx, this->player.cy)));
+				player.getBomb();
+				//this->aoeList.push_back(new AoE(400.f, 0.3f, 10.f, sf::Vector2f(this->player.cx, this->player.cy)));
 				delete dropBombList[j];
 			}
 			for (int j = 0; j < this->dropIceList.size(); j++) {
 				for (int k = 0; k < mobList.size(); k++) {
 					mobList[k]->speedZeroDuration = 0.f;
 				}
-				this->aoeList.push_back(new AoE(400.f, 0.3f, sf::Vector2f(this->player.cx, this->player.cy), 1));
+				player.getIce();
+				//this->aoeList.push_back(new AoE(400.f, 0.3f, sf::Vector2f(this->player.cx, this->player.cy), 1));
 				delete dropIceList[j];
 			}
 			for (int j = 0; j < this->dropPotionList.size(); j++) {
@@ -426,6 +436,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 	}
 }
 
+
 void GameState::updateInput(const float& dt) {
 	this->checkForQuit();
 	this->velocity.x = 0;
@@ -457,6 +468,8 @@ void GameState::updateInput(const float& dt) {
 		if (this->timeUntilItemCooldown < 0.01f && sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(sf::Keyboard::Num1 - 1 + i))) {
 			// 아이템 사용 쿨다운 조정
 			bool res = this->player.useItem(i);
+			if (i == 2 && res == true) this->aoeList.push_back(new AoE(400.f, 0.3f, 10.f, sf::Vector2f(this->player.cx, this->player.cy)));
+			else if (i == 3 && res == true) this->aoeList.push_back(new AoE(400.f, 0.3f, sf::Vector2f(this->player.cx, this->player.cy), 10));
 			this->timeUntilItemCooldown = res ? 1.f : .1f;
 		}
 	}
