@@ -2,7 +2,7 @@
 
 Brick::Brick(float cooltime, float damage, float duration, sf::Vector2f position, float speed, sf::Color color) : RangedWeapon(cooltime, damage, duration, position, speed, color)
 {
-	this->maxHitCount = 1000;
+	this->maxHitCount = INT16_MAX;
 	initShape();
 }
 
@@ -37,14 +37,19 @@ void Brick::levelUp()
 	{
 	case 1:
 		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->damage += .1f;
 		this->level++;
 		break;
 	case 2:
 		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->damage += .1f;
 		this->level++;
 		break;
 	case 3:
-		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->shape.setSize(this->shape.getSize() + sf::Vector2f(20.f, 20.f));
+		this->damage += .3f;
+		this->duration += 3.f;
+		this->cooltime -= 2.f;
 		this->level++;
 		break;
 	default:

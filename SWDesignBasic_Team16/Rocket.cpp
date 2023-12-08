@@ -35,15 +35,20 @@ void Rocket::levelUp()
 	switch (this->level)
 	{
 	case 1:
-		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->shape.setSize(this->shape.getSize() + sf::Vector2f(5.f, 5.f));
+		this->radius += 15.f;
 		this->level++;
 		break;
 	case 2:
-		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->shape.setSize(this->shape.getSize() + sf::Vector2f(5.f, 5.f));
+		this->radius += 15.f;
 		this->level++;
 		break;
 	case 3:
-		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->shape.setSize(this->shape.getSize() + sf::Vector2f(20.f, 20.f));
+		this->radius += 30.f;
+		this->cooltime -= 1.f;
+		this->explosionDamage += 1.f;
 		this->level++;
 		break;
 	default:

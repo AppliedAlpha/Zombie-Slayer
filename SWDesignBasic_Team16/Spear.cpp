@@ -12,7 +12,7 @@ Spear::~Spear()
 void Spear::initShape()
 {
 	MeleeWeapon::initShape();
-	this->shape.setSize(sf::Vector2f(24.f, 100.f)); // 무기마다 shape가 달라지면 전체적으로 손봐야도리듯
+	this->shape.setSize(sf::Vector2f(24.f, 150.f)); // 무기마다 shape가 달라지면 전체적으로 손봐야도리듯
 }
 
 void Spear::updateCollision(Entity* object)
@@ -44,15 +44,19 @@ void Spear::levelUp()
 	switch (this->level)
 	{
 	case 1:
-		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->shape.setSize(this->shape.getSize() + sf::Vector2f(0.f, 10.f));
+		this->cooltime = this->cooltime - 0.1f;
 		this->level++;
 		break;
 	case 2:
-		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->shape.setSize(this->shape.getSize() + sf::Vector2f(0.f, 10.f));
+		this->cooltime = this->cooltime - 0.1f;
 		this->level++;
 		break;
 	case 3:
-		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->shape.setSize(this->shape.getSize() + sf::Vector2f(0, 30.f));
+		this->damage += 2.f;
+		this->cooltime = this->cooltime - 0.3f;
 		this->level++;
 		break;
 	default:

@@ -24,6 +24,7 @@ void Pistol::update(const float& dt, sf::RectangleShape playerPos, float cx, flo
 {
 	RangedWeapon::update(dt, playerPos, cx, cy, viewDirection);
 	this->shape.setPosition(cx - this->shape.getGlobalBounds().width * 0.5f - this->shape.getOutlineThickness(), cy - this->shape.getGlobalBounds().height * 0.5f - this->shape.getOutlineThickness());
+	
 }
 
 void Pistol::render(sf::RenderTarget* target)
@@ -36,15 +37,20 @@ void Pistol::levelUp()
 	switch (this->level)
 	{
 	case 1:
-		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->damage += 2.5f;
+		this->maxHitCount += 1;
 		this->level++;
 		break;
 	case 2:
-		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->damage += 2.5f;
+		this->maxHitCount += 1;
 		this->level++;
 		break;
 	case 3:
-		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->damage += 5.f;
+		this->maxHitCount += 2;
+		this->duration += 1.f;
+		this->speed += 2.f;
 		this->level++;
 		break;
 	default:

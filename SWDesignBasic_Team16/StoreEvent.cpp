@@ -61,6 +61,14 @@ void StoreEvent::initScreen()
 	this->goldText.setFillColor(sf::Color::Yellow);
 	this->script.setFont(this->font);
 	this->script.setPosition(width * 0.5 - this->script.getGlobalBounds().width * 0.5, 650);
+	this->script.setOutlineColor(sf::Color(0, 0, 0));
+	this->script.setOutlineThickness(1.f);
+	this->goldText.setOutlineColor(sf::Color(0, 0, 0));
+	this->goldText.setOutlineThickness(1.f);
+	this->title.setOutlineColor(sf::Color(0, 0, 0));
+	this->title.setOutlineColor(sf::Color(0, 0, 0));
+	this->subtitle.setOutlineThickness(1.f);
+	this->subtitle.setOutlineThickness(1.f);
 }
 
 void StoreEvent::showSelectionScreen()

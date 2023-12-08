@@ -14,7 +14,7 @@ Grinder::~Grinder()
 void Grinder::initShape()
 {
 	MeleeWeapon::initShape();
-	this->shape.setSize(sf::Vector2f(40.f, 40.f)); // 무기마다 shape가 달라지면 전체적으로 손봐야도리듯
+	this->shape.setSize(sf::Vector2f(50.f, 50.f)); // 무기마다 shape가 달라지면 전체적으로 손봐야도리듯
 }
 
 void Grinder::updateCollision(Entity* object)
@@ -44,15 +44,19 @@ void Grinder::levelUp()
 	switch (this->level)
 	{
 	case 1:
-		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->shape.setSize(this->shape.getSize() + sf::Vector2f(5.f, 5.f));
+		this->rotation += 1;
 		this->level++;
 		break;
 	case 2:
-		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->shape.setSize(this->shape.getSize() + sf::Vector2f(5.f, 5.f));
+		this->rotation += 1;
 		this->level++;
 		break;
 	case 3:
-		this->shape.setSize(this->shape.getSize() + sf::Vector2f(10.f, 10.f));
+		this->shape.setSize(this->shape.getSize() + sf::Vector2f(20.f, 20.f));
+		this->rotation += 3;
+		this->damage += 1.f;
 		this->level++;
 		break;
 	default:
