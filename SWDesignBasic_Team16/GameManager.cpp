@@ -66,6 +66,12 @@ void GameManager::endGame() {
 	std::cout << "Ending Game\n";
 }
 
+void GameManager::finishGameState() {
+	if (GameState* gameState = dynamic_cast<GameState*>(this->states.front())) {
+		this->states.push_back(new GameOverState(this->window, gameState->allClear, gameState->playTime, gameState->totalKillCount, gameState->totalDamage, gameState->totalXp, gameState->totalGold, gameState->player.weaponList));
+	}
+}
+
 void GameManager::pushStates(std::deque<Event*>& eventQueue, sf::View& view)
 {
 	while (!eventQueue.empty()) {
@@ -100,8 +106,10 @@ void GameManager::update() {
 
 			// 기존 state 종료 시 새로운 state를 뒤에 밀어넣는 작업
 			this->transitionStates<MainMenuState, GameState>(false);
-			this->transitionStates<GameState, GameOverState>(true);
+			// this->transitionStates<GameState, GameOverState>(true);
 			this->transitionStates<GameOverState, MainMenuState>(false);
+
+			this->finishGameState();
 
 			delete this->states.front();
 			this->states.pop_front();

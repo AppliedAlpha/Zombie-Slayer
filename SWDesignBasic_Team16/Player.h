@@ -25,7 +25,7 @@ public:
 
 	bool invincible = true;
 	sf::Vector2f viewDirection;
-	std::unordered_map<int, Weapon*> weaponList;
+	std::unordered_map<int, Weapon*>* weaponList;
 	std::vector<int> selected;
 	std::vector<int> unselected;
 	std::unordered_map<std::string, Item*> itemList;

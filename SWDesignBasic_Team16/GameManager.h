@@ -29,6 +29,7 @@ public:
 
 	template <typename CurrentState, typename NextState>
 	void transitionStates(bool autoTransit = false);
+	void finishGameState();
 
 	void pushStates(std::deque<Event*>& eventQueue, sf::View& view);
 	void updateDt();

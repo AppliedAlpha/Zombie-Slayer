@@ -200,17 +200,18 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			sf::FloatRect aoeItemBounds = aoeItem->shape.getGlobalBounds();
 			if (mobBounds.intersects(aoeItemBounds) && aoeItem->active) {
 				mobList[i]->updateItemCollision(aoeItem, this->player.power);
+				this->totalDamage += aoeItem->damage * this->player.power;
 			}
 		}
 		
-		for (auto weapon : this->player.weaponList) {
+		for (auto weapon : *this->player.weaponList) {
 			if (MeleeWeapon* melee = dynamic_cast<MeleeWeapon*>(weapon.second)) {
 				sf::FloatRect weaponBounds = melee->shape.getGlobalBounds();
 					if (mobBounds.intersects(weaponBounds) && melee->active) {
 						// printf("Collision\n");
 						mobList[i]->updateCollision(melee, this->player.power);
+						this->totalDamage += melee->damage * this->player.power;
 					}
-				
 			}
 			else if (RangedWeapon* ranged = dynamic_cast<RangedWeapon*>(weapon.second)) {
 				for (auto bullet : ranged->bullets) {
@@ -218,6 +219,8 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 					
 						if (mobBounds.intersects(bulletBounds)) {
 							mobList[i]->updateCollision(ranged, this->player.power);
+							this->totalDamage += ranged->damage * this->player.power;
+
 							if (bullet->maxHitCount <= bullet->hitCount) {
 								if (bullet->explosion) {
 									this->aoeList.push_back(bullet->explode(ranged->radius, ranged->explosionDuration, ranged->explosionDamage, mobList[i]->shape.getPosition()));
@@ -238,6 +241,8 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 
 					if (mobBounds.intersects(partnerBulletBounds)) {
 						mobList[i]->updateCollision(partnerRanged, partner->power);
+						this->totalDamage += partnerRanged->damage * partner->power;
+
 						if (partnerBullet->maxHitCount <= partnerBullet->hitCount) {
 							if (partnerBullet->explosion) {
 								this->aoeList.push_back(partnerBullet->explode(partnerRanged->radius, partnerRanged->explosionDuration, partnerRanged->explosionDamage, mobList[i]->shape.getPosition()));
@@ -253,7 +258,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		
 
 		if (mobList[i]->getDeath()) {
-			float itemOffset = 8.f;
+			float itemOffset = 12.f;
 			DropItem* dropGold = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(itemOffset * 1.723f, itemOffset * 1.f), mobList[i]->inventory, this->mappedSprite->at("Gold"));
 			dropGoldList.push_back(dropGold);
 			DropItem* dropXp = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(itemOffset * -1.732f, itemOffset * 1.f), mobList[i]->inventory, this->mappedSprite->at("Xp"));
@@ -290,6 +295,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			this->mobList.erase(this->mobList.begin() + i);
 
 			this->nowStage->leftKillCountUntilBoss--;
+			this->totalKillCount++;
 		}
 	}
 
@@ -300,6 +306,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 				sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
 				if (mobBounds.intersects(aoeBounds)) {
 					mobList[i]->updateCollision(aoe, this->player.power);
+					this->totalDamage += aoe->damage * this->player.power * .5f;
 				}
 			}
 		}
@@ -332,6 +339,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		if (dropGoldBounds.intersects(playerNextPosBounds)) {
 			if (goldList[i] != NULL) {
 				this->player.inventory.setGold(this->player.inventory.getGold() + this->goldList[i]);
+				this->totalGold += this->goldList[i];
 			}
 			std::cout << "Gold:  " << this->player.inventory.getGold() << std::endl;
 
@@ -346,6 +354,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		if (dropXpBounds.intersects(playerNextPosBounds)) {
 			if (xpList[i] != NULL) {
 				this->player.inventory.setXp(this->player.inventory.getXp() + this->xpList[i]);
+				this->totalXp += this->xpList[i];
 			}
 
 			std::cout << "Level: " << this->player.level << ", Xp: " << this->player.inventory.getXp() << std::endl;
@@ -411,12 +420,14 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			for (int j = 0; j < this->dropXpList.size(); j++) {
 				if (xpList[j] != NULL) {
 					this->player.inventory.setXp(this->player.inventory.getXp() + this->xpList[j]);
+					this->totalXp += this->xpList[i];
 				}
 				delete dropXpList[j];
 			}
 			for (int j = 0; j < this->dropGoldList.size(); j++) {
 				if (goldList[j] != NULL) {
 					this->player.inventory.setGold(this->player.inventory.getGold() + this->goldList[j]);
+					this->totalGold += this->goldList[i];
 				}
 				delete dropGoldList[j];
 			}
@@ -627,8 +638,8 @@ void GameState::updateStageClear()
 		this->stages.pop_front();
 
 		if (this->stages.empty()) {
-			this->quit = true;
 			this->allClear = true; // TODO: 올 클리어 추가해야함
+			this->quit = true;
 			return;
 		}
 		this->eventQueue.push_back(new StoreEvent(&this->player));
@@ -732,7 +743,7 @@ void GameState::render(sf::RenderTarget* target) {
 	for (auto dropMagnetic : this->dropMagneticList)
 		dropMagnetic->draw(target);
 
-	for (auto weapon : this->player.weaponList) {
+	for (auto weapon : *this->player.weaponList) {
 		if (MeleeWeapon* melee = dynamic_cast<MeleeWeapon*>(weapon.second)) {
 			if (melee->active)
 				melee->render(target);

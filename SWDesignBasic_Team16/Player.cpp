@@ -28,6 +28,7 @@ Player::Player() : Entity(200, 10, 100)
 {
 	this->initShape();
 	this->initVariables();
+	this->weaponList = new std::unordered_map<int, Weapon*>();
 
 	/*
 	* 0: Sword
@@ -37,7 +38,8 @@ Player::Player() : Entity(200, 10, 100)
 	* 4: Brick
 	* 5: Rocket
 	*/
-	weaponList.insert(std::unordered_map<int, Weapon*>::value_type(0, new Sword(1, 1, .5f, sf::Vector2f(this->cx, this->cy), sf::Color::Red)));
+	weaponList->emplace(0, new Sword(1, 1, .5f, sf::Vector2f(this->cx, this->cy), sf::Color::Red));
+	// weaponList.insert(std::unordered_map<int, Weapon*>::value_type(0, new Sword(1, 1, .5f, sf::Vector2f(this->cx, this->cy), sf::Color::Red)));
 	// weaponList.insert(std::unordered_map<int, Weapon*>::value_type(1, new Spear(1, 1, .5f, sf::Vector2f(this->cx, this->cy), sf::Color::Red)));
 	// weaponList.insert(std::unordered_map<int, Weapon*>::value_type(2, new Grinder(0, 2, 0, sf::Vector2f(this->cx, this->cy), sf::Color::Red)));
 	// weaponList.insert(std::unordered_map<int, Weapon*>::value_type(3, new Pistol(1.f, 5, 5.f, sf::Vector2f(this->cx, this->cy), 5, sf::Color::Red)));
@@ -48,10 +50,15 @@ Player::Player() : Entity(200, 10, 100)
 
 Player::~Player()
 {
-	for (auto weapon : this->weaponList) {
+	std::unordered_map<int, Weapon*>().swap(*this->weaponList);
+	std::unordered_map<std::string, Item*>().swap(this->itemList);
+	std::vector<Partner*>().swap(this->partners);
+
+	/*
+	for (auto weapon : *this->weaponList) {
 		delete weapon.second;
 	}
-	this->weaponList.clear();
+	this->weaponList->clear();
 	
 	for (auto item : this->itemList) {
 		delete item.second;
@@ -62,11 +69,12 @@ Player::~Player()
 		delete partner;
 	}
 	this->partners.clear();
+	*/
 }
 
 void Player::attack(const float& dt)
 {
-	for (auto weapon : this->weaponList) {
+	for (auto weapon : *this->weaponList) {
 		weapon.second->update(dt, this->shape, this->cx, this->cy, this->viewDirection);
 	}
 	for (auto item : this->itemList) {

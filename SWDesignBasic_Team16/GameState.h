@@ -19,10 +19,8 @@
 class GameState : public State
 {
 private:
-	Player player;
 	GameUI ui;
 	sf::Font* font;
-	bool allClear = false;
 
 	std::vector<Mob*> mobList;
 	std::vector<Mob*> mobSpeedList;
@@ -48,7 +46,6 @@ private:
 	Stage* nowStage;
 
 	float timeUntilItemCooldown;
-	float playTime = 0.f;
 
 	sf::Texture* allTextures;
 	std::map<std::string, sf::Sprite *>* mappedSprite;
@@ -56,6 +53,13 @@ private:
 	void initStages();
 
 public:
+	Player player;
+
+	bool allClear = false;
+	float playTime = 0.f;
+	int totalKillCount = 0, totalXp = 0, totalGold = 0;
+	double totalDamage = 0.f;
+
 	GameState(sf::RenderWindow* window);
 	virtual ~GameState();
 

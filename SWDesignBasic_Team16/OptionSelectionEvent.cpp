@@ -96,22 +96,22 @@ void OptionSelectionEvent::update(const float& dt, std::string option)
 		switch (index)
 		{
 		case 0:
-			this->player->weaponList.insert(std::unordered_map<int, Weapon*>::value_type(index, new Sword(1, 1, .5f, sf::Vector2f(this->player->cx, this->player->cy), sf::Color::Red)));
+			this->player->weaponList->insert(std::unordered_map<int, Weapon*>::value_type(index, new Sword(1, 1, .5f, sf::Vector2f(this->player->cx, this->player->cy), sf::Color::Red)));
 			break;
 		case 1:
-			this->player->weaponList.insert(std::unordered_map<int, Weapon*>::value_type(index, new Spear(1, 1.5f, .5f, sf::Vector2f(this->player->cx, this->player->cy), sf::Color::Red)));
+			this->player->weaponList->insert(std::unordered_map<int, Weapon*>::value_type(index, new Spear(1, 1.5f, .5f, sf::Vector2f(this->player->cx, this->player->cy), sf::Color::Red)));
 			break;
 		case 2:
-			this->player->weaponList.insert(std::unordered_map<int, Weapon*>::value_type(index, new Grinder(0, 2, 0, sf::Vector2f(this->player->cx, this->player->cy), sf::Color::Red)));
+			this->player->weaponList->insert(std::unordered_map<int, Weapon*>::value_type(index, new Grinder(0, 2, 0, sf::Vector2f(this->player->cx, this->player->cy), sf::Color::Red)));
 			break;
 		case 3:
-			this->player->weaponList.insert(std::unordered_map<int, Weapon*>::value_type(index, new Pistol(.5f, 5, 5.f, sf::Vector2f(this->player->cx, this->player->cy), 5, sf::Color::Red)));
+			this->player->weaponList->insert(std::unordered_map<int, Weapon*>::value_type(index, new Pistol(.5f, 5, 5.f, sf::Vector2f(this->player->cx, this->player->cy), 5, sf::Color::Red)));
 			break;
 		case 4:
-			this->player->weaponList.insert(std::unordered_map<int, Weapon*>::value_type(index, new Brick(5.f, .3f, 5.f, sf::Vector2f(this->player->cx, this->player->cy), 2, sf::Color::Red)));
+			this->player->weaponList->insert(std::unordered_map<int, Weapon*>::value_type(index, new Brick(5.f, .3f, 5.f, sf::Vector2f(this->player->cx, this->player->cy), 2, sf::Color::Red)));
 			break;
 		case 5:
-			this->player->weaponList.insert(std::unordered_map<int, Weapon*>::value_type(index, new Rocket(3.f, 0.f, 5.f, sf::Vector2f(this->player->cx, this->player->cy), 10, sf::Color::Red, 60.f, 1.f, .5f)));
+			this->player->weaponList->insert(std::unordered_map<int, Weapon*>::value_type(index, new Rocket(3.f, 0.f, 5.f, sf::Vector2f(this->player->cx, this->player->cy), 10, sf::Color::Red, 60.f, 1.f, .5f)));
 			break;
 		}
 		int i = std::find(this->player->unselected.begin(), this->player->unselected.end(), index) - this->player->unselected.begin();
@@ -121,7 +121,7 @@ void OptionSelectionEvent::update(const float& dt, std::string option)
 	else if (type == "Upgrade") {
 		std::string name = option.substr(split + 7);
 		int index = this->player->weaponNameToIndex(name);
-		auto weapon = this->player->weaponList.find(index)->second;
+		auto weapon = this->player->weaponList->find(index)->second;
 		if (weapon->level < weapon->maxLevel) {
 			weapon->levelUp();
 			if (weapon->level == weapon->maxLevel) {
@@ -198,7 +198,7 @@ void OptionSelectionEvent::selectRandomWeapon()
 			this->options.push_back(this->newWeapon + player->indexToWeaponName(player->unselected.at(option[i])));
 		for (int i = player->unselected.size(); i < 3; i++) {
 			if (option[i] == -1) this->options.push_back("All Stats Up: Power, Speed, Max HP");
-			else this->options.push_back(this->upgradeWeapon + +"Lv." + std::to_string(player->weaponList.find(player->selected.at(option[i]))->second->level + 1) + " " + player->indexToWeaponName(player->selected.at(option[i])));
+			else this->options.push_back(this->upgradeWeapon + +"Lv." + std::to_string(player->weaponList->find(player->selected.at(option[i]))->second->level + 1) + " " + player->indexToWeaponName(player->selected.at(option[i])));
 		}
 	}
 	else if (player->selected.size() > 3) {
@@ -209,7 +209,7 @@ void OptionSelectionEvent::selectRandomWeapon()
 			if (option[0] != option[1] && option[0] != option[2] && option[1] != option[2]) break;
 		}
 		for (int i = 0; i < 3; i++)
-			this->options.push_back(this->upgradeWeapon + "Lv." + std::to_string(player->weaponList.find(player->selected.at(option[i]))->second->level + 1) + " " + player->indexToWeaponName(player->selected.at(option[i])));
+			this->options.push_back(this->upgradeWeapon + "Lv." + std::to_string(player->weaponList->find(player->selected.at(option[i]))->second->level + 1) + " " + player->indexToWeaponName(player->selected.at(option[i])));
 	}
 	else {
 		int left = 3 - player->selected.size();
@@ -218,7 +218,7 @@ void OptionSelectionEvent::selectRandomWeapon()
 		}
 		for (int i = 0; i < 3; i++) {
 			if (option[i] == -1) this->options.push_back("Power Up");
-			else this->options.push_back(this->upgradeWeapon + "Lv." + std::to_string(player->weaponList.find(player->selected.at(option[i]))->second->level + 1) + " " + player->indexToWeaponName(player->selected.at(option[i])));
+			else this->options.push_back(this->upgradeWeapon + "Lv." + std::to_string(player->weaponList->find(player->selected.at(option[i]))->second->level + 1) + " " + player->indexToWeaponName(player->selected.at(option[i])));
 
 		}
 	}
