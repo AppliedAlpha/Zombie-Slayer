@@ -34,6 +34,13 @@ GameState::GameState(sf::RenderWindow* window) : State(window) {
 	this->mappedSprite->emplace("Boss IV", new sf::Sprite(*this->allTextures, sf::IntRect(80, 0, 50, 50)));
 	this->mappedSprite->emplace("Boss V", new sf::Sprite(*this->allTextures, sf::IntRect(80, 0, 50, 50)));
 
+	this->mappedSprite->emplace("Gold", new sf::Sprite(*this->allTextures, sf::IntRect(524, 0, 16, 16)));
+	this->mappedSprite->emplace("Bomb", new sf::Sprite(*this->allTextures, sf::IntRect(524, 16, 16, 16)));
+	this->mappedSprite->emplace("Xp", new sf::Sprite(*this->allTextures, sf::IntRect(524, 32, 16, 16)));
+	this->mappedSprite->emplace("Magnet", new sf::Sprite(*this->allTextures, sf::IntRect(524, 48, 16, 16)));
+	this->mappedSprite->emplace("Potion", new sf::Sprite(*this->allTextures, sf::IntRect(524, 64, 16, 16)));
+	this->mappedSprite->emplace("Ice", new sf::Sprite(*this->allTextures, sf::IntRect(524, 80, 16, 16)));
+
 	this->ui = GameUI(sf::Vector2f(640, 360), this->font, this->allTextures);
 	
 	this->border.setSize(sf::Vector2f(3840, 360));
@@ -246,28 +253,33 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		
 
 		if (mobList[i]->getDeath()) {
-			DropItem* dropGold = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7 * 1.723f, 7 * 1.f), mobList[i]->inventory, sf::Color(255, 255, 0));
+			float itemOffset = 8.f;
+			DropItem* dropGold = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(itemOffset * 1.723f, itemOffset * 1.f), mobList[i]->inventory, this->mappedSprite->at("Gold"));
 			dropGoldList.push_back(dropGold);
-			DropItem* dropXp = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7 * -1.732f, 7 * 1.f), mobList[i]->inventory, sf::Color(0, 0, 255));
+			DropItem* dropXp = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(itemOffset * -1.732f, itemOffset * 1.f), mobList[i]->inventory, this->mappedSprite->at("Xp"));
 			dropXpList.push_back(dropXp);
 
+			//auto a = dropGold->getPosition();
+			//auto b = dropXp->getPosition();
+			//printf("[%.2f, %.2f && %.2f, %.2f]\n", a.x, a.y, b.x, b.y);
+
 			Random* random = NULL;
-			if (random->eventOccursWithProbability(0)) {
-				DropItem* dropBomb = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(0.f, 7 * 2.f), mobList[i]->inventory, sf::Color(0, 0, 0));
+			if (random->eventOccursWithProbability(1.f)) {
+				DropItem* dropBomb = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(0.f, itemOffset * 2.f), mobList[i]->inventory, this->mappedSprite->at("Bomb"));
 				dropBomb->shape.setOutlineColor(sf::Color::White);
 				dropBomb->shape.setOutlineThickness(1.f);
 				dropBombList.push_back(dropBomb);
 			}
-			if (random->eventOccursWithProbability(0)) {
-				DropItem* dropIce = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7 * -1.732f, 7 * -1.f), mobList[i]->inventory, sf::Color(0, 183, 235));
+			if (random->eventOccursWithProbability(1.f)) {
+				DropItem* dropIce = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(itemOffset * -1.732f, itemOffset * -1.f), mobList[i]->inventory, this->mappedSprite->at("Ice"));
 				dropIceList.push_back(dropIce);
 			}
-			if (random->eventOccursWithProbability(0)) {
-				DropItem* dropPotion = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(0.f, 7 * -2.f), mobList[i]->inventory, sf::Color(255, 0, 0));
+			if (random->eventOccursWithProbability(1.f)) {
+				DropItem* dropPotion = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(0.f, itemOffset * -2.f), mobList[i]->inventory, this->mappedSprite->at("Potion"));
 				dropPotionList.push_back(dropPotion);
 			}
-			if (random->eventOccursWithProbability(0.01f)) {
-				DropItem* dropMagnetic = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7 * 1.723f, 7 * -1.f), mobList[i]->inventory, sf::Color(0, 255, 0));
+			if (random->eventOccursWithProbability(1.f)) {
+				DropItem* dropMagnetic = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(itemOffset * 1.723f, itemOffset * -1.f), mobList[i]->inventory, this->mappedSprite->at("Magnet"));
 				dropMagneticList.push_back(dropMagnetic);
 			}
 
