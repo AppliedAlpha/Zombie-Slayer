@@ -6,25 +6,25 @@ class GameUI
 {
 private:
 	sf::Texture* allTextures;
-	sf::Sprite itemPotion;
+	sf::Sprite itemSprite[3];
 
 	sf::Vector2f centerPos, diff;
 	sf::Vertex hpBar[4];
 	sf::Vertex xpBar[4];
-	sf::Vertex itemSlotCoolBar[1][4];
+	sf::Vertex itemSlotCoolBar[3][4];
 
 	sf::RectangleShape hpBackBar, xpBackBar;
-	sf::RectangleShape itemSlot[1];
+	sf::RectangleShape itemSlot[3];
 
 	sf::Color red, blue, bottomRed, bottomBlue;
 	sf::Color outlineGold, itemCoolBarColor;
 	sf::IntRect hpBarRect, xpBarRect, itemSlotCoolBarRect;
 	sf::Vector2f levelTextPos, goldTextPos, timeTextPos, stageTextPos;
-	sf::Vector2f itemPotionCountTextPos[2];
+	sf::Vector2f itemCountTextPos[3][2];
 
 	sf::Font* font;
 	sf::Text levelText, goldText, timeText, stageText;
-	sf::Text itemPotionCountText;
+	sf::Text itemCountText[3];
 
 	char timeTextBuffer[13];
 

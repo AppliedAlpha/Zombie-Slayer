@@ -10,7 +10,8 @@ GameUI::GameUI(const sf::Vector2f& center, sf::Font* font, sf::Texture* texture)
 	this->font = font;
 
 	this->allTextures = texture;
-	this->itemPotion = sf::Sprite(*this->allTextures, sf::IntRect(540, 0, 60, 60));
+	for (int i=0; i<3; i++)
+		this->itemSprite[i] = sf::Sprite(*this->allTextures, sf::IntRect(540, i * 60, 60, 60));
 		
 	initColors();
 	initRectPosValues();
@@ -38,11 +39,13 @@ void GameUI::initRectPosValues() {
 
 	timeTextPos = sf::Vector2f(640 - 160 / 2, 80);
 	goldTextPos = sf::Vector2f(20, 85);
-	levelTextPos = sf::Vector2f(1166, 85);
-	stageTextPos = sf::Vector2f(1160, 670);
+	levelTextPos = sf::Vector2f(1095, 85);
+	stageTextPos = sf::Vector2f(1148, 115);
 
-	itemPotionCountTextPos[0] = sf::Vector2f(64, 675);
-	itemPotionCountTextPos[1] = sf::Vector2f(61, 680);
+	for (int i = 0; i < 3; i++) {
+		itemCountTextPos[i][0] = sf::Vector2f(540 + 44 + i * 70, 675);
+		itemCountTextPos[i][1] = sf::Vector2f(540 + 41 + i * 70, 680);
+	}
 }
 
 void GameUI::setBarPos(sf::Vertex* bar, const sf::IntRect& rect, const sf::Color& up, const sf::Color& down, const float fillPercent) {
@@ -72,18 +75,18 @@ void GameUI::initBars() {
 	xpBackBar.setOutlineColor(outlineGold);
 	xpBackBar.setOutlineThickness(2.f);
 
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < 3; i++) {
 		itemSlot[i].setFillColor(sf::Color::White);
 		itemSlot[i].setSize(sf::Vector2f(60, 60));
-		itemSlot[i].setPosition(centerPos + sf::Vector2f(-620 + i * 70, 280));
+		itemSlot[i].setPosition(centerPos - diff + sf::Vector2f(540 + i * 70, 640));
 		itemSlot[i].setOutlineColor(CustomColor::Gray(0.1f));
 		itemSlot[i].setOutlineThickness(2.f);
-	}
 
-	itemSlotCoolBar[0][0] = sf::Vertex(centerPos + sf::Vector2f(-620, 280), itemCoolBarColor);
-	itemSlotCoolBar[0][1] = sf::Vertex(centerPos + sf::Vector2f(-620, 340), itemCoolBarColor);
-	itemSlotCoolBar[0][2] = sf::Vertex(centerPos + sf::Vector2f(-560, 340), itemCoolBarColor);
-	itemSlotCoolBar[0][3] = sf::Vertex(centerPos + sf::Vector2f(-560, 280), itemCoolBarColor);
+		itemSlotCoolBar[i][0] = sf::Vertex(centerPos - diff + sf::Vector2f(540 + i * 70, 640), itemCoolBarColor);
+		itemSlotCoolBar[i][1] = sf::Vertex(centerPos - diff + sf::Vector2f(540 + i * 70, 700), itemCoolBarColor);
+		itemSlotCoolBar[i][2] = sf::Vertex(centerPos - diff + sf::Vector2f(600 + i * 70, 700), itemCoolBarColor);
+		itemSlotCoolBar[i][3] = sf::Vertex(centerPos - diff + sf::Vector2f(600 + i * 70, 640), itemCoolBarColor);
+	}
 }
 
 void GameUI::initTexts() {
@@ -91,7 +94,7 @@ void GameUI::initTexts() {
 	levelText.setCharacterSize(24);
 	levelText.setFillColor(sf::Color::White);
 	levelText.setPosition(centerPos - diff + levelTextPos);
-	levelText.setString("Level 1");
+	levelText.setString("Player Level 1");
 
 	goldText.setFont(*font);
 	goldText.setCharacterSize(24);
@@ -111,12 +114,14 @@ void GameUI::initTexts() {
 	timeText.setPosition(centerPos - diff + timeTextPos);
 	timeText.setString("0:00.0");
 
-	itemPotionCountText.setFont(*font);
-	itemPotionCountText.setCharacterSize(20);
-	itemPotionCountText.setFillColor(sf::Color::Black);
-	itemPotionCountText.setOutlineColor(sf::Color::White);
-	itemPotionCountText.setPosition(centerPos - diff + itemPotionCountTextPos[0]);
-	itemPotionCountText.setString("0");
+	for (int i = 0; i < 3; i++) {
+		itemCountText[i].setFont(*font);
+		itemCountText[i].setCharacterSize(20);
+		itemCountText[i].setFillColor(sf::Color::Black);
+		itemCountText[i].setOutlineColor(sf::Color::White);
+		itemCountText[i].setPosition(centerPos - diff + itemCountTextPos[i][0]);
+		itemCountText[i].setString("0");
+	}
 }
 
 void GameUI::updateCenterPos(const sf::Vector2f& center) {
@@ -138,20 +143,20 @@ void GameUI::updateXpBar(float xp, float maxXp) {
 }
 
 void GameUI::updateItemSlot(float coolDown, int potionCount) {
-	itemSlotCoolBar[0][0] = sf::Vertex(centerPos + sf::Vector2f(-620, 340 - 60 * coolDown), itemCoolBarColor);
-	itemSlotCoolBar[0][1] = sf::Vertex(centerPos + sf::Vector2f(-620, 340), itemCoolBarColor);
-	itemSlotCoolBar[0][2] = sf::Vertex(centerPos + sf::Vector2f(-560, 340), itemCoolBarColor);
-	itemSlotCoolBar[0][3] = sf::Vertex(centerPos + sf::Vector2f(-560, 340 - 60 * coolDown), itemCoolBarColor);
+	for (int i = 0; i < 3; i++) {
+		itemSlot[i].setPosition(centerPos - diff + sf::Vector2f(540 + i * 70, 640));
 
-	for (int i = 0; i < 1; i++) {
-		itemSlot[i].setPosition(centerPos + sf::Vector2f(-620 + i * 70, 280));
+		itemSlotCoolBar[i][0] = sf::Vertex(centerPos - diff + sf::Vector2f(540 + i * 70, 700 - coolDown * 60), itemCoolBarColor);
+		itemSlotCoolBar[i][1] = sf::Vertex(centerPos - diff + sf::Vector2f(540 + i * 70, 700), itemCoolBarColor);
+		itemSlotCoolBar[i][2] = sf::Vertex(centerPos - diff + sf::Vector2f(600 + i * 70, 700), itemCoolBarColor);
+		itemSlotCoolBar[i][3] = sf::Vertex(centerPos - diff + sf::Vector2f(600 + i * 70, 700 - coolDown * 60), itemCoolBarColor);
+
+		this->itemSprite[i].setPosition(centerPos - diff + sf::Vector2f(540 + i * 70, 640));
+
+		this->itemCountText[i].setCharacterSize(potionCount >= 10 ? 14 : 20);
+		this->itemCountText[i].setString(std::to_string(potionCount));
+		this->itemCountText[i].setPosition(centerPos - diff + itemCountTextPos[i][potionCount >= 10]);
 	}
-
-	this->itemPotion.setPosition(centerPos + sf::Vector2f(-620, 280));
-
-	this->itemPotionCountText.setCharacterSize(potionCount >= 10 ? 14 : 20);
-	this->itemPotionCountText.setString(std::to_string(potionCount));
-	this->itemPotionCountText.setPosition(centerPos - diff + itemPotionCountTextPos[potionCount >= 10]);
 }
 
 void GameUI::updatePlayTimeText(float playTime) {
@@ -165,7 +170,7 @@ void GameUI::updatePlayTimeText(float playTime) {
 
 void GameUI::updateLevelText(int level) {
 	levelText.setPosition(centerPos - diff + levelTextPos);
-	levelText.setString("Level " + std::to_string(level));
+	levelText.setString("Player Level " + std::to_string(level));
 }
 
 void GameUI::updateGoldText(int gold) {
@@ -185,10 +190,11 @@ void GameUI::render(sf::RenderTarget* target) {
 	target->draw(hpBackBar);
 	target->draw(xpBackBar);
 	
-	// for (int i = 0; i < 1; i++)
-	//	target->draw(itemSlot[i]);
-	target->draw(itemPotion);
-	target->draw(itemPotionCountText);
+	for (int i = 0; i < 3; i++) {
+		target->draw(itemSlot[i]);
+		target->draw(itemSprite[i]);
+		target->draw(itemCountText[i]);
+	}
 
 	target->draw(itemSlotCoolBar[0], 4, sf::Quads);
 
