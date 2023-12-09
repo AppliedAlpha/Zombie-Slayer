@@ -46,6 +46,8 @@ Player::Player() : Entity(200, 10, 100)
 	// weaponList.insert(std::unordered_map<int, Weapon*>::value_type(4, new Brick(5.f, .5f, 5.f, sf::Vector2f(this->cx, this->cy), 2, sf::Color::Red)));
 	// weaponList.insert(std::unordered_map<int, Weapon*>::value_type(5, new Rocket(3.f, 0.f, 5.f, sf::Vector2f(this->cx, this->cy), 10, sf::Color::Red, 40.f, 5.f, .5f)));
 	remainPotion = 0;
+	remainBomb = 0;
+	remainIce = 0;
 }
 
 Player::~Player()
@@ -122,6 +124,14 @@ void Player::getPotion() {
 	remainPotion++;
 }
 
+void Player::getBomb() {
+	remainBomb++;
+}
+
+void Player::getIce() {
+	remainIce++;
+}
+
 bool Player::useItem(int i) {
 	if (i == 1) {
 		if (remainPotion >= 1) {
@@ -141,6 +151,32 @@ bool Player::useItem(int i) {
 				std::cout << "Your HP is already FULL" << std::endl;
 				return false;
 			}
+		}
+		else {
+			std::cout << "There's No Item!!!" << std::endl;
+			return false;
+		}
+	}
+
+	if (i == 2) {
+		if (remainBomb >= 1) {
+			
+			remainBomb--;
+			std::cout << "Bomb" << std::endl;
+			return true;		
+		}
+		else {
+			std::cout << "There's No Item!!!" << std::endl;
+			return false;
+		}
+	}
+
+	if (i == 3) {
+		if (remainIce >= 1) {
+
+			remainIce--;
+			std::cout << "Freeze" << std::endl;
+			return true;
 		}
 		else {
 			std::cout << "There's No Item!!!" << std::endl;

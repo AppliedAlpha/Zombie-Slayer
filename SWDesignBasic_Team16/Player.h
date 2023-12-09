@@ -19,9 +19,10 @@ private:
 	void initVariables();
 	bool death = false;
 
-
 public:
 	int remainPotion;
+	int remainBomb;
+	int remainIce;
 
 	bool invincible = true;
 	sf::Vector2f viewDirection;
@@ -48,5 +49,7 @@ public:
 	bool getDeath() const { return this->death; }
 
 	void getPotion();
+	void getBomb();
+	void getIce();
 	bool useItem(int i);
 };
