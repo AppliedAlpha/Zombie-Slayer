@@ -23,7 +23,7 @@ public:
 	int level, maxMobCount;
 	int leftKillCountUntilBoss;
 	float nextSpawnTime, mobSpawnTime, bossSpawnTime;
-
+	int waveCount;
 	std::deque<Mob *> mobList;
 	Mob *boss;
 	bool isBossSpawned, isClear;

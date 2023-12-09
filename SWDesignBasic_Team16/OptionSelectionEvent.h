@@ -14,6 +14,7 @@ public:
 	std::vector<std::string> options;
 	std::vector<sf::RectangleShape*> optionFields;
 	std::vector<sf::Text*> optionTexts;
+	sf::Text script;
 	sf::String newWeapon = "New: ";
 	sf::String upgradeWeapon = "Upgrade: ";
 	sf::Text title;

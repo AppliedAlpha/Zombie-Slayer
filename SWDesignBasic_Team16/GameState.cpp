@@ -36,8 +36,8 @@ GameState::GameState(sf::RenderWindow* window) : State(window) {
 
 	this->ui = GameUI(sf::Vector2f(640, 360), this->font, this->allTextures);
 	
-	this->border.setSize(sf::Vector2f(2560, 1440));
-	this->border.setPosition(sf::Vector2f(-645, -365));
+	this->border.setSize(sf::Vector2f(3840, 360));
+	this->border.setPosition(sf::Vector2f(-1280, 180));
 	this->border.setFillColor(sf::Color::Transparent);
 	this->border.setOutlineColor(sf::Color::Red);
 	this->border.setOutlineThickness(1.f);
@@ -64,27 +64,42 @@ GameState::~GameState() {
 
 void GameState::spawnMob()
 {
-	Mob* mob = this->nowStage->spawnMob();
+	if (this->player.cx >= 640) {
+		for (int i = 0; i < this->nowStage->waveCount; i++) {
+			Mob* mob = this->nowStage->spawnMob();
+			if (mob == nullptr) return;
 
-	// 몹의 위치를 스폰되고 나서 GameState에서 정해주는 것으로 변경
-	// 반지름 크기는 나중에 변경해줘도 좋을듯
-	auto diff = CustomMath::getRandomCoordWithRadius(480.f);
+			mob->cx = this->player.cx + 640;//this->player.cx + diff.first;
+			mob->cy = 360 + Random::instance().getInt(-180, 180); //this->player.cy + diff.second;
+			this->mobList.push_back(mob);
+			mob->originSpeed = mob->movementSpeed;
+			//std::cout << mobList.size() << std::endl;
+		}
+	}
+	else {
+		for (int i = 0; i < this->nowStage->waveCount; i++) {
+			Mob* mob = this->nowStage->spawnMob();
+			if (mob == nullptr) return;
 
-	mob->cx = this->player.cx + diff.first;
-	mob->cy = this->player.cy + diff.second;
-	this->mobList.push_back(mob);
-	mob->originSpeed = mob->movementSpeed;
-	//std::cout << mobList.size() << std::endl;
+			mob->cx = this->player.cx - 640;//this->player.cx + diff.first;
+			mob->cy = 360 + Random::instance().getInt(-180, 180); //this->player.cy + diff.second;
+			this->mobList.push_back(mob);
+			mob->originSpeed = mob->movementSpeed;
+			//std::cout << mobList.size() << std::endl;
+		}
+	}
 }
 
 void GameState::spawnBoss() {
 	Mob* boss = this->nowStage->spawnBoss();
-
-	auto diff = CustomMath::getRandomCoordWithRadius(480.f);
-
-	boss->cx = this->player.cx + diff.first;
-	boss->cy = this->player.cy + diff.second;
-
+	if (this->player.cx >= 640) {
+		boss->cx = this->player.cx + 640;//this->player.cx + diff.first;
+		boss->cy = 360;//this->player.cy + diff.second;
+	}
+	else {
+		boss->cx = this->player.cx - 640;//this->player.cx + diff.first;
+		boss->cy = 360;//this->player.cy + diff.second;
+	}
 	this->mobList.push_back(boss);
 	boss->originSpeed = boss->movementSpeed;
 }
@@ -247,7 +262,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 				DropItem* dropIce = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(7 * -1.732f, 7 * -1.f), mobList[i]->inventory, sf::Color(0, 183, 235));
 				dropIceList.push_back(dropIce);
 			}
-			if (random->eventOccursWithProbability(01.1f)) {
+			if (random->eventOccursWithProbability(10.1f)) {
 				DropItem* dropPotion = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(0.f, 7 * -2.f), mobList[i]->inventory, sf::Color(255, 0, 0));
 				dropPotionList.push_back(dropPotion);
 			}
@@ -272,7 +287,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			for (int i = 0; i < this->mobList.size(); i++) {
 				sf::FloatRect mobBounds = mobList[i]->getShape().getGlobalBounds();
 				if (mobBounds.intersects(aoeBounds)) {
-					mobList[i]->updateCollision(aoe);
+					mobList[i]->updateCollision(aoe, this->player.power);
 				}
 			}
 		}
@@ -319,11 +334,6 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 		if (dropXpBounds.intersects(playerNextPosBounds)) {
 			if (xpList[i] != NULL) {
 				this->player.inventory.setXp(this->player.inventory.getXp() + this->xpList[i]);
-				if (this->player.inventory.getXp() >= CustomMath::getMaxXp(this->player.level)) {
-					this->player.inventory.setXp(this->player.inventory.getXp() - CustomMath::getMaxXp(this->player.level));
-					this->player.level++;
-					this->eventQueue.push_back(new OptionSelectionEvent(&this->player));
-				}
 			}
 
 			std::cout << "Level: " << this->player.level << ", Xp: " << this->player.inventory.getXp() << std::endl;
@@ -399,11 +409,6 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			for (int j = 0; j < this->dropXpList.size(); j++) {
 				if (xpList[j] != NULL) {
 					this->player.inventory.setXp(this->player.inventory.getXp() + this->xpList[j]);
-					while (this->player.inventory.getXp() >= CustomMath::getMaxXp(this->player.level)) {
-						this->player.inventory.setXp(this->player.inventory.getXp() - CustomMath::getMaxXp(this->player.level));
-						this->player.level++;
-						this->eventQueue.push_back(new OptionSelectionEvent(&this->player));
-					}
 				}
 				delete dropXpList[j];
 			}
@@ -505,6 +510,7 @@ void GameState::updateItemUse(const float& dt) {
 }
 
 void GameState::updateMobSpawn(const float& dt) {
+	if (this->mobList.empty()) this->nowStage->nextSpawnTime = 0;
 	if (this->nowStage->nextSpawnTime == 0.f && this->mobList.size() < this->nowStage->maxMobCount) {
 		this->spawnMob();
 	}
@@ -582,6 +588,43 @@ void GameState::updateStageClear()
 	if (this->nowStage->isBossSpawned && this->mobList.empty()) {
 		printf("Stage %d Clear\n", this->nowStage->level);
 
+		for (int j = 0; j < this->dropBombList.size(); j++) {
+			this->aoeList.push_back(new AoE(400.f, 0.3f, 10.f, sf::Vector2f(this->player.cx, this->player.cy)));
+			delete dropBombList[j];
+		}
+		for (int j = 0; j < this->dropIceList.size(); j++) {
+			for (int k = 0; k < mobList.size(); k++) {
+				mobList[k]->speedZeroDuration = 0.f;
+			}
+			this->aoeList.push_back(new AoE(400.f, 0.3f, sf::Vector2f(this->player.cx, this->player.cy), 1));
+			delete dropIceList[j];
+		}
+		for (int j = 0; j < this->dropPotionList.size(); j++) {
+			player.getPotion();
+			delete dropPotionList[j];
+		}
+		for (int j = 0; j < this->dropXpList.size(); j++) {
+			if (xpList[j] != NULL) {
+				this->player.inventory.setXp(this->player.inventory.getXp() + this->xpList[j]);
+			}
+			delete dropXpList[j];
+		}
+		for (int j = 0; j < this->dropGoldList.size(); j++) {
+			if (goldList[j] != NULL) {
+				this->player.inventory.setGold(this->player.inventory.getGold() + this->goldList[j]);
+			}
+			delete dropGoldList[j];
+		}
+		for (int j = 0; j < this->dropMagneticList.size(); j++) {
+			delete dropMagneticList[j];
+		}
+		this->dropBombList.clear();
+		this->dropIceList.clear();
+		this->dropPotionList.clear();
+		this->dropXpList.clear();
+		this->dropGoldList.clear();
+		this->dropMagneticList.clear();
+
 		this->stages.pop_front();
 
 		if (this->stages.empty()) {
@@ -606,11 +649,11 @@ void GameState::update(const float& dt) {
 
 	this->updateInput(dt);
 	this->player.update(dt, this->velocity);
-
-	if (this->player.cx < -640) this->player.cx = -640;
-	if (this->player.cx > 1920) this->player.cx = 1920;
-	if (this->player.cy < -360) this->player.cy = -360;
-	if (this->player.cy > 1080) this->player.cy = 1080;
+	if (this->player.inventory.getXp() >= CustomMath::getMaxXp(this->player.level)) {
+		this->player.inventory.setXp(this->player.inventory.getXp() - CustomMath::getMaxXp(this->player.level));
+		this->player.level++;
+		this->eventQueue.push_back(new OptionSelectionEvent(&this->player));
+	}
 
 	this->view.setCenter(this->player.cx, this->player.cy);
 	this->window->setView(view);

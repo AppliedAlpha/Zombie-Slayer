@@ -38,11 +38,11 @@ Player::Player() : Entity(200, 10, 100)
 	* 5: Rocket
 	*/
 	weaponList.insert(std::unordered_map<int, Weapon*>::value_type(0, new Sword(1, 1, .5f, sf::Vector2f(this->cx, this->cy), sf::Color::Red)));
-	// weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Spear", new Spear(2, 2.5f, .25f, sf::Vector2f(this->cx, this->cy))));
-	// weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Grinder", new Grinder(0, 1, 0, sf::Vector2f(this->cx, this->cy))));
-	// weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Pistol", new Pistol(1.f, 20, 2.f, sf::Vector2f(this->cx, this->cy), 10)));
-	// weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Brick", new Brick(5.f, .5f, 5.f, sf::Vector2f(this->cx, this->cy), 2)));
-	// weaponList.insert(std::unordered_map<std::string, Weapon*>::value_type("Rocket", new Rocket(3.f, 0.f, 3.f, sf::Vector2f(this->cx, this->cy), 15, 40.f, 3.f, .1f)));
+	// weaponList.insert(std::unordered_map<int, Weapon*>::value_type(1, new Spear(1, 1, .5f, sf::Vector2f(this->cx, this->cy), sf::Color::Red)));
+	// weaponList.insert(std::unordered_map<int, Weapon*>::value_type(2, new Grinder(0, 2, 0, sf::Vector2f(this->cx, this->cy), sf::Color::Red)));
+	// weaponList.insert(std::unordered_map<int, Weapon*>::value_type(3, new Pistol(1.f, 5, 5.f, sf::Vector2f(this->cx, this->cy), 5, sf::Color::Red)));
+	// weaponList.insert(std::unordered_map<int, Weapon*>::value_type(4, new Brick(5.f, .5f, 5.f, sf::Vector2f(this->cx, this->cy), 2, sf::Color::Red)));
+	// weaponList.insert(std::unordered_map<int, Weapon*>::value_type(5, new Rocket(3.f, 0.f, 5.f, sf::Vector2f(this->cx, this->cy), 10, sf::Color::Red, 40.f, 5.f, .5f)));
 	remainPotion = 0;
 	remainBomb = 0;
 	remainIce = 0;
