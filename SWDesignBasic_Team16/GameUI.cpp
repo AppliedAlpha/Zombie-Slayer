@@ -142,20 +142,32 @@ void GameUI::updateXpBar(float xp, float maxXp) {
 	xpBackBar.setPosition(centerPos + sf::Vector2f(-xpBarRect.width / 2, -360 + xpBarRect.top));
 }
 
-void GameUI::updateItemSlot(float coolDown, int potionCount) {
+void GameUI::updateItemSlot(float coolDown[], int potionCount, int bombCount, int iceCount) {
 	for (int i = 0; i < 3; i++) {
 		itemSlot[i].setPosition(centerPos - diff + sf::Vector2f(540 + i * 70, 640));
 
-		itemSlotCoolBar[i][0] = sf::Vertex(centerPos - diff + sf::Vector2f(540 + i * 70, 700 - coolDown * 60), itemCoolBarColor);
+		itemSlotCoolBar[i][0] = sf::Vertex(centerPos - diff + sf::Vector2f(540 + i * 70, 700 - coolDown[i] * 60), itemCoolBarColor);
 		itemSlotCoolBar[i][1] = sf::Vertex(centerPos - diff + sf::Vector2f(540 + i * 70, 700), itemCoolBarColor);
 		itemSlotCoolBar[i][2] = sf::Vertex(centerPos - diff + sf::Vector2f(600 + i * 70, 700), itemCoolBarColor);
-		itemSlotCoolBar[i][3] = sf::Vertex(centerPos - diff + sf::Vector2f(600 + i * 70, 700 - coolDown * 60), itemCoolBarColor);
+		itemSlotCoolBar[i][3] = sf::Vertex(centerPos - diff + sf::Vector2f(600 + i * 70, 700 - coolDown[i] * 60), itemCoolBarColor);
 
 		this->itemSprite[i].setPosition(centerPos - diff + sf::Vector2f(540 + i * 70, 640));
 
-		this->itemCountText[i].setCharacterSize(potionCount >= 10 ? 14 : 20);
-		this->itemCountText[i].setString(std::to_string(potionCount));
-		this->itemCountText[i].setPosition(centerPos - diff + itemCountTextPos[i][potionCount >= 10]);
+		if (i == 0) {
+			this->itemCountText[i].setCharacterSize(potionCount >= 10 ? 14 : 20);
+			this->itemCountText[i].setString(std::to_string(potionCount));
+			this->itemCountText[i].setPosition(centerPos - diff + itemCountTextPos[i][potionCount >= 10]);
+		}
+		else if (i == 1) {
+			this->itemCountText[i].setCharacterSize(bombCount >= 10 ? 14 : 20);
+			this->itemCountText[i].setString(std::to_string(bombCount));
+			this->itemCountText[i].setPosition(centerPos - diff + itemCountTextPos[i][bombCount >= 10]);
+		}
+		else {
+			this->itemCountText[i].setCharacterSize(iceCount >= 10 ? 14 : 20);
+			this->itemCountText[i].setString(std::to_string(iceCount));
+			this->itemCountText[i].setPosition(centerPos - diff + itemCountTextPos[i][iceCount >= 10]);
+		}
 	}
 }
 
@@ -197,6 +209,8 @@ void GameUI::render(sf::RenderTarget* target) {
 	}
 
 	target->draw(itemSlotCoolBar[0], 4, sf::Quads);
+	target->draw(itemSlotCoolBar[1], 4, sf::Quads);
+	target->draw(itemSlotCoolBar[2], 4, sf::Quads);
 
 	// render bars
 	target->draw(hpBar, 4, sf::Quads);

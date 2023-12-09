@@ -131,9 +131,9 @@ void OptionSelectionEvent::update(const float& dt, std::string option)
 		}
 	}
 	else {
-		this->player->maxHp += 60.f;
-		this->player->movementSpeed += 30.f;
-		this->player->power += 0.3f;
+		this->player->maxHp += 20.f;
+		this->player->movementSpeed += 10.f;
+		this->player->power += 0.1f;
 	}
 }
 
@@ -197,7 +197,7 @@ void OptionSelectionEvent::selectRandomWeapon()
 		for (int i = 0; i < player->unselected.size(); i++)
 			this->options.push_back(this->newWeapon + player->indexToWeaponName(player->unselected.at(option[i])));
 		for (int i = player->unselected.size(); i < 3; i++) {
-			if (option[i] == -1) this->options.push_back("All Stats Up: Power, Speed, Max HP");
+			if (option[i] == -1) this->options.push_back("All Stats Up");
 			else this->options.push_back(this->upgradeWeapon + +"Lv." + std::to_string(player->weaponList->find(player->selected.at(option[i]))->second->level + 1) + " " + player->indexToWeaponName(player->selected.at(option[i])));
 		}
 	}
@@ -217,7 +217,7 @@ void OptionSelectionEvent::selectRandomWeapon()
 			option[i] = i;
 		}
 		for (int i = 0; i < 3; i++) {
-			if (option[i] == -1) this->options.push_back("Power Up");
+			if (option[i] == -1) this->options.push_back("All Stats Up");
 			else this->options.push_back(this->upgradeWeapon + "Lv." + std::to_string(player->weaponList->find(player->selected.at(option[i]))->second->level + 1) + " " + player->indexToWeaponName(player->selected.at(option[i])));
 
 		}

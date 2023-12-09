@@ -45,7 +45,7 @@ private:
 	std::vector<DropItem*> dropMagneticList;
 	Stage* nowStage;
 
-	float timeUntilItemCooldown;
+	float timeUntilItemCooldown[3];
 
 	sf::Texture* allTextures;
 	std::map<std::string, sf::Sprite *>* mappedSprite;

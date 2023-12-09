@@ -43,7 +43,7 @@ public:
 	void updateCenterPos(const sf::Vector2f& center);
 	void updateHpBar(float hp, float maxHp);
 	void updateXpBar(float xp, float maxXp);
-	void updateItemSlot(float coolDown, int potionCount);
+	void updateItemSlot(float coolDown[], int potionCount, int bombCount, int iceCount);
 	void updatePlayTimeText(float playTime);
 	void updateLevelText(int level);
 	void updateGoldText(int gold);

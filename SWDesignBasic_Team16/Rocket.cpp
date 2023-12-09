@@ -48,7 +48,7 @@ void Rocket::levelUp()
 		this->shape.setSize(this->shape.getSize() + sf::Vector2f(20.f, 20.f));
 		this->radius += 30.f;
 		this->cooltime -= 1.f;
-		this->explosionDamage += 1.f;
+		this->explosionDamage += .5f;
 		this->level++;
 		break;
 	default:

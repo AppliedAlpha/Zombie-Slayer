@@ -54,7 +54,9 @@ GameState::GameState(sf::RenderWindow* window) : State(window) {
 	this->initStages();
 	// this->initFirstStage();
 
-	this->timeUntilItemCooldown = 1.f;
+	this->timeUntilItemCooldown[0] = 1.f;
+	this->timeUntilItemCooldown[1] = 1.f;
+	this->timeUntilItemCooldown[2] = 1.f;
 	this->player.invincible = false;
 }
 
@@ -430,14 +432,14 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			for (int j = 0; j < this->dropXpList.size(); j++) {
 				if (xpList[j] != NULL) {
 					this->player.inventory.setXp(this->player.inventory.getXp() + this->xpList[j]);
-					this->totalXp += this->xpList[i];
+					this->totalXp += this->xpList[j];
 				}
 				delete dropXpList[j];
 			}
 			for (int j = 0; j < this->dropGoldList.size(); j++) {
 				if (goldList[j] != NULL) {
 					this->player.inventory.setGold(this->player.inventory.getGold() + this->goldList[j]);
-					this->totalGold += this->goldList[i];
+					this->totalGold += this->goldList[j];
 				}
 				delete dropGoldList[j];
 			}
@@ -492,20 +494,22 @@ void GameState::updateInput(const float& dt) {
 		this->velocity.y = 1.f;
 	}
 
-	for (auto i = 1; i <= 9; i++) {
-		if (this->timeUntilItemCooldown < 0.01f && sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(sf::Keyboard::Num1 - 1 + i))) {
+	for (auto i = 1; i <= 3; i++) {
+		if (this->timeUntilItemCooldown[i - 1] < 0.01f && sf::Keyboard::isKeyPressed(static_cast<sf::Keyboard::Key>(sf::Keyboard::Num1 - 1 + i))) {
 			// 아이템 사용 쿨다운 조정
 			bool res = this->player.useItem(i);
-			if (i == 2 && res == true) this->aoeList.push_back(new AoE(400.f, 0.3f, 10.f, sf::Vector2f(this->player.cx, this->player.cy)));
-			else if (i == 3 && res == true) this->aoeList.push_back(new AoE(400.f, 0.3f, sf::Vector2f(this->player.cx, this->player.cy), 10));
-			this->timeUntilItemCooldown = res ? 1.f : .1f;
+			if (i == 2 && res == true) this->aoeList.push_back(new AoE(200.f, 0.3f, 5.f, sf::Vector2f(this->player.cx, this->player.cy)));
+			else if (i == 3 && res == true) this->aoeList.push_back(new AoE(200.f, 0.3f, sf::Vector2f(this->player.cx, this->player.cy), 10));
+			this->timeUntilItemCooldown[i - 1] = res ? 1.f : .1f;
 		}
 	}
 
 }
 
 void GameState::updateItemUse(const float& dt) {
-	this->timeUntilItemCooldown -= dt;
+	this->timeUntilItemCooldown[0] -= dt;
+	this->timeUntilItemCooldown[1] -= dt;
+	this->timeUntilItemCooldown[2] -= dt;
 
 	for (int i = 0; i < this->mobList.size(); i++) {
 		if (mobList[i]->movementSpeed == 0 && mobList[i]->freeze == true) {
@@ -528,8 +532,10 @@ void GameState::updateItemUse(const float& dt) {
 		}
 	}
 
-	if (this->timeUntilItemCooldown <= 0)
-		this->timeUntilItemCooldown = 0.f;
+	for (int i = 0; i < 3; i++) {
+		if (this->timeUntilItemCooldown[i] <= 0)
+			this->timeUntilItemCooldown[i] = 0.f;
+	}
 }
 
 void GameState::updateMobSpawn(const float& dt) {
@@ -612,14 +618,14 @@ void GameState::updateStageClear()
 		printf("Stage %d Clear\n", this->nowStage->level);
 
 		for (int j = 0; j < this->dropBombList.size(); j++) {
-			this->aoeList.push_back(new AoE(400.f, 0.3f, 10.f, sf::Vector2f(this->player.cx, this->player.cy)));
+			player.getBomb();
 			delete dropBombList[j];
 		}
 		for (int j = 0; j < this->dropIceList.size(); j++) {
 			for (int k = 0; k < mobList.size(); k++) {
 				mobList[k]->speedZeroDuration = 0.f;
 			}
-			this->aoeList.push_back(new AoE(400.f, 0.3f, sf::Vector2f(this->player.cx, this->player.cy), 1));
+			player.getIce();
 			delete dropIceList[j];
 		}
 		for (int j = 0; j < this->dropPotionList.size(); j++) {
@@ -721,7 +727,7 @@ void GameState::update(const float& dt) {
 	this->ui.updateCenterPos(sf::Vector2f(this->player.cx, this->player.cy));
 	this->ui.updateHpBar(this->player.hp, this->player.maxHp);
 	this->ui.updateXpBar(this->player.inventory.getXp(), CustomMath::getMaxXp(this->player.level));
-	this->ui.updateItemSlot(this->timeUntilItemCooldown, this->player.remainPotion);
+	this->ui.updateItemSlot(this->timeUntilItemCooldown, this->player.remainPotion, this->player.remainBomb, this->player.remainIce);
 	this->ui.updateLevelText(this->player.level);
 	this->ui.updateGoldText(this->player.inventory.getGold());
 	this->ui.updateStageText(this->nowStage->level);
