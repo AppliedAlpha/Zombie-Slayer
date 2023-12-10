@@ -132,8 +132,9 @@ void OptionSelectionEvent::update(const float& dt, std::string option)
 	}
 	else {
 		this->player->maxHp += 20.f;
-		this->player->movementSpeed += 10.f;
-		this->player->power += 0.1f;
+		this->player->hp += 20.f;
+		this->player->movementSpeed += 5.f;
+		this->player->power += 0.05f;
 	}
 }
 

@@ -181,6 +181,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 						this->player.updateCollision(ranged);
 						if (bullet->explosion) {
 							this->aoeList.push_back(bullet->explode(ranged->radius, ranged->explosionDuration, ranged->explosionDamage, mobList[i]->shape.getPosition()));
+							bullet->explosion = false;
 						}
 						bullet->out = true;
 					}
@@ -189,6 +190,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 							partner->updateCollision(ranged);
 							if (bullet->explosion) {
 								this->aoeList.push_back(bullet->explode(ranged->radius, ranged->explosionDuration, ranged->explosionDamage, mobList[i]->shape.getPosition()));
+								bullet->explosion = false;
 							}
 							bullet->out = true;
 						}
@@ -226,6 +228,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 							if (bullet->maxHitCount <= bullet->hitCount) {
 								if (bullet->explosion) {
 									this->aoeList.push_back(bullet->explode(ranged->radius, ranged->explosionDuration, ranged->explosionDamage, mobList[i]->shape.getPosition()));
+									bullet->explosion = false;
 								}
 								bullet->out = true;
 							}
@@ -248,6 +251,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 						if (partnerBullet->maxHitCount <= partnerBullet->hitCount) {
 							if (partnerBullet->explosion) {
 								this->aoeList.push_back(partnerBullet->explode(partnerRanged->radius, partnerRanged->explosionDuration, partnerRanged->explosionDamage, mobList[i]->shape.getPosition()));
+								partnerBullet->explosion = false;
 							}
 							partnerBullet->out = true;
 						}
@@ -271,21 +275,21 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 			//printf("[%.2f, %.2f && %.2f, %.2f]\n", a.x, a.y, b.x, b.y);
 
 			Random* random = NULL;
-			if (random->eventOccursWithProbability(1.f)) {
+			if (random->eventOccursWithProbability(0.001f)) {
 				DropItem* dropBomb = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(0.f, itemOffset * 2.f), mobList[i]->inventory, this->mappedSprite->at("Bomb"));
 				dropBomb->shape.setOutlineColor(sf::Color::White);
 				dropBomb->shape.setOutlineThickness(1.f);
 				dropBombList.push_back(dropBomb);
 			}
-			if (random->eventOccursWithProbability(1.f)) {
+			if (random->eventOccursWithProbability(0.001f)) {
 				DropItem* dropIce = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(itemOffset * -1.732f, itemOffset * -1.f), mobList[i]->inventory, this->mappedSprite->at("Ice"));
 				dropIceList.push_back(dropIce);
 			}
-			if (random->eventOccursWithProbability(1.f)) {
+			if (random->eventOccursWithProbability(0.001f)) {
 				DropItem* dropPotion = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(0.f, itemOffset * -2.f), mobList[i]->inventory, this->mappedSprite->at("Potion"));
 				dropPotionList.push_back(dropPotion);
 			}
-			if (random->eventOccursWithProbability(1.f)) {
+			if (random->eventOccursWithProbability(0.01f)) {
 				DropItem* dropMagnetic = new DropItem(mobList[i]->shape.getPosition() + sf::Vector2f(itemOffset * 1.723f, itemOffset * -1.f), mobList[i]->inventory, this->mappedSprite->at("Magnet"));
 				dropMagneticList.push_back(dropMagnetic);
 			}
@@ -561,21 +565,23 @@ void GameState::updateNPCEvent(const float& dt) {
 		case 1:
 			this->player.inventory.setGold(this->player.inventory.getGold() + 10);
 			this->player.getPartner();
-			this->player.getPartner();
-			this->player.getPartner();
-			this->player.getPartner();
 			break;
 		case 2:
-			this->aoeList.push_back(new AoE(200, .5f, 1.f, this->npcEventPos));
+			this->player.getBomb();
+			this->player.getPartner();
 			break;
 		case 3:
-			this->player.movementSpeed = this->player.movementSpeed + 10;
+			this->player.getIce();
+			this->player.getPartner();
 			break;
 		case 4:
-			this->player.inventory.setGold(this->player.inventory.getGold() + 10);
+			this->player.getIce();
+			this->player.getPartner();
 			break;
 		case 5:
-
+			this->player.getBomb();
+			this->player.getPartner();
+			break;
 		default:
 			break;
 		}
@@ -586,25 +592,35 @@ void GameState::updateNPCEvent(const float& dt) {
 		case 1:
 			this->player.inventory.setGold(this->player.inventory.getGold() + 10);
 			this->player.getPartner();
-			this->player.getPartner();
-			this->player.getPartner();
-			this->player.getPartner();
 			break;
 		case 2:
 			this->aoeList.push_back(new AoE(200, .5f, 1.f, this->npcEventPos, false));
+			this->nowStage->enqueueMob(1, 2, "Normal Zombie", 3, 1, 400, sf::Color::Green, 20/*size*/, 1, false, 0);
+			this->mobList.at(this->mobList.size() - 1)->cx = this->npcEventPos.x;
+			this->mobList.at(this->mobList.size() - 1)->cy = this->npcEventPos.y;
+			this->mobList.at(this->mobList.size() - 1)->shape.setPosition(this->npcEventPos);
 			break;
 		case 3:
-			this->player.movementSpeed = this->player.movementSpeed - 10;
+			this->aoeList.push_back(new AoE(200, .5f, 1.f, this->npcEventPos, false));
+			this->nowStage->enqueueMob(1, 2, "Normal Zombie", 3, 1, 400, sf::Color::Green, 20/*size*/, 1, false, 0);
+			this->mobList.at(this->mobList.size() - 1)->cx = this->npcEventPos.x;
+			this->mobList.at(this->mobList.size() - 1)->cy = this->npcEventPos.y;
+			this->mobList.at(this->mobList.size() - 1)->shape.setPosition(this->npcEventPos);
 			break;
 		case 4:
-			// enqueueMob(1, 1, "Normal Zombie", 2, 1, 20, sf::Color::Green, 20, 120, false, 0)
-			this->nowStage->enqueueMob(1, 1, "Normal Zombie", 2, 1, 20, sf::Color::Green, 20, 120, false, 0);
+			this->aoeList.push_back(new AoE(200, .5f, 1.f, this->npcEventPos, false));
+			this->nowStage->enqueueMob(1, 2, "Normal Zombie", 3, 1, 400, sf::Color::Green, 20/*size*/, 1, false, 0);
 			this->mobList.at(this->mobList.size() - 1)->cx = this->npcEventPos.x;
 			this->mobList.at(this->mobList.size() - 1)->cy = this->npcEventPos.y;
 			this->mobList.at(this->mobList.size() - 1)->shape.setPosition(this->npcEventPos);
 			break;
 		case 5:
-
+			this->aoeList.push_back(new AoE(200, .5f, 1.f, this->npcEventPos, false));
+			this->nowStage->enqueueMob(1, 2, "Normal Zombie", 3, 1, 400, sf::Color::Green, 20/*size*/, 1, false, 0);
+			this->mobList.at(this->mobList.size() - 1)->cx = this->npcEventPos.x;
+			this->mobList.at(this->mobList.size() - 1)->cy = this->npcEventPos.y;
+			this->mobList.at(this->mobList.size() - 1)->shape.setPosition(this->npcEventPos);
+			break;
 		default:
 			break;
 		}
@@ -616,7 +632,7 @@ void GameState::updateStageClear()
 {
 	if (this->nowStage->isBossSpawned && this->mobList.empty()) {
 		printf("Stage %d Clear\n", this->nowStage->level);
-
+		this->player.hp = this->player.maxHp;
 		for (int j = 0; j < this->dropBombList.size(); j++) {
 			player.getBomb();
 			delete dropBombList[j];

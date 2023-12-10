@@ -114,14 +114,14 @@ void StoreEvent::update(const float& dt, std::string option)
 			player->getPotion();
 		}
 		else if (type == "Pow") {
-			player->power += 0.1f;
+			player->power += 0.05f;
 		}
 		else if (type == "Max") {
 			player->maxHp += 20;
 			player->hp += 20;
 		}
 		else {
-			player->movementSpeed += 10;
+			player->movementSpeed += 5;
 		}
 
 		this->script.move(this->script.getGlobalBounds().width * 0.5, 0.f);
