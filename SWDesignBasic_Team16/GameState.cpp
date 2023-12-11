@@ -567,11 +567,11 @@ void GameState::updateNPCEvent(const float& dt) {
 			this->player.getPartner();
 			break;
 		case 2:
-			this->player.getBomb();
+			this->player.getIce();
 			this->player.getPartner();
 			break;
 		case 3:
-			this->player.getIce();
+			this->player.getBomb();
 			this->player.getPartner();
 			break;
 		case 4:
