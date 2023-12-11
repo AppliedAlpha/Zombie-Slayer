@@ -30,7 +30,8 @@ Partner::Partner(float cx, float cy, sf::Vector2f viewDirection, int index) : En
 	this->cx = center.x;
 	this->cy = center.y;
 	this->initShape();
-	this->weapon = new Pistol(1.f, 20, 2.f, sf::Vector2f(this->cx, this->cy), 5, sf::Color::Red);
+	// new Pistol(.5f, 5, 5.f, sf::Vector2f(this->player->cx, this->player->cy), 5, sf::Color::Red)
+	this->weapon = new Pistol(1.f, 5, 5.f, sf::Vector2f(this->cx, this->cy), 5, sf::Color::Red);
 }
 
 Partner::~Partner()

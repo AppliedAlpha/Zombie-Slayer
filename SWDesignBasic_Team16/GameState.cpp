@@ -245,8 +245,8 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 					sf::FloatRect partnerBulletBounds = partnerBullet->shape.getGlobalBounds();
 
 					if (mobBounds.intersects(partnerBulletBounds)) {
-						mobList[i]->updateCollision(partnerRanged, partner->power);
-						this->totalDamage += partnerRanged->damage * partner->power;
+						mobList[i]->updateCollision(partnerRanged, this->player.power);
+						this->totalDamage += partnerRanged->damage * this->player.power;
 
 						if (partnerBullet->maxHitCount <= partnerBullet->hitCount) {
 							if (partnerBullet->explosion) {
@@ -575,11 +575,13 @@ void GameState::updateNPCEvent(const float& dt) {
 			this->player.getPartner();
 			break;
 		case 4:
-			this->player.getIce();
+			this->player.inventory.setXp(this->player.level * (this->player.level + 20));
 			this->player.getPartner();
 			break;
 		case 5:
 			this->player.getBomb();
+			this->player.getIce();
+			this->player.inventory.setXp(this->player.level * (this->player.level + 20));
 			this->player.getPartner();
 			break;
 		default:
@@ -594,28 +596,28 @@ void GameState::updateNPCEvent(const float& dt) {
 			this->player.getPartner();
 			break;
 		case 2:
-			this->aoeList.push_back(new AoE(200, .5f, 1.f, this->npcEventPos, false));
+			this->aoeList.push_back(new AoE(200, .25f, 1.f, this->npcEventPos, false));
 			this->nowStage->enqueueMob(1, 2, "Normal Zombie", 3, 1, 400, sf::Color::Green, 20/*size*/, 1, false, 0);
 			this->mobList.at(this->mobList.size() - 1)->cx = this->npcEventPos.x;
 			this->mobList.at(this->mobList.size() - 1)->cy = this->npcEventPos.y;
 			this->mobList.at(this->mobList.size() - 1)->shape.setPosition(this->npcEventPos);
 			break;
 		case 3:
-			this->aoeList.push_back(new AoE(200, .5f, 1.f, this->npcEventPos, false));
+			this->aoeList.push_back(new AoE(200, .25f, 1.f, this->npcEventPos, false));
 			this->nowStage->enqueueMob(1, 2, "Normal Zombie", 3, 1, 400, sf::Color::Green, 20/*size*/, 1, false, 0);
 			this->mobList.at(this->mobList.size() - 1)->cx = this->npcEventPos.x;
 			this->mobList.at(this->mobList.size() - 1)->cy = this->npcEventPos.y;
 			this->mobList.at(this->mobList.size() - 1)->shape.setPosition(this->npcEventPos);
 			break;
 		case 4:
-			this->aoeList.push_back(new AoE(200, .5f, 1.f, this->npcEventPos, false));
+			this->aoeList.push_back(new AoE(200, .25f, 1.f, this->npcEventPos, false));
 			this->nowStage->enqueueMob(1, 2, "Normal Zombie", 3, 1, 400, sf::Color::Green, 20/*size*/, 1, false, 0);
 			this->mobList.at(this->mobList.size() - 1)->cx = this->npcEventPos.x;
 			this->mobList.at(this->mobList.size() - 1)->cy = this->npcEventPos.y;
 			this->mobList.at(this->mobList.size() - 1)->shape.setPosition(this->npcEventPos);
 			break;
 		case 5:
-			this->aoeList.push_back(new AoE(200, .5f, 1.f, this->npcEventPos, false));
+			this->aoeList.push_back(new AoE(200, .25f, 1.f, this->npcEventPos, false));
 			this->nowStage->enqueueMob(1, 2, "Normal Zombie", 3, 1, 400, sf::Color::Green, 20/*size*/, 1, false, 0);
 			this->mobList.at(this->mobList.size() - 1)->cx = this->npcEventPos.x;
 			this->mobList.at(this->mobList.size() - 1)->cy = this->npcEventPos.y;

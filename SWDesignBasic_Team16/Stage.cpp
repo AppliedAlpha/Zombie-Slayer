@@ -206,69 +206,60 @@ void Stage::setDialogArchive(int level)
 	{
 	case 1:
 		this->dialogArchive.first.push_back("Oh, You are not Zombie!");
-		this->dialogArchive.first.push_back("Survive here if you can.");
-		this->dialogArchive.first.push_back("I have a present for you. Good Luck!");
+		this->dialogArchive.first.push_back("I want to join with you.");
+		this->dialogArchive.first.push_back("Here is a present for you.");
 		this->dialogArchive.first.push_back("You got 10 golds.");
 
-		this->dialogArchive.second.push_back("Oh, Hi! You are not Zombie.");
-		this->dialogArchive.second.push_back("Survive here if you can.");
-		this->dialogArchive.second.push_back("I have a present for you. Good Luck!");
+		this->dialogArchive.second.push_back("Oh, You are not Zombie!");
+		this->dialogArchive.second.push_back("I want to join with you.");
+		this->dialogArchive.second.push_back("Here is a present for you.");
 		this->dialogArchive.second.push_back("You got 10 golds.");
 		break;
 	case 2:
 		this->dialogArchive.first.push_back("Oh, You are not Zombie!");
-		this->dialogArchive.first.push_back("Survive here if you can.");
-		this->dialogArchive.first.push_back("I have a present for you. Good Luck!");
-		this->dialogArchive.first.push_back("You got 10 golds.");
+		this->dialogArchive.first.push_back("I want to join with you.");
+		this->dialogArchive.first.push_back("Here is a present for you.");
+		this->dialogArchive.first.push_back("You got an Ice Item.");
 
-		this->dialogArchive.second.push_back("Hello, You are not Zombie!");
-		this->dialogArchive.second.push_back("Survive here if you can.");
-		this->dialogArchive.second.push_back("I have a present for you. Good Luck!");
-		this->dialogArchive.second.push_back("You got 10 golds.");
+		this->dialogArchive.second.push_back("You realized he is not a human.");
+		this->dialogArchive.second.push_back("It's a Zombie!");
+		this->dialogArchive.second.push_back("and you heard the sound of an explosion.");
+		this->dialogArchive.second.push_back("BOOM!!");
 		break;
 	case 3:
 		this->dialogArchive.first.push_back("Oh, You are not Zombie!");
-		this->dialogArchive.first.push_back("Survive here if you can.");
-		this->dialogArchive.first.push_back("I have a present for you. Good Luck!");
-		this->dialogArchive.first.push_back("You got 10 golds.");
+		this->dialogArchive.first.push_back("I want to join with you.");
+		this->dialogArchive.first.push_back("Here is a present for you.");
+		this->dialogArchive.first.push_back("You got a Bomb item.");
 
-		this->dialogArchive.second.push_back("Hello, You are not Zombie!");
-		this->dialogArchive.second.push_back("Survive here if you can.");
-		this->dialogArchive.second.push_back("I have a present for you. Good Luck!");
-		this->dialogArchive.second.push_back("You got 10 golds.");
+		this->dialogArchive.second.push_back("You realized he is not a human.");
+		this->dialogArchive.second.push_back("It's a Zombie!");
+		this->dialogArchive.second.push_back("and you heard the sound of an explosion.");
+		this->dialogArchive.second.push_back("BOOM!!");
 		break;
 	case 4:
 		this->dialogArchive.first.push_back("Oh, You are not Zombie!");
-		this->dialogArchive.first.push_back("Survive here if you can.");
-		this->dialogArchive.first.push_back("I have a present for you. Good Luck!");
-		this->dialogArchive.first.push_back("You got 10 golds.");
+		this->dialogArchive.first.push_back("I want to join with you.");
+		this->dialogArchive.first.push_back("I can increase your level");
+		this->dialogArchive.first.push_back("Level up!");
 
-		this->dialogArchive.second.push_back("Hello, You are not Zombie!");
-		this->dialogArchive.second.push_back("Survive here if you can.");
-		this->dialogArchive.second.push_back("I have a present for you. Good Luck!");
-		this->dialogArchive.second.push_back("You got 10 golds.");
+		this->dialogArchive.second.push_back("You realized he is not a human.");
+		this->dialogArchive.second.push_back("It's a Zombie!");
+		this->dialogArchive.second.push_back("and you heard the sound of an explosion.");
+		this->dialogArchive.second.push_back("BOOM!!");
 		break;
 	case 5:
 		this->dialogArchive.first.push_back("Oh, You are not Zombie!");
-		this->dialogArchive.first.push_back("Survive here if you can.");
-		this->dialogArchive.first.push_back("I have a present for you. Good Luck!");
-		this->dialogArchive.first.push_back("You got 10 golds.");
+		this->dialogArchive.first.push_back("I want to join with you.");
+		this->dialogArchive.first.push_back("Here is a present for you.");
+		this->dialogArchive.first.push_back("You got an Ice item.");
+		this->dialogArchive.first.push_back("You got a Bomb item.");
+		this->dialogArchive.first.push_back("Level up!");
 
-		this->dialogArchive.second.push_back("Hello, You are not Zombie!");
-		this->dialogArchive.second.push_back("Survive here if you can.");
-		this->dialogArchive.second.push_back("I have a present for you. Good Luck!");
-		this->dialogArchive.second.push_back("You got 10 golds.");
-		break;
-	case 6:
-		this->dialogArchive.first.push_back("Oh, You are not Zombie!");
-		this->dialogArchive.first.push_back("Survive here if you can.");
-		this->dialogArchive.first.push_back("I have a present for you. Good Luck!");
-		this->dialogArchive.first.push_back("You got 10 golds.");
-
-		this->dialogArchive.second.push_back("Hello, You are not Zombie!");
-		this->dialogArchive.second.push_back("Survive here if you can.");
-		this->dialogArchive.second.push_back("I have a present for you. Good Luck!");
-		this->dialogArchive.second.push_back("You got 10 golds.");
+		this->dialogArchive.second.push_back("You realized he is not a human.");
+		this->dialogArchive.second.push_back("It's a Zombie!");
+		this->dialogArchive.second.push_back("and you heard the sound of an explosion.");
+		this->dialogArchive.second.push_back("BOOM!!");
 		break;
 	default:
 		break;
