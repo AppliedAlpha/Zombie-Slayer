@@ -47,7 +47,7 @@ GameState::GameState(sf::RenderWindow* window) : State(window) {
 	this->border.setPosition(sf::Vector2f(-1280, 180));
 	this->border.setFillColor(sf::Color::Transparent);
 	this->border.setOutlineColor(sf::Color::Red);
-	this->border.setOutlineThickness(5.f);
+	this->border.setOutlineThickness(2.f);
 
 	this->window->setView(view);
 

@@ -52,7 +52,7 @@ void GameUI::initRectPosValues() {
 	}
 
 	for (int i = 0; i < 6; i++)
-		weaponLevelTextPos[i] = sf::Vector2f(740 + i * 80, 613);
+		weaponLevelTextPos[i] = sf::Vector2f(662 + i * 80, 613);
 }
 
 void GameUI::setBarPos(sf::Vertex* bar, const sf::IntRect& rect, const sf::Color& up, const sf::Color& down, const float fillPercent) {
@@ -189,7 +189,7 @@ void GameUI::updateWeaponSlot(int* weaponLevel) {
 			this->weaponLevelText[i].setString("LV " + std::to_string(weaponLevel[i]));
 		}
 
-		this->weaponSprite[i].setPosition(centerPos - diff + sf::Vector2f(730 + i * 80, 640));
+		this->weaponSprite[i].setPosition(centerPos - diff + sf::Vector2f(650 + i * 80, 640));
 		this->weaponLevelText[i].setPosition(centerPos - diff + weaponLevelTextPos[i]);
 	}
 }
