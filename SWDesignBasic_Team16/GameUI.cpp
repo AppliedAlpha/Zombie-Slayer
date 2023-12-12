@@ -12,6 +12,10 @@ GameUI::GameUI(const sf::Vector2f& center, sf::Font* font, sf::Texture* texture)
 	this->allTextures = texture;
 	for (int i=0; i<3; i++)
 		this->itemSprite[i] = sf::Sprite(*this->allTextures, sf::IntRect(540, i * 60, 60, 60));
+	for (int i=0; i<6; i++) {
+		this->weaponSprite[i] = sf::Sprite(*this->allTextures);
+		this->weaponSprite[i].setTextureRect(sf::IntRect(i * 60, 540, 60, 60));
+	}
 		
 	initColors();
 	initRectPosValues();
@@ -43,9 +47,12 @@ void GameUI::initRectPosValues() {
 	stageTextPos = sf::Vector2f(1148, 115);
 
 	for (int i = 0; i < 3; i++) {
-		itemCountTextPos[i][0] = sf::Vector2f(540 + 44 + i * 70, 675);
-		itemCountTextPos[i][1] = sf::Vector2f(540 + 41 + i * 70, 680);
+		itemCountTextPos[i][0] = sf::Vector2f(210 + 44 + i * 80, 675);
+		itemCountTextPos[i][1] = sf::Vector2f(210 + 41 + i * 80, 680);
 	}
+
+	for (int i = 0; i < 6; i++)
+		weaponLevelTextPos[i] = sf::Vector2f(740 + i * 80, 613);
 }
 
 void GameUI::setBarPos(sf::Vertex* bar, const sf::IntRect& rect, const sf::Color& up, const sf::Color& down, const float fillPercent) {
@@ -76,16 +83,10 @@ void GameUI::initBars() {
 	xpBackBar.setOutlineThickness(2.f);
 
 	for (int i = 0; i < 3; i++) {
-		itemSlot[i].setFillColor(sf::Color::White);
-		itemSlot[i].setSize(sf::Vector2f(60, 60));
-		itemSlot[i].setPosition(centerPos - diff + sf::Vector2f(540 + i * 70, 640));
-		itemSlot[i].setOutlineColor(CustomColor::Gray(0.1f));
-		itemSlot[i].setOutlineThickness(2.f);
-
-		itemSlotCoolBar[i][0] = sf::Vertex(centerPos - diff + sf::Vector2f(540 + i * 70, 640), itemCoolBarColor);
-		itemSlotCoolBar[i][1] = sf::Vertex(centerPos - diff + sf::Vector2f(540 + i * 70, 700), itemCoolBarColor);
-		itemSlotCoolBar[i][2] = sf::Vertex(centerPos - diff + sf::Vector2f(600 + i * 70, 700), itemCoolBarColor);
-		itemSlotCoolBar[i][3] = sf::Vertex(centerPos - diff + sf::Vector2f(600 + i * 70, 640), itemCoolBarColor);
+		itemSlotCoolBar[i][0] = sf::Vertex(centerPos - diff + sf::Vector2f(210 + i * 80, 640), itemCoolBarColor);
+		itemSlotCoolBar[i][1] = sf::Vertex(centerPos - diff + sf::Vector2f(210 + i * 80, 700), itemCoolBarColor);
+		itemSlotCoolBar[i][2] = sf::Vertex(centerPos - diff + sf::Vector2f(270 + i * 80, 700), itemCoolBarColor);
+		itemSlotCoolBar[i][3] = sf::Vertex(centerPos - diff + sf::Vector2f(270 + i * 80, 640), itemCoolBarColor);
 	}
 }
 
@@ -122,6 +123,14 @@ void GameUI::initTexts() {
 		itemCountText[i].setPosition(centerPos - diff + itemCountTextPos[i][0]);
 		itemCountText[i].setString("0");
 	}
+
+	for (int i = 0; i < 6; i++) {
+		weaponLevelText[i].setFont(*font);
+		weaponLevelText[i].setCharacterSize(20);
+		weaponLevelText[i].setFillColor(sf::Color::White);
+		weaponLevelText[i].setPosition(centerPos - diff + weaponLevelTextPos[i]);
+		weaponLevelText[i].setString("");
+	}
 }
 
 void GameUI::updateCenterPos(const sf::Vector2f& center) {
@@ -144,14 +153,12 @@ void GameUI::updateXpBar(float xp, float maxXp) {
 
 void GameUI::updateItemSlot(float coolDown[], int potionCount, int bombCount, int iceCount) {
 	for (int i = 0; i < 3; i++) {
-		itemSlot[i].setPosition(centerPos - diff + sf::Vector2f(540 + i * 70, 640));
+		itemSlotCoolBar[i][0] = sf::Vertex(centerPos - diff + sf::Vector2f(210 + i * 80, 700 - coolDown[i] * 60), itemCoolBarColor);
+		itemSlotCoolBar[i][1] = sf::Vertex(centerPos - diff + sf::Vector2f(210 + i * 80, 700), itemCoolBarColor);
+		itemSlotCoolBar[i][2] = sf::Vertex(centerPos - diff + sf::Vector2f(270 + i * 80, 700), itemCoolBarColor);
+		itemSlotCoolBar[i][3] = sf::Vertex(centerPos - diff + sf::Vector2f(270 + i * 80, 700 - coolDown[i] * 60), itemCoolBarColor);
 
-		itemSlotCoolBar[i][0] = sf::Vertex(centerPos - diff + sf::Vector2f(540 + i * 70, 700 - coolDown[i] * 60), itemCoolBarColor);
-		itemSlotCoolBar[i][1] = sf::Vertex(centerPos - diff + sf::Vector2f(540 + i * 70, 700), itemCoolBarColor);
-		itemSlotCoolBar[i][2] = sf::Vertex(centerPos - diff + sf::Vector2f(600 + i * 70, 700), itemCoolBarColor);
-		itemSlotCoolBar[i][3] = sf::Vertex(centerPos - diff + sf::Vector2f(600 + i * 70, 700 - coolDown[i] * 60), itemCoolBarColor);
-
-		this->itemSprite[i].setPosition(centerPos - diff + sf::Vector2f(540 + i * 70, 640));
+		this->itemSprite[i].setPosition(centerPos - diff + sf::Vector2f(210 + i * 80, 640));
 
 		if (i == 0) {
 			this->itemCountText[i].setCharacterSize(potionCount >= 10 ? 14 : 20);
@@ -168,6 +175,22 @@ void GameUI::updateItemSlot(float coolDown[], int potionCount, int bombCount, in
 			this->itemCountText[i].setString(std::to_string(iceCount));
 			this->itemCountText[i].setPosition(centerPos - diff + itemCountTextPos[i][iceCount >= 10]);
 		}
+	}
+}
+
+void GameUI::updateWeaponSlot(int* weaponLevel) {
+	for (int i = 0; i < 6; i++) {
+		if (weaponLevel[i] == 0) {
+			this->weaponSprite[i].setTextureRect(sf::IntRect(360, 540, 60, 60));
+			this->weaponLevelText[i].setString("");
+		}
+		else {
+			this->weaponSprite[i].setTextureRect(sf::IntRect(i * 60, 540, 60, 60));
+			this->weaponLevelText[i].setString("LV " + std::to_string(weaponLevel[i]));
+		}
+
+		this->weaponSprite[i].setPosition(centerPos - diff + sf::Vector2f(730 + i * 80, 640));
+		this->weaponLevelText[i].setPosition(centerPos - diff + weaponLevelTextPos[i]);
 	}
 }
 
@@ -203,14 +226,16 @@ void GameUI::render(sf::RenderTarget* target) {
 	target->draw(xpBackBar);
 	
 	for (int i = 0; i < 3; i++) {
-		target->draw(itemSlot[i]);
 		target->draw(itemSprite[i]);
 		target->draw(itemCountText[i]);
+	
+		target->draw(itemSlotCoolBar[i], 4, sf::Quads);
 	}
 
-	target->draw(itemSlotCoolBar[0], 4, sf::Quads);
-	target->draw(itemSlotCoolBar[1], 4, sf::Quads);
-	target->draw(itemSlotCoolBar[2], 4, sf::Quads);
+	for (int i = 0; i < 6; i++) {
+		target->draw(weaponSprite[i]);
+		target->draw(weaponLevelText[i]);
+	}
 
 	// render bars
 	target->draw(hpBar, 4, sf::Quads);

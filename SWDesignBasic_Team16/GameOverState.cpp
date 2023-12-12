@@ -10,7 +10,7 @@ GameOverState::GameOverState(sf::RenderWindow* window) : State(window) {
 	this->bgSprite.setTexture(bgTexture);
 }
 
-GameOverState::GameOverState(sf::RenderWindow* window, const bool& allClear, const double& playTime, const int& killCount, const double& totalDamage, const int& totalXp, const int& totalGold, std::unordered_map<int, Weapon*>* weaponList) : State(window) {
+GameOverState::GameOverState(sf::RenderWindow* window, const bool& allClear, const double& playTime, const int& killCount, const double& totalDamage, const int& totalXp, const int& totalGold, int* weaponLevelList) : State(window) {
 	this->font = new sf::Font();
 	this->font->loadFromFile("./Resources/Arial.ttf");
 
@@ -35,11 +35,11 @@ GameOverState::GameOverState(sf::RenderWindow* window, const bool& allClear, con
 
 	char weaponName[6][9] = {"Sword", "Spear", "Grinder", "Pistol", "Brick", "Rocket"};
 	for (int i = 0; i < 6; i++) {
-		if (weaponList->find(i) != weaponList->end()) {
+		if (weaponLevelList[i] != 0 ) {
 			beforeWeaponText += "Level Of ";
 			beforeWeaponText += weaponName[i];
 			beforeWeaponText += ": ";
-			beforeWeaponText += std::to_string(weaponList->at(i)->level);
+			beforeWeaponText += std::to_string(weaponLevelList[i]);
 			beforeWeaponText += '\n';
 		}
 	}

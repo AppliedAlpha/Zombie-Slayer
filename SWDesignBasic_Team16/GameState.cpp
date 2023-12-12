@@ -689,6 +689,15 @@ void GameState::updateStageClear()
 	}
 }
 
+void GameState::updateWeaponLevelList() {
+	for (int i = 0; i < 6; i++) {
+		if (this->player.weaponList->find(i) != this->player.weaponList->end())
+			this->weaponLevelList[i] = this->player.weaponList->at(i)->level;
+		else
+			this->weaponLevelList[i] = 0;
+	}
+}
+
 void GameState::update(const float& dt) {
 	if (inputTerm < 10) {
 		inputTerm++;
@@ -740,12 +749,14 @@ void GameState::update(const float& dt) {
 		mob->update(dt, sf::Vector2f(mob->direction.x, mob->direction.y));
 	}
 	this->playTime += dt;
+	this->updateWeaponLevelList();
 
 	// ui update
 	this->ui.updateCenterPos(sf::Vector2f(this->player.cx, this->player.cy));
 	this->ui.updateHpBar(this->player.hp, this->player.maxHp);
 	this->ui.updateXpBar(this->player.inventory.getXp(), CustomMath::getMaxXp(this->player.level));
 	this->ui.updateItemSlot(this->timeUntilItemCooldown, this->player.remainPotion, this->player.remainBomb, this->player.remainIce);
+	this->ui.updateWeaponSlot(this->weaponLevelList);
 	this->ui.updateLevelText(this->player.level);
 	this->ui.updateGoldText(this->player.inventory.getGold());
 	this->ui.updateStageText(this->nowStage->level);

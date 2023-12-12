@@ -60,6 +60,8 @@ public:
 	int totalKillCount = 0, totalXp = 0, totalGold = 0;
 	double totalDamage = 0.f;
 
+	int weaponLevelList[6];
+
 	GameState(sf::RenderWindow* window);
 	virtual ~GameState();
 
@@ -74,6 +76,7 @@ public:
 	void updateItemUse(const float& dt);
 	void updateMobSpawn(const float& dt);
 	void updateStageClear();
+	void updateWeaponLevelList();
 	void update(const float& dt);
 	void render(sf::RenderTarget* target);
 };

@@ -68,7 +68,7 @@ void GameManager::endGame() {
 
 void GameManager::finishGameState() {
 	if (GameState* gameState = dynamic_cast<GameState*>(this->states.front())) {
-		this->states.push_back(new GameOverState(this->window, gameState->allClear, gameState->playTime, gameState->totalKillCount, gameState->totalDamage, gameState->totalXp, gameState->totalGold, gameState->player.weaponList));
+		this->states.push_back(new GameOverState(this->window, gameState->allClear, gameState->playTime, gameState->totalKillCount, gameState->totalDamage, gameState->totalXp, gameState->totalGold, gameState->weaponLevelList));
 	}
 }
 

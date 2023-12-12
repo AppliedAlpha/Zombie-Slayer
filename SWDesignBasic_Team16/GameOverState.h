@@ -11,7 +11,7 @@ public:
 	sf::Sprite bgSprite;
 
 	GameOverState(sf::RenderWindow* window);
-	GameOverState(sf::RenderWindow* window, const bool& allClear, const double& playTime = 0.f, const int& killCount = 0, const double& totalDamage = 0.f, const int& totalXp = 0, const int& totalGold = 0, std::unordered_map<int, Weapon*>* weaponList = nullptr);
+	GameOverState(sf::RenderWindow* window, const bool& allClear, const double& playTime = 0.f, const int& killCount = 0, const double& totalDamage = 0.f, const int& totalXp = 0, const int& totalGold = 0, int* weaponLevelList = nullptr);
 	virtual ~GameOverState();
 
 	void endState();
