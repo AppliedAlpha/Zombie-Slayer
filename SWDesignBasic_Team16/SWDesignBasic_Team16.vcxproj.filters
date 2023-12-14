@@ -39,6 +39,7 @@
     <ClCompile Include="GameOverState.cpp" />
     <ClCompile Include="StoreEvent.cpp" />
     <ClCompile Include="Partner.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AoeItem.h" />
@@ -79,6 +80,7 @@
     <ClInclude Include="GameOverState.h" />
     <ClInclude Include="StoreEvent.h" />
     <ClInclude Include="Partner.h" />
+    <ClInclude Include="SoundManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />

@@ -58,6 +58,8 @@ GameState::GameState(sf::RenderWindow* window) : State(window) {
 	this->timeUntilItemCooldown[1] = 1.f;
 	this->timeUntilItemCooldown[2] = 1.f;
 	this->player.invincible = false;
+
+	SoundManager::instance().bgm.play();
 }
 
 GameState::~GameState() {
@@ -457,6 +459,7 @@ void GameState::updateCollision(sf::Vector2f& velocity)
 				delete dropMagnetic;
 			}
 			this->dropMagneticList.clear();
+			SoundManager::instance().magnet.play();
 			break;
 		}
 	}
@@ -505,6 +508,9 @@ void GameState::updateInput(const float& dt) {
 			if (i == 2 && res == true) this->aoeList.push_back(new AoE(200.f, 0.3f, 5.f, sf::Vector2f(this->player.cx, this->player.cy)));
 			else if (i == 3 && res == true) this->aoeList.push_back(new AoE(200.f, 0.3f, sf::Vector2f(this->player.cx, this->player.cy), 10));
 			this->timeUntilItemCooldown[i - 1] = res ? 1.f : .1f;
+
+			if (res)
+				SoundManager::instance().itemUse[i - 1].play();
 		}
 	}
 

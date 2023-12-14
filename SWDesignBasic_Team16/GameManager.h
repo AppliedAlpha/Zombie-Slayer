@@ -5,6 +5,7 @@
 #include "EventState.h"
 #include "MainMenuState.h"
 #include "GameOverState.h"
+#include "SoundManager.h"
 
 class GameManager
 {

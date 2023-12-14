@@ -51,6 +51,7 @@
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="RangedWeapon.cpp" />
     <ClCompile Include="Rocket.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Spear.cpp" />
     <ClCompile Include="Stage.cpp" />
     <ClCompile Include="State.cpp" />
@@ -90,6 +91,7 @@
     <ClInclude Include="Random.h" />
     <ClInclude Include="RangedWeapon.h" />
     <ClInclude Include="Rocket.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Spear.h" />
     <ClInclude Include="Stage.h" />
     <ClInclude Include="State.h" />

@@ -4,11 +4,13 @@
 #include "NPCEvent.h"
 #include "OptionSelectionEvent.h"
 #include "StoreEvent.h"
+#include "SoundManager.h"
 
 class EventState : public State
 {
 private:
 public:
+	bool soundPlayed = false;
 	Event* event;
 	EventState(sf::RenderWindow* window, sf::View& view, Event* event);
 	~EventState();

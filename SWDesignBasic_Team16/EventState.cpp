@@ -13,6 +13,12 @@ EventState::~EventState()
 
 void EventState::endState()
 {
+	if (NPCEvent* npc = dynamic_cast<NPCEvent*>(this->event)) {
+		if (npc->level != 1 && npc->positive <= 0) {
+			SoundManager::instance().itemUse[1].play();
+		}
+	}
+	SoundManager::instance().bgm.play();
 }
 
 void EventState::updateInput(const float& dt)
@@ -21,6 +27,21 @@ void EventState::updateInput(const float& dt)
 
 void EventState::update(const float& dt)
 {
+	if (!soundPlayed) {
+		soundPlayed = true;
+		SoundManager::instance().bgm.pause();
+
+		if (NPCEvent* npc = dynamic_cast<NPCEvent*>(this->event)) {
+			SoundManager::instance().npc[npc->positive > 0 || npc->level == 1].play();
+		}
+		else if (OptionSelectionEvent* option = dynamic_cast<OptionSelectionEvent*>(this->event)) {
+			SoundManager::instance().levelUp.play();
+		}
+		else if (StoreEvent* store = dynamic_cast<StoreEvent*>(this->event)) {
+			SoundManager::instance().stageClear.play();
+		}
+	}
+
 	if (inputTerm < 10) {
 		inputTerm++;
 	}
@@ -64,6 +85,7 @@ void EventState::update(const float& dt)
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) && inputTerm >= 10) {
 				store->update(dt, store->options.at(store->index));
+				SoundManager::instance().stageClear.play();
 				inputTerm = 0;
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::X) && inputTerm >= 10) {

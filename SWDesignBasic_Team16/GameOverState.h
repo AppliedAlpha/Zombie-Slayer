@@ -1,5 +1,6 @@
 #pragma once
 #include "State.h"
+#include "SoundManager.h"
 
 class GameOverState : public State {
 private:

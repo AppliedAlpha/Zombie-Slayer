@@ -15,6 +15,7 @@
 #include "RangedWeapon.h"
 #include "AoE.h"
 #include "Random.h"
+#include "SoundManager.h"
 
 class GameState : public State
 {

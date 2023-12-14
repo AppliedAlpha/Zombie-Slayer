@@ -1,4 +1,5 @@
 #include "GameOverState.h"
+#include "SoundManager.h"
 
 GameOverState::GameOverState(sf::RenderWindow* window) : State(window) {
 	this->font = new sf::Font();
@@ -44,6 +45,13 @@ GameOverState::GameOverState(sf::RenderWindow* window, const bool& allClear, con
 		}
 	}
 	this->resultText->setString(beforeWeaponText);
+
+	SoundManager::instance().bgm.stop();
+
+	if (allClear)
+		SoundManager::instance().gameClear.play();
+	else
+		SoundManager::instance().gameOver.play();
 }
 
 GameOverState::~GameOverState() {
